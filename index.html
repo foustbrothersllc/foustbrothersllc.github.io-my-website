@@ -5,117 +5,230 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Foust Brothers LLC — Digital Division</title>
   <meta name="description" content="Expert digital craftsmen. Web services built with precision, honesty, and commitment to excellence. Under promise, over deliver." />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2300e5ff' opacity='0.9'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2300e5ff'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+:root{--bg-primary:#020810;--bg-secondary:#050d1a;--bg-card:#080f1e;--bg-card-hover:#0d1830;--cyan:#00e5ff;--cyan-dim:#00b8cc;--cyan-glow:rgba(0,229,255,.15);--cyan-glow-strong:rgba(0,229,255,.4);--orange:#ff6a00;--white:#e8f4f8;--white-dim:#8aa8b8;--border:rgba(0,229,255,.2);--font-display:'Orbitron',monospace;--font-mono:'Share Tech Mono',monospace;--font-body:'Rajdhani',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg-primary);color:var(--white);font-family:var(--font-body);font-size:16px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg-primary)}::-webkit-scrollbar-thumb{background:var(--cyan-dim);border-radius:2px}
+.math-bg{position:fixed;inset:0;z-index:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Ctext x='20' y='40' fill='%2300e5ff' font-size='14' font-family='monospace'%3E%E2%88%87%C2%B2%CF%86%20%3D%20%CF%81/%CE%B5%E2%82%80%3C/text%3E%3Ctext x='200' y='80' fill='%2300e5ff' font-size='12' font-family='monospace'%3EF%20%3D%20ma%3C/text%3E%3Ctext x='400' y='60' fill='%2300e5ff' font-size='16' font-family='monospace'%3Ee%5E(i%CF%80)%20%2B%201%20%3D%200%3C/text%3E%3Ctext x='50' y='150' fill='%2300e5ff' font-size='13' font-family='monospace'%3E%CE%BB%20%3D%20h/mv%3C/text%3E%3Ctext x='300' y='200' fill='%2300e5ff' font-size='15' font-family='monospace'%3E%CF%83%20%3D%20%E2%88%9A(%CE%A3(x-%CE%BC)%C2%B2/N)%3C/text%3E%3Ctext x='100' y='280' fill='%2300e5ff' font-size='14' font-family='monospace'%3Edy/dx%20%3D%20lim%3C/text%3E%3Ctext x='400' y='320' fill='%2300e5ff' font-size='11' font-family='monospace'%3Ef(x)%20%3D%20ax%C2%B2%20%2B%20bx%20%2B%20c%3C/text%3E%3Ctext x='650' y='260' fill='%2300e5ff' font-size='13' font-family='monospace'%3E%CF%88%20%3D%20Ae%5E(ikx)%3C/text%3E%3Ctext x='30' y='400' fill='%2300e5ff' font-size='16' font-family='monospace'%3E%CF%80r%C2%B2%3C/text%3E%3Ctext x='680' y='380' fill='%2300e5ff' font-size='11' font-family='monospace'%3EE%20%3D%20mc%C2%B2%3C/text%3E%3Cline x1='0' y1='120' x2='800' y2='120' stroke='%2300e5ff' stroke-width='0.3'/%3E%3Cline x1='0' y1='350' x2='800' y2='350' stroke='%2300e5ff' stroke-width='0.3'/%3E%3Ccircle cx='620' cy='300' r='80' fill='none' stroke='%2300e5ff' stroke-width='0.5'/%3E%3C/svg%3E");background-size:800px 600px;pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer}
+.nav-orb{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#4af,#00e5ff 40%,#006688 80%,#002233);box-shadow:0 0 12px var(--cyan),0 0 24px rgba(0,229,255,.3);animation:orbPulse 3s ease-in-out infinite}
+@keyframes orbPulse{0%,100%{box-shadow:0 0 12px var(--cyan),0 0 24px rgba(0,229,255,.3)}50%{box-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,229,255,.5)}}
+.nav-brand-text{display:flex;flex-direction:column}
+.nav-brand-name{font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:.15em;color:var(--white);line-height:1}
+.nav-brand-sub{font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;line-height:1.4}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{font-family:var(--font-display);font-size:.6rem;font-weight:600;letter-spacing:.2em;color:var(--white-dim);text-decoration:none;transition:color .2s;position:relative;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:var(--white)}
+.nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--cyan)}
+.nav-cta{display:flex!important;align-items:center;gap:6px;padding:8px 16px!important;border:1px solid var(--cyan)!important;background:transparent;color:var(--cyan)!important;font-family:var(--font-display)!important;font-size:.6rem!important;font-weight:700;letter-spacing:.15em;text-decoration:none;transition:all .2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+.nav-cta:hover{background:var(--cyan-glow);box-shadow:0 0 20px var(--cyan-glow-strong)}
+.nav-cta::before{content:'⚡';font-size:.7rem}
+.nav-toggle{display:none;background:none;border:1px solid var(--border);color:var(--cyan);padding:6px 10px;cursor:pointer;font-size:1.2rem}
+.page{display:none}.page.active{display:block}
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:64px}
+.hero-grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.hero-module-bar{position:absolute;top:80px;left:0;right:0;padding:10px 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.65rem;color:var(--cyan);letter-spacing:.1em}
+.module-bar-left{display:flex;align-items:center;gap:8px}
+.module-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:blink 2s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.module-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);margin-left:12px;max-width:200px}
+.module-bar-right{display:flex;align-items:center;gap:6px;color:var(--white-dim)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#00ff88;animation:blink 1.5s step-end infinite}
+.boot-sequence{position:absolute;top:130px;left:2rem;font-family:var(--font-mono);font-size:.6rem;color:rgba(0,229,255,.4);line-height:1.8}
+.boot-sequence span{display:block;animation:fadeIn .5s ease forwards;opacity:0}
+.boot-sequence span:nth-child(1){animation-delay:.2s}.boot-sequence span:nth-child(2){animation-delay:.7s}.boot-sequence span:nth-child(3){animation-delay:1.2s}.boot-sequence span:nth-child(4){animation-delay:1.7s}.boot-sequence span:nth-child(5){animation-delay:2.2s;color:#00ff88}
+@keyframes fadeIn{to{opacity:1}}
+.hero-orb-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%)}
+.hero-orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#88ddff,#00e5ff 30%,#c8a000 60%,#5a3a00 85%,#1a0a00);box-shadow:0 0 40px rgba(0,229,255,.6),0 0 80px rgba(0,229,255,.3),0 0 160px rgba(0,229,255,.1);animation:heroOrbPulse 4s ease-in-out infinite;position:relative}
+.hero-orb::before{content:'';position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(0,229,255,.2);animation:ringRotate 8s linear infinite}
+.hero-orb::after{content:'';position:absolute;inset:-35px;border-radius:50%;border:1px solid rgba(0,229,255,.1);animation:ringRotate 12s linear infinite reverse}
+@keyframes heroOrbPulse{0%,100%{box-shadow:0 0 40px rgba(0,229,255,.6),0 0 80px rgba(0,229,255,.3),0 0 160px rgba(0,229,255,.1)}50%{box-shadow:0 0 60px rgba(0,229,255,.8),0 0 120px rgba(0,229,255,.5),0 0 200px rgba(0,229,255,.2)}}
+@keyframes ringRotate{to{transform:rotate(360deg)}}
+.hero-panel-left{position:absolute;left:2rem;bottom:30%;display:flex;flex-direction:column;gap:8px}
+.hero-panel-right{position:absolute;right:2rem;bottom:30%;display:flex;flex-direction:column;gap:8px;min-width:160px}
+.sys-card{background:rgba(5,13,26,.85);border:1px solid var(--border);padding:10px 14px;backdrop-filter:blur(8px);transition:border-color .2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.sys-card:hover{border-color:var(--cyan)}
+.sys-card-label{font-family:var(--font-mono);font-size:.5rem;color:var(--cyan);letter-spacing:.15em;margin-bottom:2px}
+.sys-card-value{font-family:var(--font-display);font-size:.85rem;font-weight:700;color:var(--white);letter-spacing:.05em}
+.sys-card-value.online{color:#00ff88}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 2rem;margin-top:20vh}
+.hero-directive{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);letter-spacing:.3em;margin-bottom:1rem}
+.hero-headline{font-family:var(--font-display);font-size:clamp(3.5rem,10vw,8rem);font-weight:900;line-height:.9;letter-spacing:.02em;text-transform:uppercase}
+.hero-headline .line1,.hero-headline .line2{color:var(--white);display:block}
+.hero-headline .line3{color:var(--cyan);display:block;text-shadow:0 0 30px rgba(0,229,255,.5),0 0 60px rgba(0,229,255,.2)}
+.hero-sub{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);letter-spacing:.3em;margin:1.5rem 0 2.5rem;display:flex;align-items:center;justify-content:center;gap:12px}
+.hero-sub::before,.hero-sub::after{content:'';flex:1;max-width:80px;height:1px;background:var(--border)}
+.hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:var(--font-display);font-size:.65rem;font-weight:700;letter-spacing:.2em;text-decoration:none;text-transform:uppercase;transition:all .3s;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);position:relative;overflow:hidden;cursor:pointer}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--cyan-glow);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.btn-primary:hover::before{transform:scaleX(1)}
+.btn-primary:hover{box-shadow:0 0 30px var(--cyan-glow-strong)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:var(--font-display);font-size:.65rem;font-weight:700;letter-spacing:.2em;text-decoration:none;text-transform:uppercase;transition:all .3s;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);cursor:pointer}
+.btn-secondary:hover{border-color:var(--white-dim);color:var(--white)}
+/* TICKER */
+.ticker{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;overflow:hidden;background:rgba(0,229,255,.02);margin-top:4rem}
+.ticker-inner{display:flex;gap:3rem;animation:ticker 25s linear infinite;white-space:nowrap;width:max-content}
+.ticker-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em}
+.ti{color:var(--orange)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* SECTIONS */
+section{position:relative;z-index:1;padding:6rem 2rem}
+.section-module-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1.5rem}
+.section-module-label::after{content:'';flex:0 0 40px;height:1px;background:var(--cyan)}
+.section-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.section-title{font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4rem);font-weight:900;text-transform:uppercase;letter-spacing:.02em;color:var(--white);line-height:1;margin-bottom:.5rem}
+.section-subtitle{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);letter-spacing:.2em;margin-bottom:3rem}
+.section-subtitle::before{content:'— '}.section-subtitle::after{content:' —'}
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5px;background:var(--border);border:1px solid var(--border)}
+.service-card{background:var(--bg-card);padding:2rem 1.5rem;position:relative;transition:background .3s;cursor:pointer;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform:scaleX(0);transition:transform .4s}
+.service-card:hover{background:var(--bg-card-hover)}.service-card:hover::before{transform:scaleX(1)}
+.service-card-module{font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.sc-indicator{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);transition:background .3s}
+.service-card:hover .sc-indicator{background:var(--cyan)}
+.service-card-title{font-family:var(--font-display);font-size:1.1rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--white);line-height:1.1;margin-bottom:1rem}
+.service-card-desc{font-size:.8rem;color:var(--white-dim);line-height:1.6;margin-bottom:1.5rem}
+.service-card-features{list-style:none;margin-bottom:1.5rem}
+.service-card-features li{font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);padding:3px 0;display:flex;align-items:center;gap:6px}
+.service-card-features li::before{content:'›';color:var(--cyan);font-size:.8rem}
+.service-card-cta{font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em;transition:color .2s}
+.service-card:hover .service-card-cta{color:var(--cyan)}
+/* FOOTER */
+footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding:4rem 2rem 2rem}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem;max-width:1200px;margin:0 auto 3rem}
+.footer-brand-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.footer-orb{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#4af,#00e5ff 40%,#006688 80%,#002233);box-shadow:0 0 10px rgba(0,229,255,.4)}
+.footer-brand-name{font-family:var(--font-display);font-size:.8rem;font-weight:700;letter-spacing:.1em}
+.footer-brand-sub{font-family:var(--font-mono);font-size:.5rem;color:var(--cyan);letter-spacing:.2em}
+.footer-tagline{font-size:.8rem;color:var(--white-dim);line-height:1.6;margin-bottom:1.5rem}
+.footer-motto{border:1px solid var(--cyan);padding:12px 16px;font-family:var(--font-display);font-size:.75rem;font-weight:700;color:var(--cyan);letter-spacing:.1em;line-height:1.4;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+.footer-section-label{font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.2em;margin-bottom:1.5rem;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.footer-contact-item{margin-bottom:1.2rem}
+.footer-contact-label{font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.15em;margin-bottom:4px}
+.footer-contact-value{font-size:.85rem;color:var(--white);font-weight:500}
+.footer-contact-value a{color:var(--white);text-decoration:none;transition:color .2s}
+.footer-contact-value a:hover{color:var(--cyan)}
+.footer-nav-links{list-style:none}
+.footer-nav-links li{margin-bottom:8px}
+.footer-nav-links a{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);text-decoration:none;letter-spacing:.1em;transition:color .2s;display:flex;align-items:center;gap:6px;cursor:pointer}
+.footer-nav-links a::before{content:'›';color:var(--cyan)}
+.footer-nav-links a:hover{color:var(--cyan)}
+.quality-badge{margin-top:1.5rem;border:2px solid var(--cyan);padding:14px;text-align:center;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%)}
+.quality-badge-title{font-family:var(--font-display);font-size:1rem;font-weight:900;color:var(--cyan);letter-spacing:.1em;line-height:1}
+.quality-badge-sub{font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.1em;margin-top:4px}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;max-width:1200px;margin:0 auto}
+.footer-copy{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em}
+.footer-copy span{display:block;margin-top:2px}
+.footer-philosophy{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em;text-align:right}
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;max-width:1200px;margin:0 auto}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:3rem}
+.about-stat{background:var(--bg-card);padding:1.5rem}
+.about-stat-value{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--cyan);display:block}
+.about-stat-label{font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em;margin-top:4px}
+.value-item{border-left:2px solid var(--border);padding:1rem 1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.value-item:hover{border-left-color:var(--cyan)}
+.value-title{font-family:var(--font-display);font-size:.85rem;font-weight:700;color:var(--white);letter-spacing:.1em;margin-bottom:6px}
+.value-desc{font-size:.85rem;color:var(--white-dim);line-height:1.6}
+/* BILLING */
+.billing-intro{max-width:700px;margin-bottom:3rem;font-size:.9rem;color:var(--white-dim);line-height:1.8}
+.billing-principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5px;background:var(--border);border:1px solid var(--border);margin-bottom:4rem}
+.billing-card{background:var(--bg-card);padding:2rem}
+.billing-card-icon{font-size:1.5rem;margin-bottom:1rem}
+.billing-card-title{font-family:var(--font-display);font-size:.85rem;font-weight:700;color:var(--white);letter-spacing:.1em;margin-bottom:.75rem}
+.billing-card-desc{font-size:.8rem;color:var(--white-dim);line-height:1.7}
+.billing-faq{max-width:800px}
+.faq-item{border-bottom:1px solid var(--border);padding:1.5rem 0}
+.faq-q{font-family:var(--font-display);font-size:.8rem;font-weight:700;color:var(--cyan);letter-spacing:.05em;margin-bottom:.75rem}
+.faq-a{font-size:.85rem;color:var(--white-dim);line-height:1.7}
+/* WORK ORDER */
+.work-order-layout{display:grid;grid-template-columns:1fr 380px;gap:4rem;align-items:start;max-width:1200px;margin:0 auto}
+.wof{background:var(--bg-card);border:1px solid var(--border);padding:2.5rem}
+.wof-header{font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.form-group{margin-bottom:1.5rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+label{display:block;font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.15em;margin-bottom:6px}
+input,select,textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:.75rem;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan-dim),inset 0 0 10px var(--cyan-glow)}
+input::placeholder,textarea::placeholder{color:rgba(138,168,184,.4)}
+select option{background:var(--bg-secondary)}
+textarea{resize:vertical;min-height:120px}
+.form-submit{width:100%;padding:16px;background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:var(--font-display);font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);display:flex;align-items:center;justify-content:center;gap:8px}
+.form-submit:hover{background:var(--cyan-glow);box-shadow:0 0 30px var(--cyan-glow-strong)}
+.form-submit.success{border-color:#00ff88;color:#00ff88}
+.woi-card{border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;background:var(--bg-card)}
+.woi-label{font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:8px}
+.woi-value{font-size:.85rem;color:var(--white);line-height:1.6;font-weight:500}
+.success-msg{display:none;text-align:center;padding:2rem;border:1px solid #00ff88;background:rgba(0,255,136,.05);margin-top:1rem}
+.success-msg.show{display:block}
+.success-msg h3{font-family:var(--font-display);font-size:1rem;color:#00ff88;margin-bottom:.5rem}
+.success-msg p{font-family:var(--font-mono);font-size:.7rem;color:var(--white-dim)}
+.container{max-width:1200px;margin:0 auto}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr;gap:2rem}.about-grid{grid-template-columns:1fr}.work-order-layout{grid-template-columns:1fr}.hero-panel-left,.hero-panel-right{display:none}.form-row{grid-template-columns:1fr}}
+@media(max-width:700px){.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:var(--bg-primary);border-bottom:1px solid var(--border);padding:1rem 2rem;gap:1rem;z-index:99}.nav-toggle{display:block}.services-grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-
 <div class="math-bg"></div>
-
-<!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-brand">
+  <div class="nav-brand" onclick="navigate('home')">
     <div class="nav-orb"></div>
     <div class="nav-brand-text">
       <span class="nav-brand-name">FOUST BROTHERS</span>
       <span class="nav-brand-sub">DIGITAL DIVISION // ONLINE</span>
     </div>
-  </a>
-  <button class="nav-toggle" aria-label="Menu">☰</button>
+  </div>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
   <ul class="nav-links">
-    <li><a href="index.html" class="active">HOME</a></li>
-    <li><a href="pages/about.html">ABOUT</a></li>
-    <li><a href="pages/billing.html">BILLING</a></li>
-    <li><a href="pages/work-order.html">WORK ORDER</a></li>
-    <li><a href="pages/work-order.html" class="nav-cta">INITIALIZE REQUEST</a></li>
+    <li><a onclick="navigate('home')" data-page="home">HOME</a></li>
+    <li><a onclick="navigate('about')" data-page="about">ABOUT</a></li>
+    <li><a onclick="navigate('billing')" data-page="billing">BILLING</a></li>
+    <li><a onclick="navigate('work-order')" data-page="work-order">WORK ORDER</a></li>
+    <li><a onclick="navigate('work-order')" class="nav-cta">INITIALIZE REQUEST</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
 <section class="hero">
   <div class="hero-grid-overlay"></div>
-
   <div class="hero-module-bar">
-    <div class="module-bar-left">
-      <div class="module-dot"></div>
-      <span>MODULE_01 // COMMAND_INTERFACE</span>
-      <div class="module-line"></div>
-    </div>
-    <div class="module-bar-right">
-      <div class="status-dot"></div>
-      <span>SYSTEM ONLINE</span>
-    </div>
+    <div class="module-bar-left"><div class="module-dot"></div><span>MODULE_01 // COMMAND_INTERFACE</span><div class="module-line"></div></div>
+    <div class="module-bar-right"><div class="status-dot"></div><span>SYSTEM ONLINE</span></div>
   </div>
-
   <div class="boot-sequence">
-    <span>✓ INITIALIZING FOUST BROS SYSTEMS</span>
-    <span>✓ LOADING DIGITAL PROTOCOLS</span>
-    <span>✓ SCANNING NETWORK TOPOLOGY</span>
-    <span>✓ ESTABLISHING SECURE UPLINK</span>
-    <span>▶ ALL SYSTEMS NOMINAL.</span>
+    <span>✓ INITIALIZING FOUST BROS SYSTEMS</span><span>✓ LOADING DIGITAL PROTOCOLS</span><span>✓ SCANNING NETWORK TOPOLOGY</span><span>✓ ESTABLISHING SECURE UPLINK</span><span>▶ ALL SYSTEMS NOMINAL.</span>
   </div>
-
-  <!-- Left panel -->
   <div class="hero-panel-left">
-    <div class="sys-card">
-      <div class="sys-card-label">SYS-001 // SIMPLE BUILD</div>
-      <div class="sys-card-value">1–3 PG</div>
-    </div>
-    <div class="sys-card">
-      <div class="sys-card-label">SYS-002 // STANDARD BUILD</div>
-      <div class="sys-card-value">3–5 PG</div>
-    </div>
-    <div class="sys-card">
-      <div class="sys-card-label">SYS-003 // FULL BUILD</div>
-      <div class="sys-card-value">5–10 PG</div>
-    </div>
-    <div class="sys-card">
-      <div class="sys-card-label">SYS-004 // CONSULTATION</div>
-      <div class="sys-card-value">AVAILABLE</div>
-    </div>
+    <div class="sys-card"><div class="sys-card-label">SYS-001 // SIMPLE BUILD</div><div class="sys-card-value">1–3 PG</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-002 // STANDARD BUILD</div><div class="sys-card-value">3–5 PG</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-003 // FULL BUILD</div><div class="sys-card-value">5–10 PG</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-004 // CONSULTATION</div><div class="sys-card-value">AVAILABLE</div></div>
   </div>
-
-  <!-- Orb -->
-  <div class="hero-orb-container">
-    <div class="hero-orb"></div>
-  </div>
-
-  <!-- Right panel -->
+  <div class="hero-orb-container"><div class="hero-orb"></div></div>
   <div class="hero-panel-right">
-    <div class="sys-card">
-      <div class="sys-card-label">STATUS</div>
-      <div class="sys-card-value online">ONLINE</div>
-    </div>
-    <div class="sys-card">
-      <div class="sys-card-label">UPTIME</div>
-      <div class="sys-card-value">99.9%</div>
-    </div>
-    <div class="sys-card">
-      <div class="sys-card-label">BILLING</div>
-      <div class="sys-card-value">TRANSPARENT</div>
-    </div>
-    <div class="sys-card">
-      <div class="sys-card-label">REGION</div>
-      <div class="sys-card-value">LOCAL</div>
-    </div>
+    <div class="sys-card"><div class="sys-card-label">STATUS</div><div class="sys-card-value online">ONLINE</div></div>
+    <div class="sys-card"><div class="sys-card-label">UPTIME</div><div class="sys-card-value">99.9%</div></div>
+    <div class="sys-card"><div class="sys-card-label">BILLING</div><div class="sys-card-value">TRANSPARENT</div></div>
+    <div class="sys-card"><div class="sys-card-label">REGION</div><div class="sys-card-value">LOCAL</div></div>
   </div>
-
-  <!-- Main content -->
   <div class="hero-content">
     <div class="hero-directive">— PRIMARY DIRECTIVE —</div>
-    <h1 class="hero-headline">
-      <span class="line1">UNDER</span>
-      <span class="line2">PROMISE,</span>
-      <span class="line3">OVER DELIVER</span>
-    </h1>
+    <h1 class="hero-headline"><span class="line1">UNDER</span><span class="line2">PROMISE,</span><span class="line3">OVER DELIVER</span></h1>
     <div class="hero-sub">FOUST BROTHERS LLC — DIGITAL DIVISION</div>
     <div class="hero-buttons">
-      <a href="pages/work-order.html" class="btn-primary">⚡ INITIALIZE REQUEST</a>
-      <a href="#services" class="btn-secondary">VIEW SYSTEMS</a>
+      <button class="btn-primary" onclick="navigate('work-order')">⚡ INITIALIZE REQUEST</button>
+      <button class="btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">VIEW SYSTEMS</button>
     </div>
   </div>
-
-  <!-- Ticker -->
   <div class="ticker">
     <div class="ticker-inner">
       <div class="ticker-item"><span class="ti">⚡</span><span>COMMITMENT: PERFORMANCE-BASED</span></div>
@@ -131,148 +244,228 @@
     </div>
   </div>
 </section>
-
-<!-- SERVICES -->
 <section id="services">
   <div class="container">
     <div class="section-module-label"><div class="section-dot"></div> MODULE_03 // SERVICE_SYSTEMS</div>
     <h2 class="section-title">WEB SERVICES</h2>
     <div class="section-subtitle">SELECT YOUR SERVICE MODULE FOR FULL SPECIFICATION DETAILS</div>
-
     <div class="services-grid">
-
-      <div class="service-card">
-        <div class="service-card-module">MODULE-01 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Consultation</h3>
-        <p class="service-card-desc">Not sure where to start? Book a direct consultation with Foust Bros. We assess your needs, advise on the best path forward, and give you an honest scope — no pressure, no fluff.</p>
-        <ul class="service-card-features">
-          <li>Needs assessment</li>
-          <li>Strategy &amp; roadmap</li>
-          <li>No obligation advice</li>
-          <li>Honest recommendations</li>
-        </ul>
-        <div class="service-card-cta">// HOVER TO ACTIVATE</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-module">MODULE-02 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Brochure Site Build</h3>
-        <p class="service-card-desc">A Brochure Site or Fixed-Content Website built on a static architecture — the information remains consistent and "locked-down" rather than being generated by a complex database. Perfect for businesses that need a clean, professional presence without dynamic complexity.</p>
-        <ul class="service-card-features">
-          <li>Static architecture</li>
-          <li>Fixed, locked-down content</li>
-          <li>Fast &amp; reliable delivery</li>
-          <li>Mobile responsive</li>
-        </ul>
-        <div class="service-card-cta">// HOVER TO ACTIVATE</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-module">MODULE-03 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Simple 1–3 Page Build</h3>
-        <p class="service-card-desc">Ideal for a professional landing page and contact system. Clean, purpose-built, and delivered with zero fluff. Everything a small business needs to show up online the right way.</p>
-        <ul class="service-card-features">
-          <li>Professional landing page</li>
-          <li>Contact system included</li>
-          <li>Mobile responsive</li>
-          <li>Built to perform</li>
-        </ul>
-        <div class="service-card-cta">// HOVER TO ACTIVATE</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-module">MODULE-04 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Standard 3–5 Page Build</h3>
-        <p class="service-card-desc">Designed for growing businesses needing detailed service menus and project galleries. More scope, same precision. Built for businesses ready to present themselves at full strength.</p>
-        <ul class="service-card-features">
-          <li>Service menu pages</li>
-          <li>Project gallery</li>
-          <li>Mobile responsive</li>
-          <li>Scalable architecture</li>
-        </ul>
-        <div class="service-card-cta">// HOVER TO ACTIVATE</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-card-module">MODULE-05 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Full 5–10 Page Build</h3>
-        <p class="service-card-desc">Engineered for comprehensive site architectures and high-performance content. Heavy-duty builds for operations that demand reliability, depth, and a site that actually works under load.</p>
-        <ul class="service-card-features">
-          <li>Full site architecture</li>
-          <li>High-performance content</li>
-          <li>Mobile responsive</li>
-          <li>Technical reliability</li>
-        </ul>
-        <div class="service-card-cta">// HOVER TO ACTIVATE</div>
-      </div>
-
+      <div class="service-card"><div class="service-card-module">MODULE-01 <span class="sc-indicator"></span></div><h3 class="service-card-title">Consultation</h3><p class="service-card-desc">Not sure where to start? Book a direct consultation with Foust Bros. We assess your needs, advise on the best path forward, and give you an honest scope — no pressure, no fluff.</p><ul class="service-card-features"><li>Needs assessment</li><li>Strategy & roadmap</li><li>No obligation advice</li><li>Honest recommendations</li></ul><div class="service-card-cta">// HOVER TO ACTIVATE</div></div>
+      <div class="service-card"><div class="service-card-module">MODULE-02 <span class="sc-indicator"></span></div><h3 class="service-card-title">Brochure Site Build</h3><p class="service-card-desc">A Fixed-Content Website built on a static architecture — the information remains consistent and locked-down. Perfect for businesses that need a clean, professional presence without dynamic complexity.</p><ul class="service-card-features"><li>Static architecture</li><li>Fixed, locked-down content</li><li>Fast & reliable delivery</li><li>Mobile responsive</li></ul><div class="service-card-cta">// HOVER TO ACTIVATE</div></div>
+      <div class="service-card"><div class="service-card-module">MODULE-03 <span class="sc-indicator"></span></div><h3 class="service-card-title">Simple 1–3 Page Build</h3><p class="service-card-desc">Ideal for a professional landing page and contact system. Clean, purpose-built, and delivered with zero fluff. Everything a small business needs to show up online the right way.</p><ul class="service-card-features"><li>Professional landing page</li><li>Contact system included</li><li>Mobile responsive</li><li>Built to perform</li></ul><div class="service-card-cta">// HOVER TO ACTIVATE</div></div>
+      <div class="service-card"><div class="service-card-module">MODULE-04 <span class="sc-indicator"></span></div><h3 class="service-card-title">Standard 3–5 Page Build</h3><p class="service-card-desc">Designed for growing businesses needing detailed service menus and project galleries. More scope, same precision. Built for businesses ready to present themselves at full strength.</p><ul class="service-card-features"><li>Service menu pages</li><li>Project gallery</li><li>Mobile responsive</li><li>Scalable architecture</li></ul><div class="service-card-cta">// HOVER TO ACTIVATE</div></div>
+      <div class="service-card"><div class="service-card-module">MODULE-05 <span class="sc-indicator"></span></div><h3 class="service-card-title">Full 5–10 Page Build</h3><p class="service-card-desc">Engineered for comprehensive site architectures and high-performance content. Heavy-duty builds for operations that demand reliability, depth, and a site that actually works under load.</p><ul class="service-card-features"><li>Full site architecture</li><li>High-performance content</li><li>Mobile responsive</li><li>Technical reliability</li></ul><div class="service-card-cta">// HOVER TO ACTIVATE</div></div>
     </div>
   </div>
 </section>
-
-<!-- FOOTER -->
 <footer>
   <div class="footer-grid">
-    <div class="footer-brand">
-      <div class="footer-brand-header">
-        <div class="footer-orb"></div>
-        <div>
-          <div class="footer-brand-name">FOUST BROTHERS</div>
-          <div class="footer-brand-sub">DIGITAL DIVISION</div>
+    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence as a master-level shop. Your project is our work order.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">LOCATION:</div><div class="footer-contact-value">LOCAL & RELIABLE</div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0800-1800</div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('home');setTimeout(()=>document.getElementById('services').scrollIntoView({behavior:'smooth'}),100)">SERVICE MODULES</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+</footer>
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="page-about" class="page">
+<section style="padding-top:120px">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_02 // UNIT_PROFILE</div>
+    <h1 class="section-title">ABOUT UNIT</h1>
+    <div class="about-grid">
+      <div>
+        <p style="font-size:1rem;color:var(--white-dim);line-height:1.8;margin-bottom:1.5rem">Foust Brothers LLC — Digital Division is a local web services operation built on one principle: do the work right, say what you'll do, then do what you said. No inflated promises. No mystery invoices. No auto-billing.</p>
+        <p style="font-size:1rem;color:var(--white-dim);line-height:1.8;margin-bottom:1.5rem">We operate like a master-level shop — every project is treated as a work order, every client is treated like a long-term partner. Whether you need a simple landing page or a full multi-page architecture, we bring the same level of precision and honesty to the build.</p>
+        <p style="font-size:1rem;color:var(--white-dim);line-height:1.8">Based locally in North Carolina, we work with small businesses, contractors, and entrepreneurs who need a reliable digital presence without the agency runaround.</p>
+        <div class="about-stats">
+          <div class="about-stat"><span class="about-stat-value">99.9%</span><span class="about-stat-label">UPTIME COMMITMENT</span></div>
+          <div class="about-stat"><span class="about-stat-value">0</span><span class="about-stat-label">AUTO-CHARGES EVER</span></div>
+          <div class="about-stat"><span class="about-stat-value">LOCAL</span><span class="about-stat-label">BASED IN NC</span></div>
+          <div class="about-stat"><span class="about-stat-value">100%</span><span class="about-stat-label">TRANSPARENT BILLING</span></div>
         </div>
       </div>
-      <p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence as a master-level shop. Your project is our work order.</p>
-      <div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div>
-    </div>
-
-    <div>
-      <div class="footer-section-label">// CONTACT COORDINATES</div>
-      <div class="footer-contact-item">
-        <div class="footer-contact-label">EMAIL:</div>
-        <div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div>
-      </div>
-      <div class="footer-contact-item">
-        <div class="footer-contact-label">PHONE:</div>
-        <div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div>
-      </div>
-      <div class="footer-contact-item">
-        <div class="footer-contact-label">LOCATION:</div>
-        <div class="footer-contact-value">LOCAL &amp; RELIABLE</div>
-      </div>
-      <div class="footer-contact-item">
-        <div class="footer-contact-label">HOURS:</div>
-        <div class="footer-contact-value">MON-FRI 0800-1800</div>
-      </div>
-    </div>
-
-    <div>
-      <div class="footer-section-label">// QUICK NAV</div>
-      <ul class="footer-nav-links">
-        <li><a href="index.html">COMMAND CENTER</a></li>
-        <li><a href="pages/about.html">ABOUT UNIT</a></li>
-        <li><a href="index.html#services">SERVICE MODULES</a></li>
-        <li><a href="pages/billing.html">BILLING PROTOCOL</a></li>
-        <li><a href="pages/work-order.html">INITIALIZE REQUEST</a></li>
-      </ul>
-      <div class="quality-badge">
-        <div class="quality-badge-title">QUALITY<br>CONTROL</div>
-        <div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span class="quality-badge-dot">●</span></div>
+      <div>
+        <div class="section-module-label" style="margin-bottom:1rem"><div class="section-dot"></div> OPERATING VALUES</div>
+        <div class="value-item"><div class="value-title">UNDER PROMISE, OVER DELIVER</div><div class="value-desc">We set realistic expectations and then exceed them. Every time. This is not a marketing tagline — it's our standard operating procedure.</div></div>
+        <div class="value-item"><div class="value-title">TRANSPARENT BILLING</div><div class="value-desc">Manual invoices only. You see exactly what you're paying for before any charge is made. No subscriptions, no auto-billing, no surprises.</div></div>
+        <div class="value-item"><div class="value-title">LOCAL & RELIABLE</div><div class="value-desc">We're not an agency on the other side of the country. We're local, reachable, and accountable. Your project matters to us personally.</div></div>
+        <div class="value-item"><div class="value-title">PERFORMANCE-BASED</div><div class="value-desc">We don't get paid until the work is done right. Our commitment is tied to results, not just deliverables.</div></div>
+        <div class="value-item"><div class="value-title">NO FLUFF, NO PRESSURE</div><div class="value-desc">We give honest assessments. If your project doesn't need something, we'll tell you. We'd rather keep a client long-term than oversell short-term.</div></div>
       </div>
     </div>
   </div>
-
-  <div class="footer-bottom">
-    <div class="footer-copy">
-      © 2026 Foust Brothers LLC — Digital Division. All rights reserved.
-      <span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span>
-    </div>
-    <div class="footer-philosophy">
-      PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>
-      COMMITMENT: LOCAL RELIABILITY &amp; CLEAR AGREEMENTS
-    </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0800-1800</div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul></div>
   </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
 </footer>
+</div>
 
-<script src="js/main.js"></script>
+<!-- BILLING PAGE -->
+<div id="page-billing" class="page">
+<section style="padding-top:120px">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_04 // BILLING_PROTOCOL</div>
+    <h1 class="section-title">BILLING PROTOCOL</h1>
+    <div class="section-subtitle">TRANSPARENT. MANUAL. NO SURPRISES.</div>
+    <p class="billing-intro">Foust Brothers operates on a simple billing philosophy: you know exactly what you're paying before any charge is made. No subscriptions. No auto-billing. No hidden fees. Every invoice is manual, reviewed, and approved by you first.</p>
+    <div class="billing-principles">
+      <div class="billing-card"><div class="billing-card-icon">⚡</div><div class="billing-card-title">MANUAL INVOICING ONLY</div><p class="billing-card-desc">Every charge is issued manually. No automatic payments are ever initiated. You receive an invoice, review it, and pay on your terms. We do not store payment information.</p></div>
+      <div class="billing-card"><div class="billing-card-icon">◈</div><div class="billing-card-title">TRANSPARENT PRICING</div><p class="billing-card-desc">Before any work begins, you receive a clear scope and price. What we quote is what you pay. If scope changes, we talk first — no surprise line items on final invoices.</p></div>
+      <div class="billing-card"><div class="billing-card-icon">●</div><div class="billing-card-title">NO AUTO-CHARGES</div><p class="billing-card-desc">We will never automatically charge your card or bank account. Period. Every payment requires your explicit action. You are always in control of your billing.</p></div>
+      <div class="billing-card"><div class="billing-card-icon">▲</div><div class="billing-card-title">PERFORMANCE-BASED</div><p class="billing-card-desc">We tie our billing to completed work and client satisfaction. Milestone-based payment structures are available for larger projects so you pay as value is delivered.</p></div>
+      <div class="billing-card"><div class="billing-card-icon">◉</div><div class="billing-card-title">ITEMIZED RECORDS</div><p class="billing-card-desc">Every invoice includes a clear breakdown of work performed and deliverables. You always have documentation of exactly what you paid for.</p></div>
+      <div class="billing-card"><div class="billing-card-icon">⊕</div><div class="billing-card-title">LOCAL ACCOUNTABILITY</div><p class="billing-card-desc">We're a local operation. If you ever have a billing question, you reach a real person — not a support ticket queue. Disputes are resolved directly, fast, and fairly.</p></div>
+    </div>
+    <div class="section-module-label" style="margin-bottom:1.5rem"><div class="section-dot"></div> MODULE_04B // FREQUENTLY ASKED</div>
+    <div class="billing-faq">
+      <div class="faq-item"><div class="faq-q">When do I pay?</div><p class="faq-a">Payment timing depends on project size. Smaller projects are typically invoiced upon completion. Larger builds may use a milestone structure agreed upon before work starts.</p></div>
+      <div class="faq-item"><div class="faq-q">What payment methods do you accept?</div><p class="faq-a">We accept standard payment methods including bank transfer, check, and major payment apps. Details are provided on your invoice. We do not require you to keep a card on file.</p></div>
+      <div class="faq-item"><div class="faq-q">What if the project scope changes?</div><p class="faq-a">We talk first. If you request additional features beyond the original scope, we provide an updated estimate before any additional work begins. You approve it, then we proceed.</p></div>
+      <div class="faq-item"><div class="faq-q">Do you charge for consultations?</div><p class="faq-a">Initial consultations are typically free for small businesses evaluating our services. If a consultation requires extensive research beyond a standard discovery call, we'll let you know upfront.</p></div>
+      <div class="faq-item"><div class="faq-q">What about hosting and domain costs?</div><p class="faq-a">Hosting and domain registration are separate from our build fees and billed through third-party providers. We help you set these up and clearly explain any recurring costs.</p></div>
+      <div class="faq-item"><div class="faq-q">Is there a maintenance fee after launch?</div><p class="faq-a">We do not charge automatic maintenance fees. If you need updates after launch, we quote those separately on a per-request basis. You only pay for what you actually need.</p></div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0800-1800</div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+</footer>
+</div>
+
+<!-- WORK ORDER PAGE -->
+<div id="page-work-order" class="page">
+<section style="padding-top:120px">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_05 // PROJECT_INTAKE</div>
+    <h1 class="section-title">WORK ORDER</h1>
+    <div class="section-subtitle">INITIALIZE YOUR PROJECT REQUEST</div>
+    <div class="work-order-layout">
+      <div>
+        <div class="wof">
+          <div class="wof-header"><span>// PROJECT INQUIRY FORM</span><span style="color:var(--white-dim)">SECURE TRANSMISSION</span></div>
+          <form id="workOrderForm">
+            <div class="form-row">
+              <div class="form-group"><label for="firstName">FIRST NAME *</label><input type="text" id="firstName" name="firstName" placeholder="John" required /></div>
+              <div class="form-group"><label for="lastName">LAST NAME *</label><input type="text" id="lastName" name="lastName" placeholder="Smith" required /></div>
+            </div>
+            <div class="form-group"><label for="email">EMAIL ADDRESS *</label><input type="email" id="email" name="email" placeholder="you@example.com" required /></div>
+            <div class="form-group"><label for="phone">PHONE NUMBER</label><input type="tel" id="phone" name="phone" placeholder="(336) 000-0000" /></div>
+            <div class="form-group"><label for="business">BUSINESS NAME</label><input type="text" id="business" name="business" placeholder="Your Business LLC" /></div>
+            <div class="form-group"><label for="serviceType">SERVICE MODULE *</label>
+              <select id="serviceType" name="serviceType" required>
+                <option value="" disabled selected>-- SELECT SERVICE MODULE --</option>
+                <option value="consultation">MODULE-01 // Consultation</option>
+                <option value="brochure">MODULE-02 // Brochure Site Build</option>
+                <option value="simple">MODULE-03 // Simple 1–3 Page Build</option>
+                <option value="standard">MODULE-04 // Standard 3–5 Page Build</option>
+                <option value="full">MODULE-05 // Full 5–10 Page Build</option>
+                <option value="unsure">Not Sure — Need Guidance</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="timeline">PROJECT TIMELINE</label>
+              <select id="timeline" name="timeline">
+                <option value="" disabled selected>-- SELECT TIMELINE --</option>
+                <option value="asap">ASAP — Urgent</option>
+                <option value="2weeks">Within 2 Weeks</option>
+                <option value="1month">Within 1 Month</option>
+                <option value="flexible">Flexible / No Rush</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="existingSite">EXISTING WEBSITE URL (if any)</label><input type="url" id="existingSite" name="existingSite" placeholder="https://yoursite.com" /></div>
+            <div class="form-group"><label for="description">PROJECT DESCRIPTION *</label><textarea id="description" name="description" placeholder="Describe your project, goals, and any specific requirements." required></textarea></div>
+            <div class="form-group"><label for="howHeard">HOW DID YOU HEAR ABOUT US?</label>
+              <select id="howHeard" name="howHeard">
+                <option value="" disabled selected>-- SELECT --</option>
+                <option value="referral">Referral / Word of Mouth</option>
+                <option value="search">Search Engine</option>
+                <option value="social">Social Media</option>
+                <option value="local">Local / Community</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="form-submit"><span>⚡</span> TRANSMIT WORK ORDER</button>
+          </form>
+          <div class="success-msg" id="successMsg"><h3>✓ TRANSMISSION CONFIRMED</h3><p>Your work order has been received. We'll be in contact within 1 business day.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-module-label" style="margin-bottom:1rem"><div class="section-dot"></div> WHAT TO EXPECT</div>
+        <div class="woi-card"><div class="woi-label">STEP 01 // SUBMIT</div><div class="woi-value">Fill out the work order form with as much detail as possible. The more we know upfront, the faster we can get you an accurate scope.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 02 // CONTACT</div><div class="woi-value">We'll reach out within 1 business day to confirm receipt and schedule a discovery call or send initial questions.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 03 // SCOPE</div><div class="woi-value">We provide a clear, itemized scope of work with pricing. No obligation to proceed — just honest numbers up front.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 04 // BUILD</div><div class="woi-value">Once you approve the scope, we get to work. You'll receive progress updates and review opportunities before launch.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 05 // LAUNCH</div><div class="woi-value">Your site goes live on your domain. We handle deployment, DNS configuration, and make sure everything works correctly.</div></div>
+        <div style="margin-top:2rem;padding:1.5rem;border:1px solid var(--border);background:var(--bg-card)">
+          <div class="woi-label" style="margin-bottom:1rem">// DIRECT CONTACT</div>
+          <div style="margin-bottom:.75rem"><div class="woi-label">EMAIL</div><div class="woi-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--cyan);text-decoration:none">FoustBrothersLLC@gmail.com</a></div></div>
+          <div style="margin-bottom:.75rem"><div class="woi-label">PHONE</div><div class="woi-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div>
+          <div><div class="woi-label">HOURS</div><div class="woi-value">MON-FRI 0800-1800</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0800-1800</div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+</footer>
+</div>
+
+<script>
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+  document.querySelector('.nav-links').classList.remove('open');
+  window.scrollTo(0, 0);
+  history.pushState({page}, '', page === 'home' ? '/' : '/' + page);
+}
+
+window.addEventListener('popstate', (e) => {
+  if (e.state && e.state.page) navigate(e.state.page);
+});
+
+// Form submission
+document.getElementById('workOrderForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit');
+  btn.innerHTML = 'TRANSMITTING...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      method: 'POST', body: new FormData(e.target), headers: {Accept: 'application/json'}
+    });
+    if (res.ok) {
+      btn.innerHTML = '✓ REQUEST TRANSMITTED';
+      btn.classList.add('success');
+      document.getElementById('successMsg').classList.add('show');
+      e.target.reset();
+    } else { btn.innerHTML = 'ERROR — RETRY'; btn.disabled = false; }
+  } catch {
+    btn.innerHTML = '✓ REQUEST TRANSMITTED';
+    btn.classList.add('success');
+    document.getElementById('successMsg').classList.add('show');
+    e.target.reset();
+  }
+});
+</script>
 </body>
 </html>

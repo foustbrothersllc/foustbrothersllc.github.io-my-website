@@ -1,17 +1,16 @@
 {
-  "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/about",
-      "destination": "/pages/about.html"
+      "source": "/work-order",
+      "destination": "/work-order.html"
     },
     {
       "source": "/billing",
-      "destination": "/pages/billing.html"
+      "destination": "/billing.html"
     },
     {
-      "source": "/work-order",
-      "destination": "/pages/work-order.html"
+      "source": "/about",
+      "destination": "/about.html"
     }
   ]
 }

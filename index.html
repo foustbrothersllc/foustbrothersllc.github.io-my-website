@@ -152,7 +152,36 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .about-info-label{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.2em;margin-bottom:6px}
 .about-info-value{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:.05em}
 @media(max-width:900px){.about-split{grid-template-columns:1fr}.about-img-panel{min-height:300px}.about-content-panel{padding:2rem}}
-/* BILLING */
+/* RATE TABLES */
+.rate-section-label{font-family:var(--font-mono);font-size:.65rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.rate-table{border:1px solid var(--border);margin-bottom:2rem}
+.rate-table-header{display:flex;justify-content:space-between;padding:.6rem 1.5rem;background:rgba(0,229,255,.04);font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.2em;border-bottom:1px solid var(--border)}
+.rate-row{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);transition:background .2s}
+.rate-row:last-child{border-bottom:none}
+.rate-row:hover{background:rgba(0,229,255,.03)}
+.rate-row-active{border-left:2px solid var(--cyan)}
+.rate-row-left{display:flex;align-items:center;gap:1rem}
+.rate-dot{width:8px;height:8px;border-radius:50%;background:var(--white-dim);flex-shrink:0}
+.rate-dot.cyan{background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.rate-tier{font-family:var(--font-mono);font-size:.65rem;color:var(--white);letter-spacing:.1em;margin-bottom:3px}
+.rate-sub{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em}
+.rate-amount{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--white);letter-spacing:.05em}
+.rate-amount.cyan{color:var(--cyan);text-shadow:0 0 15px rgba(0,229,255,.3)}
+.rate-amount.included{color:var(--white);font-size:1rem;letter-spacing:.15em}
+.rate-amount-block{text-align:right}
+.rate-sub-right{font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.1em;margin-top:3px}
+.rate-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:.5rem}
+.rate-stat{background:var(--bg-card);padding:1.2rem;text-align:center}
+.rate-stat-label{font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.15em;margin-bottom:.5rem}
+.rate-stat-value{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--white);letter-spacing:.05em}
+.rate-stat-sub{font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.1em;margin-top:4px}
+.specialized-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border);border:1px solid var(--border)}
+.specialized-card{background:var(--bg-card);padding:2rem;position:relative}
+.specialized-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:40px;background:var(--cyan);opacity:.3}
+.specialized-label{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.2em;margin-bottom:.75rem}
+.specialized-price{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--cyan);letter-spacing:.02em;margin-bottom:.75rem;text-shadow:0 0 20px rgba(0,229,255,.3)}
+.specialized-desc{font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.05em;line-height:1.6}
+@media(max-width:700px){.rate-stats{grid-template-columns:1fr 1fr}.specialized-grid{grid-template-columns:1fr}.rate-row{flex-direction:column;align-items:flex-start;gap:.75rem}.rate-amount-block{text-align:left}.rate-amount{font-size:1rem}}
 .billing-intro{max-width:700px;margin-bottom:3rem;font-size:.9rem;color:var(--white-dim);line-height:1.8}
 .billing-principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5px;background:var(--border);border:1px solid var(--border);margin-bottom:4rem}
 .billing-card{background:var(--bg-card);padding:2rem}
@@ -392,20 +421,115 @@ textarea{resize:vertical;min-height:120px}
     </div>
   </div>
 </section>
+<!-- SECTION 01: MONTHLY MAINTENANCE -->
+<section style="padding-top:0;padding-bottom:2rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 01 — MONTHLY MAINTENANCE &amp; MANAGEMENT</div>
+    <div class="rate-table">
+      <div class="rate-table-header">
+        <span>SERVICE TIER</span>
+        <span>RATE BASIS</span>
+      </div>
+      <div class="rate-row rate-row-active">
+        <div class="rate-row-left">
+          <div class="rate-dot cyan"></div>
+          <div><div class="rate-tier">BASIC — MONITORING &amp; UPTIME</div><div class="rate-sub">Security scans, uptime monitoring</div></div>
+        </div>
+        <div class="rate-amount included">INCLUDED</div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot cyan"></div>
+          <div><div class="rate-tier">STANDARD — MAINTENANCE &amp; UPDATES</div><div class="rate-sub">CMS updates, content changes, backups</div></div>
+        </div>
+        <div class="rate-amount cyan">$50 – $150</div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot"></div>
+          <div><div class="rate-tier">MANAGED — FULL MANAGEMENT</div><div class="rate-sub">Hosting, domain, full site management</div></div>
+        </div>
+        <div class="rate-amount">$150 – $300</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 02: HOURLY LABOR TABLE -->
+<section style="padding-top:0;padding-bottom:2rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 02 — STANDARD HOURLY LABOR TABLE — REF: BM-001</div>
+    <p style="font-size:.8rem;color:var(--white-dim);line-height:1.8;margin-bottom:2rem;">This table applies to maintenance calls — additions or changes to an existing website, including updates that fall outside of a service tier plan. Design and build projects are priced on a negotiated basis. The table below reflects standard hourly labor rates for this additional work and support.</p>
+    <div class="rate-table">
+      <div class="rate-table-header">
+        <span>TIME ELAPSED</span>
+        <span>BILLABLE AMOUNT</span>
+      </div>
+      <div class="rate-row rate-row-active">
+        <div class="rate-row-left">
+          <div class="rate-dot cyan"></div>
+          <div><div class="rate-tier">MINIMUM CHARGE</div><div class="rate-sub">0:00 – 1:00</div></div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount cyan">$50.00</div><div class="rate-sub-right">1-HR MINIMUM</div></div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot"></div>
+          <div><div class="rate-tier">FIRST INCREMENT</div><div class="rate-sub">1:01 – 1:15</div></div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount">$62.50</div><div class="rate-sub-right">+15 MIN @ $12.50</div></div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot"></div>
+          <div><div class="rate-tier">SECOND INCREMENT</div><div class="rate-sub">1:16 – 1:30</div></div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount">$75.00</div><div class="rate-sub-right">+30 MIN @ $25.00</div></div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot"></div>
+          <div><div class="rate-tier">THIRD INCREMENT</div><div class="rate-sub">1:31 – 1:45</div></div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount">$87.50</div><div class="rate-sub-right">+45 MIN @ $37.50</div></div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot"></div>
+          <div><div class="rate-tier">FULL SECOND HOUR</div><div class="rate-sub">1:46 – 2:00</div></div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount">$100.00</div><div class="rate-sub-right">+60 MIN @ $50.00</div></div>
+      </div>
+    </div>
+    <div class="rate-stats">
+      <div class="rate-stat"><div class="rate-stat-label">SHOP MINIMUM</div><div class="rate-stat-value">1.0 HR</div><div class="rate-stat-sub">FLAT MINIMUM</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">INCREMENT</div><div class="rate-stat-value">15 MIN</div><div class="rate-stat-sub">BILLING UNIT</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">BILLING TYPE</div><div class="rate-stat-value">MANUAL</div><div class="rate-stat-sub">NO AUTO-CHARGE</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">PAYMENT</div><div class="rate-stat-value">INVOICE</div><div class="rate-stat-sub">AFTER DELIVERY</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 03: SPECIALIZED SERVICES -->
 <section style="padding-top:0;padding-bottom:4rem">
   <div class="container">
-    <div class="section-module-label"><div class="section-dot"></div> MODULE_04C // SERVICE_SYSTEMS</div>
-    <h2 class="section-title">OUR SERVICES</h2>
-    <div class="section-subtitle">CLICK ANY MODULE TO INITIALIZE A REQUEST</div>
-    <div class="ai-notice"><span class="ai-badge">⚡ AI-ASSISTED</span> All services leverage AI tools to accelerate delivery, enhance quality, and keep costs low — while every final product is reviewed and crafted by a real human craftsman.</div>
-    <div class="services-grid">
-      <div class="service-card" onclick="selectService('consultation')"><div class="service-card-module">MODULE-01 <span class="sc-indicator"></span></div><h3 class="service-card-title">Consultation</h3><p class="service-card-desc">Not sure where to start? Book a direct consultation with Foust Bros. We assess your needs, advise on the best path forward, and give you an honest scope — no pressure, no fluff.</p><ul class="service-card-features"><li>Needs assessment</li><li>Strategy & roadmap</li><li>No obligation advice</li><li>Honest recommendations</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
-      <div class="service-card" onclick="selectService('logo')"><div class="service-card-module">MODULE-02 <span class="sc-indicator"></span></div><h3 class="service-card-title">Business Logo Design</h3><p class="service-card-desc">A professional logo built to represent your brand with impact. AI-assisted design process delivers polished, unique concepts fast — refined until it's exactly right.</p><ul class="service-card-features"><li>Custom logo concepts</li><li>Multiple format delivery</li><li>AI-accelerated design</li><li>Revisions included</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
-      <div class="service-card" onclick="selectService('flyer')"><div class="service-card-module">MODULE-03 <span class="sc-indicator"></span></div><h3 class="service-card-title">Digital Flyers</h3><p class="service-card-desc">Eye-catching digital flyers for promotions, events, or announcements. Designed for social media, email, and web — built to grab attention and drive action.</p><ul class="service-card-features"><li>Social media ready</li><li>Print-ready formats</li><li>AI-assisted design</li><li>Fast turnaround</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
-      <div class="service-card" onclick="selectService('brochure')"><div class="service-card-module">MODULE-04 <span class="sc-indicator"></span></div><h3 class="service-card-title">Brochure Site Build</h3><p class="service-card-desc">A Fixed-Content Website built on a static architecture — locked-down and reliable. Perfect for businesses that need a clean, professional presence.</p><ul class="service-card-features"><li>Static architecture</li><li>Fixed, locked-down content</li><li>Fast & reliable delivery</li><li>Mobile responsive</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
-      <div class="service-card" onclick="selectService('simple')"><div class="service-card-module">MODULE-05 <span class="sc-indicator"></span></div><h3 class="service-card-title">Simple 1–3 Page Build</h3><p class="service-card-desc">Ideal for a professional landing page and contact system. Clean, purpose-built, and delivered with zero fluff.</p><ul class="service-card-features"><li>Professional landing page</li><li>Contact system included</li><li>Mobile responsive</li><li>Built to perform</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
-      <div class="service-card" onclick="selectService('standard')"><div class="service-card-module">MODULE-06 <span class="sc-indicator"></span></div><h3 class="service-card-title">Standard 3–5 Page Build</h3><p class="service-card-desc">Designed for growing businesses needing detailed service menus and project galleries. More scope, same precision.</p><ul class="service-card-features"><li>Service menu pages</li><li>Project gallery</li><li>Mobile responsive</li><li>Scalable architecture</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
-      <div class="service-card" onclick="selectService('full')"><div class="service-card-module">MODULE-07 <span class="sc-indicator"></span></div><h3 class="service-card-title">Full 5–10 Page Build</h3><p class="service-card-desc">Engineered for comprehensive site architectures and high-performance content. Heavy-duty builds for operations that demand reliability and depth.</p><ul class="service-card-features"><li>Full site architecture</li><li>High-performance content</li><li>Mobile responsive</li><li>Technical reliability</li></ul><div class="service-card-cta">// CLICK TO ACTIVATE</div></div>
+    <div class="rate-section-label">// SECTION 03 — SPECIALIZED SERVICES &amp; DIRECT COSTS</div>
+    <div class="specialized-grid">
+      <div class="specialized-card">
+        <div class="specialized-label">DOMAIN PRIVACY</div>
+        <div class="specialized-price">$10–$25/YR</div>
+        <div class="specialized-desc">Direct cost from registrar — often included free</div>
+      </div>
+      <div class="specialized-card">
+        <div class="specialized-label">LOGO &amp; BRANDING</div>
+        <div class="specialized-price">$150–$500</div>
+        <div class="specialized-desc">Flat fee per project, based on complexity</div>
+      </div>
+      <div class="specialized-card">
+        <div class="specialized-label">RUSH LABOR</div>
+        <div class="specialized-price">$75–$100/HR</div>
+        <div class="specialized-desc">Under 48hrs or weekend — 1.5x–2x standard rate</div>
+      </div>
     </div>
   </div>
 </section>

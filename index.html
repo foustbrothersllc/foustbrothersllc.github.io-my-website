@@ -120,7 +120,10 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .footer-nav-links a{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);text-decoration:none;letter-spacing:.1em;transition:color .2s;display:flex;align-items:center;gap:6px;cursor:pointer}
 .footer-nav-links a::before{content:'›';color:var(--cyan)}
 .footer-nav-links a:hover{color:var(--cyan)}
-.quality-badge{margin-top:1.5rem;border:2px solid var(--cyan);padding:14px;text-align:center;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%)}
+.quality-badge{margin-top:1.5rem;border:2px solid var(--cyan);padding:14px;text-align:center;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transform:scale(2.5) rotate(-12deg);opacity:0;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275),opacity 0.2s ease;transform-origin:center center;position:relative;overflow:hidden}
+.quality-badge.stamped{transform:scale(1) rotate(-8deg);opacity:1}
+.quality-badge.stamped::after{content:'';position:absolute;inset:0;background:rgba(0,229,255,0.12);animation:stampFlash 0.35s ease forwards}
+@keyframes stampFlash{0%{opacity:1}100%{opacity:0}}
 .quality-badge-title{font-family:var(--font-display);font-size:1rem;font-weight:900;color:var(--cyan);letter-spacing:.1em;line-height:1}
 .quality-badge-sub{font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.1em;margin-top:4px}
 .footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;max-width:1200px;margin:0 auto}
@@ -657,6 +660,18 @@ window.addEventListener('popstate', (e) => {
 
   drawOrb();
 })();
+
+// Stamp animation on scroll
+const stampObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !entry.target.classList.contains('stamped')) {
+      setTimeout(() => {
+        entry.target.classList.add('stamped');
+      }, 200);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.quality-badge').forEach(el => stampObserver.observe(el));
 
 // Form submission
 document.getElementById('workOrderForm').addEventListener('submit', async (e) => {

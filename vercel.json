@@ -1,9 +1,17 @@
 {
-  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/about", "destination": "/pages/about.html" },
-    { "source": "/billing", "destination": "/pages/billing.html" },
-    { "source": "/work-order", "destination": "/pages/work-order.html" }
+    {
+      "source": "/about",
+      "destination": "/pages/about.html"
+    },
+    {
+      "source": "/billing",
+      "destination": "/pages/billing.html"
+    },
+    {
+      "source": "/work-order",
+      "destination": "/pages/work-order.html"
+    }
   ]
 }

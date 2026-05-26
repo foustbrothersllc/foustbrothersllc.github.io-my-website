@@ -1,4 +1,3 @@
-
 // Nav active state
 function setActiveNav() {
   const path = window.location.pathname;

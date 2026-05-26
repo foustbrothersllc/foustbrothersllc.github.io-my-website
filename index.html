@@ -184,8 +184,29 @@ textarea{resize:vertical;min-height:120px}
 .success-msg h3{font-family:var(--font-display);font-size:1rem;color:#00ff88;margin-bottom:.5rem}
 .success-msg p{font-family:var(--font-mono);font-size:.7rem;color:var(--white-dim)}
 .container{max-width:1200px;margin:0 auto}
-@media(max-width:900px){.footer-grid{grid-template-columns:1fr;gap:2rem}.about-grid{grid-template-columns:1fr}.work-order-layout{grid-template-columns:1fr}.hero-panel-left,.hero-panel-right{display:none}.form-row{grid-template-columns:1fr}}
-@media(max-width:700px){.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:var(--bg-primary);border-bottom:1px solid var(--border);padding:1rem 2rem;gap:1rem;z-index:99}.nav-toggle{display:block}.services-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.about-split{grid-template-columns:1fr}.about-img-panel{min-height:300px}.about-content-panel{padding:2rem}.about-info-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr;gap:2rem}.about-grid{grid-template-columns:1fr}.work-order-layout{grid-template-columns:1fr}.hero-panel-left,.hero-panel-right{display:none}.form-row{grid-template-columns:1fr}.billing-principles{grid-template-columns:1fr}}
+@media(max-width:700px){
+  .nav-links{display:none}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:var(--bg-primary);border-bottom:1px solid var(--border);padding:1rem 2rem;gap:1rem;z-index:99}
+  .nav-toggle{display:block}
+  .services-grid{grid-template-columns:1fr}
+  .hero-headline{font-size:clamp(2.5rem,12vw,5rem)}
+  .section-title{font-size:clamp(1.8rem,8vw,3rem)}
+  .about-headline{font-size:clamp(1.5rem,7vw,2.2rem)}
+  .about-info-grid{grid-template-columns:1fr}
+  .about-info-value{font-size:1rem;word-break:break-word;white-space:normal}
+  .about-info-card{padding:1rem}
+  .about-content-panel{padding:1.5rem}
+  section{padding:4rem 1rem}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .footer-philosophy{text-align:center}
+  .hero-content{padding:0 1rem}
+  .hero-buttons{flex-direction:column;align-items:center}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center;clip-path:none}
+  .wof{padding:1.5rem}
+  .work-order-layout{gap:2rem}
+}
   </style>
 </head>
 <body>
@@ -311,7 +332,7 @@ textarea{resize:vertical;min-height:120px}
       <div class="about-info-grid">
         <div class="about-info-card">
           <div class="about-info-label">CONTACT</div>
-          <div class="about-info-value">(336) 862-2999</div>
+          <div class="about-info-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div>
         </div>
         <div class="about-info-card">
           <div class="about-info-label">SPECIALTY</div>

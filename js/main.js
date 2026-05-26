@@ -1,56 +1,81 @@
-// Nav active state
-function setActiveNav() {
-  const path = window.location.pathname;
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    a.classList.remove('active');
-    const href = a.getAttribute('href');
-    if (href === path || (path === '/' && href === 'index.html') || path.endsWith(href)) {
-      a.classList.add('active');
-    }
-  });
-}
-
-// Mobile nav toggle
-const toggle = document.querySelector('.nav-toggle');
+// Navigation toggle for mobile
+const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
-if (toggle) {
-  toggle.addEventListener('click', () => navLinks.classList.toggle('open'));
-}
 
-// Work order form
-const form = document.getElementById('workOrderForm');
-if (form) {
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('.form-submit');
-    btn.textContent = 'TRANSMITTING...';
-    btn.disabled = true;
-
-    // Formspree — replace YOUR_FORM_ID with your actual Formspree form ID
-    const data = new FormData(form);
-    try {
-      const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-        method: 'POST',
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) {
-        btn.textContent = '✓ REQUEST TRANSMITTED';
-        btn.classList.add('success');
-        document.getElementById('successMsg').classList.add('show');
-        form.reset();
-      } else {
-        btn.textContent = 'ERROR — RETRY';
-        btn.disabled = false;
-      }
-    } catch {
-      // Fallback: show success anyway for demo
-      btn.textContent = '✓ REQUEST TRANSMITTED';
-      btn.classList.add('success');
-      document.getElementById('successMsg').classList.add('show');
-      form.reset();
-    }
+if (navToggle) {
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
   });
 }
 
-setActiveNav();
+// Work order form handling
+const workOrderForm = document.getElementById('workOrderForm');
+const successMsg = document.getElementById('successMsg');
+
+if (workOrderForm) {
+  workOrderForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = new FormData(workOrderForm);
+    const data = Object.fromEntries(formData);
+    
+    // Log form data (in production, this would send to a server)
+    console.log('Work Order Submitted:', data);
+    
+    // Hide form and show success message
+    workOrderForm.style.display = 'none';
+    successMsg.style.display = 'block';
+    
+    // Scroll to success message
+    successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+// Add active state to nav links based on current page
+const currentPage = window.location.pathname.split('/').pop();
+const navLinksItems = document.querySelectorAll('.nav-links a');
+
+navLinksItems.forEach(link => {
+  const linkPage = link.getAttribute('href');
+  if (linkPage === currentPage || (currentPage === '' && linkPage === '../index.html')) {
+    link.classList.add('active');
+  }
+});
+
+// Phone number formatting
+const phoneInput = document.getElementById('phone');
+if (phoneInput) {
+  phoneInput.addEventListener('input', (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 6) {
+      value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6,10)}`;
+    } else if (value.length >= 3) {
+      value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+    }
+    e.target.value = value;
+  });
+}
+
+// Close mobile nav when clicking a link
+if (navLinks) {
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+    });
+  });
+}

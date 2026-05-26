@@ -664,21 +664,23 @@ document.getElementById('workOrderForm').addEventListener('submit', async (e) =>
   const btn = e.target.querySelector('.form-submit');
   btn.innerHTML = 'TRANSMITTING...';
   btn.disabled = true;
+  const formData = new FormData(e.target);
+  formData.append('access_key', 'e9d0aa34-4229-4f32-bec4-02b98db6c0e9');
+  formData.append('subject', 'New Work Order — Foust Brothers LLC');
   try {
-    const res = await fetch('https://formspree.io/f/xeedrrpw', {
-      method: 'POST', body: new FormData(e.target), headers: {Accept: 'application/json'}
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST', body: formData, headers: {Accept: 'application/json'}
     });
-    if (res.ok) {
+    const data = await res.json();
+    if (data.success) {
       btn.innerHTML = '✓ REQUEST TRANSMITTED';
       btn.classList.add('success');
       document.getElementById('successMsg').classList.add('show');
       e.target.reset();
     } else { btn.innerHTML = 'ERROR — RETRY'; btn.disabled = false; }
   } catch {
-    btn.innerHTML = '✓ REQUEST TRANSMITTED';
-    btn.classList.add('success');
-    document.getElementById('successMsg').classList.add('show');
-    e.target.reset();
+    btn.innerHTML = 'ERROR — RETRY';
+    btn.disabled = false;
   }
 });
 </script>

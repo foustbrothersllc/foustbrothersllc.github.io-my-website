@@ -45,11 +45,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);
 .boot-sequence span{display:block;animation:fadeIn .5s ease forwards;opacity:0}
 .boot-sequence span:nth-child(1){animation-delay:.2s}.boot-sequence span:nth-child(2){animation-delay:.7s}.boot-sequence span:nth-child(3){animation-delay:1.2s}.boot-sequence span:nth-child(4){animation-delay:1.7s}.boot-sequence span:nth-child(5){animation-delay:2.2s;color:#00ff88}
 @keyframes fadeIn{to{opacity:1}}
-.hero-orb-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%)}
-.hero-orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#88ddff,#00e5ff 30%,#c8a000 60%,#5a3a00 85%,#1a0a00);box-shadow:0 0 40px rgba(0,229,255,.6),0 0 80px rgba(0,229,255,.3),0 0 160px rgba(0,229,255,.1);animation:heroOrbPulse 4s ease-in-out infinite;position:relative}
-.hero-orb::before{content:'';position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(0,229,255,.2);animation:ringRotate 8s linear infinite}
-.hero-orb::after{content:'';position:absolute;inset:-35px;border-radius:50%;border:1px solid rgba(0,229,255,.1);animation:ringRotate 12s linear infinite reverse}
-@keyframes heroOrbPulse{0%,100%{box-shadow:0 0 40px rgba(0,229,255,.6),0 0 80px rgba(0,229,255,.3),0 0 160px rgba(0,229,255,.1)}50%{box-shadow:0 0 60px rgba(0,229,255,.8),0 0 120px rgba(0,229,255,.5),0 0 200px rgba(0,229,255,.2)}}
+.hero-orb-container{position:relative;width:400px;height:400px;display:flex;align-items:center;justify-content:center;margin:0 auto -60px}
+#orbCanvas{position:absolute;top:0;left:0;width:400px;height:400px;filter:drop-shadow(0 0 40px rgba(0,229,255,0.5))}
+.orb-status-ring{position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(0,229,255,0.15);animation:statusRingPulse 3s ease-in-out infinite}
+@keyframes statusRingPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.15);opacity:.8}}
 @keyframes ringRotate{to{transform:rotate(360deg)}}
 .hero-panel-left{position:absolute;left:2rem;bottom:30%;display:flex;flex-direction:column;gap:8px}
 .hero-panel-right{position:absolute;right:2rem;bottom:30%;display:flex;flex-direction:column;gap:8px;min-width:160px}
@@ -58,7 +57,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);
 .sys-card-label{font-family:var(--font-mono);font-size:.5rem;color:var(--cyan);letter-spacing:.15em;margin-bottom:2px}
 .sys-card-value{font-family:var(--font-display);font-size:.85rem;font-weight:700;color:var(--white);letter-spacing:.05em}
 .sys-card-value.online{color:#00ff88}
-.hero-content{position:relative;z-index:2;text-align:center;padding:0 2rem;margin-top:20vh}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 2rem;margin-top:8vh;display:flex;flex-direction:column;align-items:center}
 .hero-directive{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);letter-spacing:.3em;margin-bottom:1rem}
 .hero-headline{font-family:var(--font-display);font-size:clamp(3.5rem,10vw,8rem);font-weight:900;line-height:.9;letter-spacing:.02em;text-transform:uppercase}
 .hero-headline .line1,.hero-headline .line2{color:var(--white);display:block}
@@ -213,7 +212,6 @@ textarea{resize:vertical;min-height:120px}
     <div class="sys-card"><div class="sys-card-label">SYS-003 // FULL BUILD</div><div class="sys-card-value">5–10 PG</div></div>
     <div class="sys-card"><div class="sys-card-label">SYS-004 // CONSULTATION</div><div class="sys-card-value">AVAILABLE</div></div>
   </div>
-  <div class="hero-orb-container"><div class="hero-orb"></div></div>
   <div class="hero-panel-right">
     <div class="sys-card"><div class="sys-card-label">STATUS</div><div class="sys-card-value online">ONLINE</div></div>
     <div class="sys-card"><div class="sys-card-label">UPTIME</div><div class="sys-card-value">99.9%</div></div>
@@ -221,6 +219,10 @@ textarea{resize:vertical;min-height:120px}
     <div class="sys-card"><div class="sys-card-label">REGION</div><div class="sys-card-value">LOCAL</div></div>
   </div>
   <div class="hero-content">
+    <div class="hero-orb-container">
+      <canvas id="orbCanvas" width="400" height="400"></canvas>
+      <div class="orb-status-ring"></div>
+    </div>
     <div class="hero-directive">— PRIMARY DIRECTIVE —</div>
     <h1 class="hero-headline"><span class="line1">UNDER</span><span class="line2">PROMISE,</span><span class="line3">OVER DELIVER</span></h1>
     <div class="hero-sub">FOUST BROTHERS LLC — DIGITAL DIVISION</div>
@@ -442,6 +444,179 @@ function navigate(page) {
 window.addEventListener('popstate', (e) => {
   if (e.state && e.state.page) navigate(e.state.page);
 });
+
+// ── CANVAS ORB ENGINE ──
+(function() {
+  const canvas = document.getElementById('orbCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 400, H = 400, cx = W/2, cy = H/2;
+  let t = 0;
+
+  // Noise helper (simplex-lite via sin/cos stacking)
+  function noise(x, y, z) {
+    return Math.sin(x*1.3 + z) * Math.cos(y*0.9 + z*0.7) * 0.5 +
+           Math.sin(x*2.1 + z*1.3) * Math.cos(y*1.7 + z*0.4) * 0.3 +
+           Math.sin(x*0.7 + z*0.5) * Math.cos(y*2.3 + z*1.1) * 0.2;
+  }
+
+  function drawOrb() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.012;
+
+    const baseR = 90;
+    const numPoints = 180;
+
+    // ── OUTER GLOW RINGS ──
+    for (let ring = 0; ring < 5; ring++) {
+      const ringR = baseR + 30 + ring * 22;
+      const alpha = 0.06 - ring * 0.01;
+      const wobble = Math.sin(t * 0.8 + ring * 0.6) * 6;
+      ctx.beginPath();
+      ctx.arc(cx, cy, ringR + wobble, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(0,229,255,${alpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // ── ROTATING DASHED ORBIT RINGS ──
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(t * 0.4);
+    ctx.beginPath();
+    ctx.arc(0, 0, baseR + 38, 0, Math.PI * 2);
+    ctx.setLineDash([6, 14]);
+    ctx.strokeStyle = 'rgba(0,229,255,0.25)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-t * 0.25);
+    ctx.beginPath();
+    ctx.arc(0, 0, baseR + 55, 0, Math.PI * 2);
+    ctx.setLineDash([3, 20]);
+    ctx.strokeStyle = 'rgba(0,229,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // ── ENERGY NODES on orbit ──
+    for (let i = 0; i < 6; i++) {
+      const angle = t * 0.5 + (i / 6) * Math.PI * 2;
+      const r = baseR + 38;
+      const nx = cx + Math.cos(angle) * r;
+      const ny = cy + Math.sin(angle) * r;
+      const pulse = 0.5 + 0.5 * Math.sin(t * 3 + i);
+      ctx.beginPath();
+      ctx.arc(nx, ny, 2.5 + pulse * 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,229,255,${0.4 + pulse * 0.6})`;
+      ctx.fill();
+      // spark line to center
+      if (pulse > 0.7) {
+        ctx.beginPath();
+        ctx.moveTo(nx, ny);
+        ctx.lineTo(cx, cy);
+        ctx.strokeStyle = `rgba(0,229,255,${(pulse - 0.7) * 0.3})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+
+    // ── PLASMA BLOB SHAPE ──
+    const points = [];
+    for (let i = 0; i < numPoints; i++) {
+      const angle = (i / numPoints) * Math.PI * 2;
+      const n = noise(Math.cos(angle) * 1.2, Math.sin(angle) * 1.2, t * 0.6);
+      const oscillate = Math.sin(t * 1.8 + angle * 3) * 5 + Math.sin(t * 2.5 + angle * 5) * 3;
+      const r = baseR + n * 14 + oscillate;
+      points.push({ x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r });
+    }
+
+    // Fill orb body
+    const grad = ctx.createRadialGradient(cx - 25, cy - 30, 5, cx, cy, baseR + 20);
+    grad.addColorStop(0,   'rgba(160, 230, 255, 1)');
+    grad.addColorStop(0.15,'rgba(0, 229, 255, 1)');
+    grad.addColorStop(0.45,'rgba(0, 160, 200, 1)');
+    grad.addColorStop(0.65,'rgba(180, 120, 0, 1)');
+    grad.addColorStop(0.85,'rgba(80, 40, 0, 1)');
+    grad.addColorStop(1,   'rgba(8, 4, 0, 1)');
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      const p0 = points[i - 1], p1 = points[i];
+      ctx.quadraticCurveTo(p0.x, p0.y, (p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
+    }
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // ── PLASMA SURFACE SHIMMER ──
+    for (let i = 0; i < numPoints; i += 3) {
+      const angle = (i / numPoints) * Math.PI * 2;
+      const n = noise(Math.cos(angle) * 1.2, Math.sin(angle) * 1.2, t * 0.6);
+      const r = baseR * 0.85 + n * 10;
+      const bright = 0.5 + 0.5 * Math.sin(t * 4 + angle * 7);
+      ctx.beginPath();
+      ctx.arc(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r, 1.5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(180,240,255,${bright * 0.4})`;
+      ctx.fill();
+    }
+
+    // ── SPECULAR HIGHLIGHT ──
+    const specGrad = ctx.createRadialGradient(cx - 28, cy - 32, 2, cx - 20, cy - 22, 45);
+    specGrad.addColorStop(0, 'rgba(255,255,255,0.55)');
+    specGrad.addColorStop(0.5, 'rgba(180,240,255,0.15)');
+    specGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, baseR + 10, 0, Math.PI * 2);
+    ctx.fillStyle = specGrad;
+    ctx.fill();
+
+    // ── CORE GLOW ──
+    const coreGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 55);
+    const pulse = 0.7 + 0.3 * Math.sin(t * 2.2);
+    coreGlow.addColorStop(0, `rgba(200,245,255,${pulse * 0.9})`);
+    coreGlow.addColorStop(0.4, `rgba(0,229,255,${pulse * 0.5})`);
+    coreGlow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 55, 0, Math.PI * 2);
+    ctx.fillStyle = coreGlow;
+    ctx.fill();
+
+    // ── OUTER CORONA ──
+    const corona = ctx.createRadialGradient(cx, cy, baseR - 5, cx, cy, baseR + 60);
+    const coronaPulse = 0.5 + 0.5 * Math.sin(t * 1.1);
+    corona.addColorStop(0, `rgba(0,229,255,${coronaPulse * 0.3})`);
+    corona.addColorStop(0.4, `rgba(0,200,255,${coronaPulse * 0.1})`);
+    corona.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, baseR + 60, 0, Math.PI * 2);
+    ctx.fillStyle = corona;
+    ctx.fill();
+
+    // ── FLOATING SCAN LINE ──
+    const scanY = cy - baseR + ((t * 25) % (baseR * 2));
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, baseR + 5, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.beginPath();
+    ctx.moveTo(cx - baseR, scanY);
+    ctx.lineTo(cx + baseR, scanY);
+    ctx.strokeStyle = 'rgba(0,229,255,0.12)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+
+    requestAnimationFrame(drawOrb);
+  }
+
+  drawOrb();
+})();
 
 // Form submission
 document.getElementById('workOrderForm').addEventListener('submit', async (e) => {

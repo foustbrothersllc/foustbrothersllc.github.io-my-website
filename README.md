@@ -1,1 +1,226 @@
-# foustbrothersllc.github.io-my-website
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work Order | Foust Brothers LLC — Digital Division</title>
+  <meta name="description" content="Initialize a project request with Foust Brothers LLC Digital Division. Submit your work order and we'll be in touch." />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="math-bg"></div>
+
+<nav>
+  <a href="../index.html" class="nav-brand">
+    <div class="nav-orb"></div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-name">FOUST BROTHERS</span>
+      <span class="nav-brand-sub">DIGITAL DIVISION // ONLINE</span>
+    </div>
+  </a>
+  <button class="nav-toggle" aria-label="Menu">☰</button>
+  <ul class="nav-links">
+    <li><a href="../index.html">HOME</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+    <li><a href="billing.html">BILLING</a></li>
+    <li><a href="work-order.html" class="active">WORK ORDER</a></li>
+    <li><a href="work-order.html" class="nav-cta">INITIALIZE REQUEST</a></li>
+  </ul>
+</nav>
+
+<section style="padding-top: 120px;">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_05 // PROJECT_INTAKE</div>
+    <h1 class="section-title">WORK ORDER</h1>
+    <div class="section-subtitle">INITIALIZE YOUR PROJECT REQUEST</div>
+
+    <div class="work-order-layout">
+
+      <!-- FORM -->
+      <div>
+        <div class="wof">
+          <div class="wof-header">
+            <span>// PROJECT INQUIRY FORM</span>
+            <span style="color:var(--white-dim)">SECURE TRANSMISSION</span>
+          </div>
+
+          <form id="workOrderForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">FIRST NAME *</label>
+                <input type="text" id="firstName" name="firstName" placeholder="John" required />
+              </div>
+              <div class="form-group">
+                <label for="lastName">LAST NAME *</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Smith" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">EMAIL ADDRESS *</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" required />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">PHONE NUMBER</label>
+              <input type="tel" id="phone" name="phone" placeholder="(336) 000-0000" />
+            </div>
+
+            <div class="form-group">
+              <label for="business">BUSINESS / ORGANIZATION NAME</label>
+              <input type="text" id="business" name="business" placeholder="Your Business LLC" />
+            </div>
+
+            <div class="form-group">
+              <label for="serviceType">SERVICE MODULE *</label>
+              <select id="serviceType" name="serviceType" required>
+                <option value="" disabled selected>-- SELECT SERVICE MODULE --</option>
+                <option value="consultation">MODULE-01 // Consultation</option>
+                <option value="brochure">MODULE-02 // Brochure Site Build</option>
+                <option value="simple">MODULE-03 // Simple 1–3 Page Build</option>
+                <option value="standard">MODULE-04 // Standard 3–5 Page Build</option>
+                <option value="full">MODULE-05 // Full 5–10 Page Build</option>
+                <option value="unsure">Not Sure — Need Guidance</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="timeline">PROJECT TIMELINE</label>
+              <select id="timeline" name="timeline">
+                <option value="" disabled selected>-- SELECT TIMELINE --</option>
+                <option value="asap">ASAP — Urgent</option>
+                <option value="2weeks">Within 2 Weeks</option>
+                <option value="1month">Within 1 Month</option>
+                <option value="flexible">Flexible / No Rush</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="existingSite">EXISTING WEBSITE URL (if any)</label>
+              <input type="url" id="existingSite" name="existingSite" placeholder="https://yoursite.com" />
+            </div>
+
+            <div class="form-group">
+              <label for="description">PROJECT DESCRIPTION *</label>
+              <textarea id="description" name="description" placeholder="Describe your project, goals, and any specific requirements. The more detail you provide, the better we can scope your work order." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="howHeard">HOW DID YOU HEAR ABOUT US?</label>
+              <select id="howHeard" name="howHeard">
+                <option value="" disabled selected>-- SELECT --</option>
+                <option value="referral">Referral / Word of Mouth</option>
+                <option value="search">Search Engine</option>
+                <option value="social">Social Media</option>
+                <option value="local">Local / Community</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <button type="submit" class="form-submit">
+              <span>⚡</span> TRANSMIT WORK ORDER
+            </button>
+          </form>
+
+          <div class="success-msg" id="successMsg">
+            <h3>✓ TRANSMISSION CONFIRMED</h3>
+            <p>Your work order has been received. We'll be in contact within 1 business day to confirm your inquiry and discuss next steps.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO PANEL -->
+      <div class="work-order-info">
+        <div class="section-module-label" style="margin-bottom:1rem;"><div class="section-dot"></div> WHAT TO EXPECT</div>
+
+        <div class="woi-card">
+          <div class="woi-label">STEP 01 // SUBMIT</div>
+          <div class="woi-value">Fill out the work order form with as much detail as possible. The more we know upfront, the faster we can get you an accurate scope.</div>
+        </div>
+        <div class="woi-card">
+          <div class="woi-label">STEP 02 // CONTACT</div>
+          <div class="woi-value">We'll reach out within 1 business day to confirm receipt and schedule a discovery call or send initial questions.</div>
+        </div>
+        <div class="woi-card">
+          <div class="woi-label">STEP 03 // SCOPE</div>
+          <div class="woi-value">We provide a clear, itemized scope of work with pricing. No obligation to proceed — just honest numbers up front.</div>
+        </div>
+        <div class="woi-card">
+          <div class="woi-label">STEP 04 // BUILD</div>
+          <div class="woi-value">Once you approve the scope, we get to work. You'll receive progress updates and have opportunities to review before launch.</div>
+        </div>
+        <div class="woi-card">
+          <div class="woi-label">STEP 05 // LAUNCH</div>
+          <div class="woi-value">Your site goes live on your domain. We handle the deployment, DNS configuration, and make sure everything is working correctly.</div>
+        </div>
+
+        <div style="margin-top:2rem; padding:1.5rem; border:1px solid var(--border); background:var(--bg-card);">
+          <div class="woi-label" style="margin-bottom:1rem;">// DIRECT CONTACT</div>
+          <div style="margin-bottom:0.75rem;">
+            <div class="woi-label">EMAIL</div>
+            <div class="woi-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--cyan); text-decoration:none;">FoustBrothersLLC@gmail.com</a></div>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <div class="woi-label">PHONE</div>
+            <div class="woi-value"><a href="tel:3368622999" style="color:var(--white); text-decoration:none;">(336) 862-2999</a></div>
+          </div>
+          <div>
+            <div class="woi-label">HOURS</div>
+            <div class="woi-value">MON-FRI 0800-1800</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-header">
+        <div class="footer-orb"></div>
+        <div>
+          <div class="footer-brand-name">FOUST BROTHERS</div>
+          <div class="footer-brand-sub">DIGITAL DIVISION</div>
+        </div>
+      </div>
+      <p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence as a master-level shop.</p>
+      <div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div>
+    </div>
+    <div>
+      <div class="footer-section-label">// CONTACT COORDINATES</div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">EMAIL:</div>
+        <div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">PHONE:</div>
+        <div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">HOURS:</div>
+        <div class="footer-contact-value">MON-FRI 0800-1800</div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-section-label">// QUICK NAV</div>
+      <ul class="footer-nav-links">
+        <li><a href="../index.html">COMMAND CENTER</a></li>
+        <li><a href="about.html">ABOUT UNIT</a></li>
+        <li><a href="../index.html#services">SERVICE MODULES</a></li>
+        <li><a href="billing.html">BILLING PROTOCOL</a></li>
+        <li><a href="work-order.html">INITIALIZE REQUEST</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div>
+    <div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY &amp; CLEAR AGREEMENTS</div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

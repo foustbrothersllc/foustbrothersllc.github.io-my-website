@@ -70,10 +70,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);
 .btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:var(--font-display);font-size:.65rem;font-weight:700;letter-spacing:.2em;text-decoration:none;text-transform:uppercase;transition:all .3s;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);cursor:pointer}
 .btn-secondary:hover{border-color:var(--white-dim);color:var(--white)}
 .ticker{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;overflow:hidden;background:rgba(0,229,255,.02);margin-top:4rem}
-.ticker-inner{display:flex;gap:3rem;animation:ticker 25s linear infinite;white-space:nowrap;width:max-content}
+.ticker-inner{display:flex;gap:3rem;animation:ticker 30s linear infinite;white-space:nowrap;width:max-content;will-change:transform}
 .ticker-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em}
 .ti{color:var(--orange)}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 section{position:relative;z-index:1;padding:6rem 2rem}
 .section-module-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1.5rem}
 .section-module-label::after{content:'';flex:0 0 40px;height:1px;background:var(--cyan)}
@@ -296,14 +296,20 @@ textarea{resize:vertical;min-height:120px}
     <div class="ticker-inner">
       <div class="ticker-item"><span class="ti">⚡</span><span>COMMITMENT: PERFORMANCE-BASED</span></div>
       <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>PHILOSOPHY: UNDER PROMISE — OVER DELIVER</span></div>
-      <div class="ticker-item"><span class="ti">⚡</span><span>LOCATION: LOCAL & RELIABLE</span></div>
+      <div class="ticker-item"><span class="ti">⚡</span><span>LOCATION: LOCAL &amp; RELIABLE</span></div>
       <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>STATUS: READY FOR DEPLOYMENT</span></div>
       <div class="ticker-item"><span class="ti">⚡</span><span>ENCRYPTION: ACTIVE</span></div>
-      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>COMMITMENT: PERFORMANCE-BASED</span></div>
-      <div class="ticker-item"><span class="ti">⚡</span><span>PHILOSOPHY: UNDER PROMISE — OVER DELIVER</span></div>
-      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>LOCATION: LOCAL & RELIABLE</span></div>
-      <div class="ticker-item"><span class="ti">⚡</span><span>STATUS: READY FOR DEPLOYMENT</span></div>
-      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>ENCRYPTION: ACTIVE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>AI-ASSISTED: ALWAYS ON</span></div>
+      <div class="ticker-item"><span class="ti">⚡</span><span>BILLING: TRANSPARENT</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>REGION: LOCAL &amp; RELIABLE</span></div>
+      <div class="ticker-item"><span class="ti">⚡</span><span>COMMITMENT: PERFORMANCE-BASED</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>PHILOSOPHY: UNDER PROMISE — OVER DELIVER</span></div>
+      <div class="ticker-item"><span class="ti">⚡</span><span>LOCATION: LOCAL &amp; RELIABLE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>STATUS: READY FOR DEPLOYMENT</span></div>
+      <div class="ticker-item"><span class="ti">⚡</span><span>ENCRYPTION: ACTIVE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>AI-ASSISTED: ALWAYS ON</span></div>
+      <div class="ticker-item"><span class="ti">⚡</span><span>BILLING: TRANSPARENT</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>REGION: LOCAL &amp; RELIABLE</span></div>
     </div>
   </div>
 </section>

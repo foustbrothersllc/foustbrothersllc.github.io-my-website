@@ -749,14 +749,14 @@ function navigate(page) {
 window.addEventListener('popstate', (e) => {
   // ── INITIAL PAGE LOAD: detect correct page from URL ──
     (function() {
-      const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
-      const validPages = ['home', 'about', 'billing', 'work-order'];
-      const startPage = validPages.includes(path) ? path : 'home';
-      if (startPage !== 'home') {
-        navigate(startPage);
-      }
-      history.replaceState({ page: startPage }, '', window.location.pathname);
-    })();
+  const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  const validPages = ['about', 'billing', 'work-order'];
+  if (validPages.includes(path)) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + path).classList.add('active');
+    // ... nav highlight + history state
+  }
+})();
 
 // ── CANVAS ORB ENGINE ──
 (function() {

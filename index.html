@@ -17,7 +17,7 @@ body{background:var(--bg-primary);color:var(--white);font-family:var(--font-body
 .math-bg{position:fixed;inset:0;z-index:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Ctext x='20' y='40' fill='%2300e5ff' font-size='14' font-family='monospace'%3E%E2%88%87%C2%B2%CF%86%20%3D%20%CF%81/%CE%B5%E2%82%80%3C/text%3E%3Ctext x='200' y='80' fill='%2300e5ff' font-size='12' font-family='monospace'%3EF%20%3D%20ma%3C/text%3E%3Ctext x='400' y='60' fill='%2300e5ff' font-size='16' font-family='monospace'%3Ee%5E(i%CF%80)%20%2B%201%20%3D%200%3C/text%3E%3Ctext x='50' y='150' fill='%2300e5ff' font-size='13' font-family='monospace'%3E%CE%BB%20%3D%20h/mv%3C/text%3E%3Ctext x='300' y='200' fill='%2300e5ff' font-size='15' font-family='monospace'%3E%CF%83%20%3D%20%E2%88%9A(%CE%A3(x-%CE%BC)%C2%B2/N)%3C/text%3E%3Ctext x='100' y='280' fill='%2300e5ff' font-size='14' font-family='monospace'%3Edy/dx%20%3D%20lim%3C/text%3E%3Ctext x='400' y='320' fill='%2300e5ff' font-size='11' font-family='monospace'%3Ef(x)%20%3D%20ax%C2%B2%20%2B%20bx%20%2B%20c%3C/text%3E%3Ctext x='650' y='260' fill='%2300e5ff' font-size='13' font-family='monospace'%3E%CF%88%20%3D%20Ae%5E(ikx)%3C/text%3E%3Ctext x='30' y='400' fill='%2300e5ff' font-size='16' font-family='monospace'%3E%CF%80r%C2%B2%3C/text%3E%3Ctext x='680' y='380' fill='%2300e5ff' font-size='11' font-family='monospace'%3EE%20%3D%20mc%C2%B2%3C/text%3E%3Cline x1='0' y1='120' x2='800' y2='120' stroke='%2300e5ff' stroke-width='0.3'/%3E%3Cline x1='0' y1='350' x2='800' y2='350' stroke='%2300e5ff' stroke-width='0.3'/%3E%3Ccircle cx='620' cy='300' r='80' fill='none' stroke='%2300e5ff' stroke-width='0.5'/%3E%3C/svg%3E");background-size:800px 600px;pointer-events:none}
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px}
 .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer}
-.nav-orb{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#4af,#00e5ff 40%,#006688 80%,#002233);box-shadow:0 0 12px var(--cyan),0 0 24px rgba(0,229,255,.3);animation:orbPulse 3s ease-in-out infinite}
+#navOrb{width:32px;height:32px;border-radius:50%;box-shadow:0 0 12px var(--cyan),0 0 24px rgba(0,229,255,.3);animation:orbPulse 3s ease-in-out infinite}
 @keyframes orbPulse{0%,100%{box-shadow:0 0 12px var(--cyan),0 0 24px rgba(0,229,255,.3)}50%{box-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,229,255,.5)}}
 .nav-brand-text{display:flex;flex-direction:column}
 .nav-brand-name{font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:.15em;color:var(--white);line-height:1}
@@ -45,7 +45,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);
 .boot-sequence span:nth-child(1){animation-delay:.2s}.boot-sequence span:nth-child(2){animation-delay:.7s}.boot-sequence span:nth-child(3){animation-delay:1.2s}.boot-sequence span:nth-child(4){animation-delay:1.7s}.boot-sequence span:nth-child(5){animation-delay:2.2s;color:#00ff88}
 @keyframes fadeIn{to{opacity:1}}
 .hero-orb-container{position:relative;width:400px;height:400px;display:flex;align-items:center;justify-content:center;margin:0 auto -60px}
-#orbCanvas{position:absolute;top:0;left:0;width:400px;height:400px;filter:drop-shadow(0 0 40px rgba(0,229,255,0.5))}
+#orbThree{filter:drop-shadow(0 0 50px rgba(0,100,255,0.6));}
+#orbThree canvas{border-radius:50%;}
 .orb-status-ring{position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(0,229,255,0.15);animation:statusRingPulse 3s ease-in-out infinite}
 @keyframes statusRingPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.15);opacity:.8}}
 .hero-panel-left{position:absolute;left:2rem;bottom:30%;display:flex;flex-direction:column;gap:8px}
@@ -234,12 +235,13 @@ textarea{resize:vertical;min-height:120px}
   .rate-amount{font-size:1rem}
 }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 <div class="math-bg"></div>
 <nav>
   <div class="nav-brand" onclick="navigate('home')">
-    <div class="nav-orb"></div>
+    
     <div class="nav-brand-text">
       <span class="nav-brand-name">FOUST BROTHERS</span>
       <span class="nav-brand-sub">DIGITAL DIVISION // ONLINE</span>
@@ -280,7 +282,7 @@ textarea{resize:vertical;min-height:120px}
   </div>
   <div class="hero-content">
     <div class="hero-orb-container">
-      <canvas id="orbCanvas" width="400" height="400"></canvas>
+      <div id="orbThree" style="position:absolute;top:0;left:0;width:400px;height:400px;"></div>
       <div class="orb-status-ring"></div>
     </div>
     <div class="hero-directive">— PRIMARY DIRECTIVE —</div>
@@ -325,7 +327,7 @@ textarea{resize:vertical;min-height:120px}
 </section>
 <footer>
   <div class="footer-grid">
-    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence as a master-level shop. Your project is our work order.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence as a master-level shop. Your project is our work order.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">LOCATION:</div><div class="footer-contact-value">LOCAL & RELIABLE</div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('home');setTimeout(()=>document.getElementById('services').scrollIntoView({behavior:'smooth'}),100)">SERVICE MODULES</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
@@ -365,7 +367,7 @@ textarea{resize:vertical;min-height:120px}
 </section>
 <footer>
   <div class="footer-grid">
-    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
@@ -445,7 +447,7 @@ textarea{resize:vertical;min-height:120px}
 </section>
 <footer>
   <div class="footer-grid">
-    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
@@ -545,7 +547,7 @@ textarea{resize:vertical;min-height:120px}
 </section>
 <footer>
   <div class="footer-grid">
-    <div><div class="footer-brand-header"><div class="footer-orb"></div><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
@@ -583,143 +585,267 @@ window.addEventListener('popstate', (e) => {
   if (e.state && e.state.page) navigate(e.state.page);
 });
 
-// ── CANVAS ORB ENGINE — PARTICLE MESH STYLE ──
+// ── THREE.JS ORB ENGINE ──
 (function() {
-  const canvas = document.getElementById('orbCanvas');
-  const ctx = canvas.getContext('2d');
-  const W = 400, H = 400, cx = W/2, cy = H/2;
+  if (typeof THREE === 'undefined') { console.warn('Three.js not loaded'); return; }
+
+  // ── HERO ORB ──
+  const container = document.getElementById('orbThree');
+  if (!container) return;
+
+  const W = 400, H = 400;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+  camera.position.z = 3.2;
+
+  // Geometry
+  const geo = new THREE.IcosahedronGeometry(1, 6);
+  const posAttr = geo.attributes.position;
+  const vertCount = posAttr.count;
+  const origPos = new Float32Array(posAttr.array);
+
+  // Gradient shader material (blue → magenta)
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime:      { value: 0 },
+      uAudio:     { value: 0 },
+      uColorA:    { value: new THREE.Color(0x00aaff) },
+      uColorB:    { value: new THREE.Color(0xff00cc) },
+    },
+    vertexShader: `
+      uniform float uTime;
+      uniform float uAudio;
+      varying vec3 vNormal;
+      varying vec3 vPos;
+
+      // Simplex-style noise
+      vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+      vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+      vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}
+      float snoise(vec3 v){
+        const vec2 C=vec2(1./6.,1./3.);
+        vec3 i=floor(v+dot(v,C.yyy));
+        vec3 x0=v-i+dot(i,C.xxx);
+        vec3 g=step(x0.yzx,x0.xyz);
+        vec3 l=1.-g;
+        vec3 i1=min(g.xyz,l.zxy);
+        vec3 i2=max(g.xyz,l.zxy);
+        vec3 x1=x0-i1+C.xxx;
+        vec3 x2=x0-i2+C.yyy;
+        vec3 x3=x0-0.5;
+        i=mod289(i);
+        vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+        vec3 ns=0.142857142857*C.yyy-C.xzx;
+        vec4 j=p-49.*floor(p*ns.z*ns.z);
+        vec4 x_=floor(j*ns.z);
+        vec4 x__=j-7.*x_; 
+        vec4 ox=x_*(1./7.)+ns.xxxx;
+        vec4 oy=x__*(1./7.)+ns.xxxx;
+        vec4 h=1.-abs(ox)-abs(oy);
+        vec4 b0=vec4(ox.xy,oy.xy);
+        vec4 b1=vec4(ox.zw,oy.zw);
+        vec4 s0=floor(b0)*2.+1.;
+        vec4 s1=floor(b1)*2.+1.;
+        vec4 sh=-step(h,vec4(0.));
+        vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+        vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+        vec3 p0=vec3(a0.xy,h.x);
+        vec3 p1=vec3(a0.zw,h.y);
+        vec3 p2=vec3(a1.xy,h.z);
+        vec3 p3=vec3(a1.zw,h.w);
+        vec4 norm=1.79284291400159-.85373472095314*vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3));
+        p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+        vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);
+        m=m*m;
+        return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+      }
+
+      void main(){
+        vNormal = normal;
+        vec3 p = position;
+        float n = snoise(p * 1.4 + uTime * 0.35);
+        float n2 = snoise(p * 3.0 - uTime * 0.5);
+        float audioDisplace = uAudio * 0.55 * (snoise(p * 2.5 + uTime * 1.2) + 0.5);
+        float displacement = 0.12 * n + 0.06 * n2 + audioDisplace;
+        vec3 newPos = p + normal * displacement;
+        vPos = newPos;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColorA;
+      uniform vec3 uColorB;
+      uniform float uTime;
+      varying vec3 vNormal;
+      varying vec3 vPos;
+
+      void main(){
+        // Gradient left→right (x axis)
+        float t = clamp(vPos.x * 0.5 + 0.5, 0.0, 1.0);
+        vec3 col = mix(uColorA, uColorB, t);
+        // Fresnel-like rim
+        vec3 viewDir = normalize(vec3(0.,0.,1.) - vPos);
+        float fresnel = pow(1.0 - abs(dot(normalize(vNormal), viewDir)), 2.5);
+        col = mix(col, vec3(1.0), fresnel * 0.4);
+        // Subtle pulse brightness
+        float pulse = 0.9 + 0.1 * sin(uTime * 2.0);
+        gl_FragColor = vec4(col * pulse, 0.92);
+      }
+    `,
+    side: THREE.FrontSide,
+    transparent: true,
+  });
+
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  // Wireframe overlay
+  const wireMat = new THREE.MeshBasicMaterial({
+    color: 0x44aaff,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.08,
+  });
+  const wireMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.01, 6), wireMat);
+  scene.add(wireMesh);
+
+  // Floating particles halo
+  const pCount = 180;
+  const pGeo = new THREE.BufferGeometry();
+  const pPos = new Float32Array(pCount * 3);
+  const pSpeeds = new Float32Array(pCount);
+  for (let i = 0; i < pCount; i++) {
+    const r = 1.4 + Math.random() * 0.7;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    pPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+    pPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    pPos[i*3+2] = r * Math.cos(phi);
+    pSpeeds[i] = 0.3 + Math.random() * 0.7;
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: 0x88ccff,
+    size: 0.022,
+    transparent: true,
+    opacity: 0.7,
+    sizeAttenuation: true,
+  });
+  const particles = new THREE.Points(pGeo, pMat);
+  scene.add(particles);
+
+  // ── AUDIO ANALYSER ──
+  let analyser = null, audioData = null;
+  let audioLevel = 0;
+  let micAllowed = false;
+
+  function initAudio() {
+    if (micAllowed) return;
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      .then(stream => {
+        micAllowed = true;
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = ctx.createMediaStreamSource(stream);
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        audioData = new Uint8Array(analyser.frequencyBinCount);
+        src.connect(analyser);
+      })
+      .catch(() => { /* no mic, idle animation only */ });
+  }
+
+  // Try audio on first user interaction
+  document.addEventListener('click', initAudio, { once: true });
+
+  // ── ANIMATE ──
   let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.012;
 
-  // 3D sphere of particles projected to 2D
-  const RINGS = 18;
-  const PTS_PER_RING = 28;
-  const BASE_R = 110;
+    // Get audio level
+    if (analyser) {
+      analyser.getByteFrequencyData(audioData);
+      let sum = 0;
+      for (let i = 0; i < audioData.length; i++) sum += audioData[i];
+      const raw = sum / (audioData.length * 255);
+      audioLevel += (raw - audioLevel) * 0.15; // smooth
+    } else {
+      // Idle breathing when no mic
+      audioLevel = 0.05 + 0.04 * Math.sin(t * 0.8);
+    }
 
-  function noise(x, y, z) {
-    return Math.sin(x*1.3 + z) * Math.cos(y*0.9 + z*0.7) * 0.5 +
-           Math.sin(x*2.1 + z*1.3) * Math.cos(y*1.7 + z*0.4) * 0.3 +
-           Math.sin(x*0.7 + z*0.5) * Math.cos(y*2.3 + z*1.1) * 0.2;
+    mat.uniforms.uTime.value = t;
+    mat.uniforms.uAudio.value = audioLevel;
+
+    mesh.rotation.y = t * 0.18;
+    mesh.rotation.x = Math.sin(t * 0.12) * 0.15;
+    wireMesh.rotation.y = t * 0.18;
+    wireMesh.rotation.x = Math.sin(t * 0.12) * 0.15;
+
+    // Drift particles
+    particles.rotation.y = t * 0.04;
+    particles.rotation.x = t * 0.02;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // ── NAV ORB (mini canvas) ──
+  const navCanvas = document.getElementById('navOrb');
+  if (navCanvas) {
+    const nc = navCanvas.getContext('2d');
+    let nt = 0;
+    function drawNavOrb() {
+      requestAnimationFrame(drawNavOrb);
+      nt += 0.04;
+      const cx = 16, cy = 16, r = 13;
+      nc.clearRect(0, 0, 32, 32);
+
+      // Glow
+      const glow = nc.createRadialGradient(cx, cy, 0, cx, cy, r * 1.6);
+      glow.addColorStop(0, 'rgba(0,180,255,0.25)');
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      nc.beginPath();
+      nc.arc(cx, cy, r * 1.6, 0, Math.PI * 2);
+      nc.fillStyle = glow;
+      nc.fill();
+
+      // Orb body gradient (blue → magenta, matching hero)
+      const pulse = 0.85 + 0.15 * Math.sin(nt * 0.9);
+      const grad = nc.createLinearGradient(cx - r, cy, cx + r, cy);
+      grad.addColorStop(0, `rgba(0,${Math.round(140*pulse)},255,0.95)`);
+      grad.addColorStop(1, `rgba(255,0,${Math.round(200*pulse)},0.9)`);
+      nc.beginPath();
+      nc.arc(cx, cy, r, 0, Math.PI * 2);
+      nc.fillStyle = grad;
+      nc.fill();
+
+      // Specular highlight
+      const spec = nc.createRadialGradient(cx - 4, cy - 4, 1, cx - 3, cy - 3, 7);
+      spec.addColorStop(0, 'rgba(255,255,255,0.55)');
+      spec.addColorStop(1, 'rgba(255,255,255,0)');
+      nc.beginPath();
+      nc.arc(cx, cy, r, 0, Math.PI * 2);
+      nc.fillStyle = spec;
+      nc.fill();
+
+      // Subtle wireframe ring
+      nc.beginPath();
+      nc.arc(cx, cy, r, 0, Math.PI * 2);
+      nc.strokeStyle = `rgba(180,220,255,${0.2 + 0.1 * Math.sin(nt)})`;
+      nc.lineWidth = 0.7;
+      nc.stroke();
+    }
+    drawNavOrb();
   }
 
-  function drawOrb() {
-    ctx.clearRect(0, 0, W, H);
-    t += 0.008;
-
-    // Build 3D particle positions on a wobbly sphere
-    const particles = [];
-    for (let ri = 0; ri < RINGS; ri++) {
-      const phi = (Math.PI * (ri + 0.5)) / RINGS; // latitude
-      const ringR = Math.sin(phi);
-      const y3d = Math.cos(phi);
-      const count = Math.max(4, Math.round(PTS_PER_RING * ringR));
-      for (let pi = 0; pi < count; pi++) {
-        const theta = (2 * Math.PI * pi / count) + t * (0.15 + ri * 0.02);
-        const x3d = Math.cos(theta) * ringR;
-        const z3d = Math.sin(theta) * ringR;
-
-        // Wobble the radius slightly with noise
-        const wobble = 1 + 0.07 * noise(x3d, y3d, t * 0.4 + ri * 0.3);
-        const r = BASE_R * wobble;
-
-        // Project to 2D (simple orthographic + slight perspective)
-        const scale = 1 + z3d * 0.18;
-        const px = cx + x3d * r * scale;
-        const py = cy - y3d * r * scale;
-        const depth = (z3d + 1) / 2; // 0=back, 1=front
-
-        particles.push({ px, py, depth, x3d, y3d, z3d, ri, pi });
-      }
-    }
-
-    // Sort back-to-front for painter's algorithm
-    particles.sort((a, b) => a.depth - b.depth);
-
-    // Draw connecting lines between nearby particles on same ring
-    ctx.lineWidth = 0.4;
-    for (let ri = 0; ri < RINGS; ri++) {
-      const ring = particles.filter(p => p.ri === ri);
-      for (let i = 0; i < ring.length; i++) {
-        const a = ring[i];
-        const b = ring[(i + 1) % ring.length];
-        const avgDepth = (a.depth + b.depth) / 2;
-        const alpha = 0.08 + avgDepth * 0.25;
-        // Blue-to-purple gradient based on latitude
-        const purpleMix = a.ri / RINGS;
-        const r = Math.round(30 + purpleMix * 120);
-        const g = Math.round(100 - purpleMix * 60);
-        const bl = 255;
-        ctx.beginPath();
-        ctx.moveTo(a.px, a.py);
-        ctx.lineTo(b.px, b.py);
-        ctx.strokeStyle = `rgba(${r},${g},${bl},${alpha})`;
-        ctx.stroke();
-      }
-    }
-
-    // Draw vertical connecting lines between rings
-    ctx.lineWidth = 0.3;
-    for (let i = 0; i < particles.length; i++) {
-      const a = particles[i];
-      // find nearest particle in next ring
-      const nextRing = particles.filter(p => p.ri === a.ri + 1);
-      if (nextRing.length === 0) continue;
-      let best = null, bestDist = Infinity;
-      for (const b of nextRing) {
-        const dx = b.px - a.px, dy = b.py - a.py;
-        const d = dx*dx + dy*dy;
-        if (d < bestDist) { bestDist = d; best = b; }
-      }
-      if (best && bestDist < 2500) {
-        const alpha = 0.04 + a.depth * 0.1;
-        ctx.beginPath();
-        ctx.moveTo(a.px, a.py);
-        ctx.lineTo(best.px, best.py);
-        ctx.strokeStyle = `rgba(80,60,255,${alpha})`;
-        ctx.stroke();
-      }
-    }
-
-    // Draw particles
-    for (const p of particles) {
-      const size = 0.8 + p.depth * 1.6;
-      const pulse = 0.5 + 0.5 * Math.sin(t * 3 + p.ri * 0.7 + p.pi * 0.4);
-      const alpha = 0.3 + p.depth * 0.55 + pulse * 0.15;
-
-      // Color: cyan at equator, purple/violet at poles
-      const lat = Math.abs(p.y3d); // 0=equator, 1=pole
-      const rC = Math.round(40 + lat * 160);
-      const gC = Math.round(180 - lat * 160);
-      const bC = 255;
-
-      ctx.beginPath();
-      ctx.arc(p.px, p.py, size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${rC},${gC},${bC},${alpha})`;
-      ctx.fill();
-
-      // Bright highlight on front-facing particles
-      if (p.depth > 0.75 && pulse > 0.6) {
-        ctx.beginPath();
-        ctx.arc(p.px, p.py, size * 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180,210,255,${(p.depth - 0.75) * 0.4})`;
-        ctx.fill();
-      }
-    }
-
-    // Outer glow corona
-    const coronaPulse = 0.5 + 0.5 * Math.sin(t * 1.1);
-    const corona = ctx.createRadialGradient(cx, cy, BASE_R * 0.85, cx, cy, BASE_R * 1.5);
-    corona.addColorStop(0, `rgba(60,80,255,${coronaPulse * 0.18})`);
-    corona.addColorStop(0.5, `rgba(0,180,255,${coronaPulse * 0.07})`);
-    corona.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.beginPath();
-    ctx.arc(cx, cy, BASE_R * 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = corona;
-    ctx.fill();
-
-    requestAnimationFrame(drawOrb);
-  }
-
-  drawOrb();
 })();
 
 function selectService(value) {

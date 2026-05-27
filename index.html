@@ -724,7 +724,30 @@ window.addEventListener('popstate', (e) => {
   var particles = new THREE.Points(pGeo, pMat);
   scene.add(particles);
 
-  // Audio
+  // ── MOUSE TRACKING ──
+  // Target rotation based on mouse, smoothly interpolated
+  var mouseTargetX = 0, mouseTargetY = 0;
+  var currentRotX = 0, currentRotY = 0;
+  var MAX_TILT = 0.25; // max radians the orb tilts toward mouse
+
+  function onMouseMove(e) {
+    // Get orb container position in the page
+    var rect = container.getBoundingClientRect();
+    var orbCenterX = rect.left + rect.width / 2;
+    var orbCenterY = rect.top + rect.height / 2;
+
+    // Normalize mouse relative to full window (-1 to 1)
+    // so even far-away mouse movement has gentle influence
+    var nx = (e.clientX - orbCenterX) / window.innerWidth;
+    var ny = (e.clientY - orbCenterY) / window.innerHeight;
+
+    // Clamp and scale — subtle lean toward the mouse
+    mouseTargetX = Math.max(-1, Math.min(1, ny)) * MAX_TILT;
+    mouseTargetY = Math.max(-1, Math.min(1, nx)) * MAX_TILT;
+  }
+  window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+  // ── AUDIO ──
   var audioContext2, analyser2, dataArray2, isAudioSetup = false;
   function initAudio() {
     if (isAudioSetup) return;
@@ -743,8 +766,9 @@ window.addEventListener('popstate', (e) => {
     if (audioContext2 && audioContext2.state === 'suspended') audioContext2.resume();
   });
 
-  var elapsed = 0;
-  var last = performance.now();
+  // ── ANIMATE ──
+  var elapsed = 0, last = performance.now();
+
   function animate() {
     requestAnimationFrame(animate);
     var now = performance.now();
@@ -753,6 +777,7 @@ window.addEventListener('popstate', (e) => {
 
     uniforms.uTime.value = elapsed;
 
+    // Audio level
     var vol = 0;
     if (isAudioSetup === true) {
       analyser2.getByteFrequencyData(dataArray2);
@@ -764,14 +789,22 @@ window.addEventListener('popstate', (e) => {
     }
     uniforms.uAudioIntensity.value += (vol - uniforms.uAudioIntensity.value) * 0.2;
 
-    orb.rotation.y = elapsed * 0.1;
-    particles.rotation.y = -elapsed * 0.05;
-    particles.rotation.x = elapsed * 0.02;
+    // Smooth mouse-follow rotation (lerp toward target)
+    var lerpSpeed = 0.04;
+    currentRotX += (mouseTargetX - currentRotX) * lerpSpeed;
+    currentRotY += (mouseTargetY - currentRotY) * lerpSpeed;
+
+    // Base auto-rotation + mouse lean
+    orb.rotation.y = elapsed * 0.1 + currentRotY;
+    orb.rotation.x = currentRotX;
+    particles.rotation.y = -elapsed * 0.05 + currentRotY * 0.5;
+    particles.rotation.x = elapsed * 0.02 + currentRotX * 0.5;
 
     renderer.render(scene, camera);
   }
   animate();
 })();
+
 
 
 function selectService(value) {

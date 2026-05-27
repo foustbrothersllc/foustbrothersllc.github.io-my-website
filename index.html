@@ -126,6 +126,16 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .footer-copy{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em}
 .footer-copy span{display:block;margin-top:2px}
 .footer-philosophy{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em;text-align:right}
+.footer-legal-links{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.footer-legal-links a{font-family:var(--font-mono);font-size:.5rem;color:var(--cyan);letter-spacing:.15em;text-decoration:none;opacity:.7;transition:opacity .2s;cursor:pointer}
+.footer-legal-links a:hover{opacity:1}
+.legal-layout{max-width:800px;margin:0 auto}
+.legal-section{border:1px solid var(--border);background:var(--bg-card);margin-bottom:1rem}
+.legal-section-head{font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.2em;padding:1rem 1.5rem .5rem;border-bottom:1px solid var(--border)}
+.legal-section-body{font-size:.82rem;color:var(--white-dim);line-height:1.8;padding:.75rem 1.5rem 1rem}
+.legal-section-body ul{padding-left:1.2rem;margin:.5rem 0}
+.legal-section-body li{margin-bottom:.4rem}
+.legal-section-body strong{color:var(--white);font-weight:600}
 .about-hero-section{padding-top:64px;min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}
 .about-module-bar{padding:10px 2rem;display:flex;align-items:center;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.65rem;color:var(--cyan);letter-spacing:.1em;background:rgba(2,8,16,.5)}
 .about-split{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:calc(100vh - 104px)}
@@ -221,6 +231,7 @@ textarea{resize:vertical;min-height:120px}
   .about-content-panel{padding:1.5rem}
   section{padding:4rem 1rem}
   .footer-bottom{flex-direction:column;text-align:center}
+  .footer-legal-links{justify-content:center}
   .footer-philosophy{text-align:center}
   .hero-content{padding:0 1rem}
   .hero-buttons{flex-direction:column;align-items:center}
@@ -336,7 +347,7 @@ textarea{resize:vertical;min-height:120px}
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">LOCATION:</div><div class="footer-contact-value">LOCAL & RELIABLE</div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('home');setTimeout(()=>document.getElementById('services').scrollIntoView({behavior:'smooth'}),100)">SERVICE MODULES</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
-  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
 </footer>
 </div>
 
@@ -376,7 +387,7 @@ textarea{resize:vertical;min-height:120px}
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
-  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
 </footer>
 </div>
 
@@ -456,7 +467,7 @@ textarea{resize:vertical;min-height:120px}
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
-  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
 </footer>
 </div>
 </div>
@@ -556,9 +567,162 @@ textarea{resize:vertical;min-height:120px}
     <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--white)'">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul><div class="quality-badge"><div class="quality-badge-title">QUALITY<br>CONTROL</div><div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div></div></div>
   </div>
-  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
 </footer>
 </div>
+<!-- PRIVACY POLICY PAGE -->
+<div id="page-privacy" class="page">
+<section style="padding-top:120px;padding-bottom:6rem">
+  <div class="container">
+    <div class="legal-layout">
+      <div class="section-module-label"><div class="section-dot"></div> MODULE_06 // PRIVACY_POLICY</div>
+      <h1 class="section-title">PRIVACY POLICY</h1>
+      <div class="section-subtitle">FOUST BROTHERS LLC — EFFECTIVE JUNE 1, 2026</div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">01 // INFORMATION WE COLLECT</div>
+        <div class="legal-section-body">When you submit a work order or contact us through this website, we collect the information you voluntarily provide, including your name, email address, phone number, business name, and project details. We do not collect payment information through this website.</div>
+      </div>
+      <div class="legal-section">
+        <div class="legal-section-head">02 // HOW WE USE YOUR INFORMATION</div>
+        <div class="legal-section-body">We use the information you provide solely to respond to your inquiry, scope your project, and communicate with you about our services. We do not sell, rent, or share your personal information with third parties for marketing purposes.</div>
+      </div>
+      <div class="legal-section">
+        <div class="legal-section-head">03 // COOKIES & ANALYTICS</div>
+        <div class="legal-section-body">This website may use basic analytics tools to understand visitor traffic and improve our services. These tools may use cookies or similar tracking technologies. No personally identifiable information is collected through these tools without your knowledge.</div>
+      </div>
+      <div class="legal-section">
+        <div class="legal-section-head">04 // DATA SECURITY</div>
+        <div class="legal-section-body">We take reasonable precautions to protect your information. Work order submissions are processed through Web3Forms, a third-party form service. We recommend reviewing their privacy policy at web3forms.com.</div>
+      </div>
+      <div class="legal-section">
+        <div class="legal-section-head">05 // YOUR RIGHTS</div>
+        <div class="legal-section-body">You may request that we delete any personal information you have submitted to us at any time by contacting us at FoustBrothersLLC@gmail.com. We will honor all reasonable requests promptly.</div>
+      </div>
+      <div class="legal-section">
+        <div class="legal-section-head">06 // CONTACT</div>
+        <div class="legal-section-body">For any privacy-related questions, contact us at <strong>FoustBrothersLLC@gmail.com</strong> or <strong>(336) 862-2999</strong>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+</footer>
+</div>
+
+<!-- TERMS OF SERVICE PAGE -->
+<div id="page-terms" class="page">
+<section style="padding-top:120px;padding-bottom:6rem">
+  <div class="container">
+    <div class="legal-layout">
+      <div class="section-module-label"><div class="section-dot"></div> MODULE_07 // TERMS_OF_SERVICE</div>
+      <h1 class="section-title">TERMS OF SERVICE</h1>
+      <div class="section-subtitle">FOUST BROTHERS LLC — EFFECTIVE JUNE 1, 2026</div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">01 // SCOPE OF SERVICES</div>
+        <div class="legal-section-body">Foust Brothers LLC — Digital Division provides web design, development, logo design, digital flyer creation, and related digital services. Projects are categorized as either a Fixed-Content "Brochure" Site or an Integrated High-Performance Build. All services are scoped individually and agreed upon in writing before work begins. The Developer ensures site function on the latest two versions of major browsers (Chrome, Safari, Edge, Firefox) at launch.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">02 // PAYMENT TERMS</div>
+        <div class="legal-section-body">
+          All charges are invoiced manually — no automatic payments are ever initiated. Payment schedule:
+          <ul>
+            <li><strong>35% non-refundable deposit</strong> required to begin work.</li>
+            <li>For projects exceeding $2,500, an interim <strong>35% milestone payment</strong> may be required upon approval of initial design.</li>
+            <li><strong>Final balance</strong> is due upon project handoff or launch.</li>
+          </ul>
+          Invoices are <strong>Net-15</strong>. Late payments are subject to service suspension and a late fee of <strong>1.5% per month</strong> on any outstanding balance.
+        </div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">03 // SHOP RATES & LABOR</div>
+        <div class="legal-section-body">
+          <ul>
+            <li><strong>Standard Shop Rate:</strong> $50.00/hr — 1-hour minimum, billed in 15-minute increments thereafter.</li>
+            <li><strong>Rush Labor Rate:</strong> $75.00–$100.00/hr for turnarounds under 48 hours or weekend work.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">04 // ANNUAL MAINTENANCE & HOSTING</div>
+        <div class="legal-section-body">
+          A recurring fee of <strong>$150.00–$300.00 per year</strong> is required for managed hosting, security monitoring, and SSL certificate management. This fee covers server infrastructure and security. Content updates, design changes, or new features are excluded and billed at the Standard Shop Rate.
+          <ul>
+            <li><strong>Domain Privacy:</strong> $10–$25/year (billed at registrar cost)</li>
+            <li><strong>SSL Certificate:</strong> Included for encrypted HTTPS connections</li>
+            <li><strong>Logo & Branding:</strong> $150–$500 flat fee per project</li>
+          </ul>
+          The Client is responsible for direct costs of domain registration and third-party email services. The Developer is not liable for downtime resulting from the Client's failure to maintain these external accounts.
+        </div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">05 // REVISIONS & SCOPE CHANGES</div>
+        <div class="legal-section-body">Any changes to the agreed-upon project scope will be communicated and re-quoted before additional work begins. Clients will never be charged for scope changes without prior written approval.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">06 // INTELLECTUAL PROPERTY & HANDOFF</div>
+        <div class="legal-section-body">Upon receipt of final payment, full ownership and intellectual property rights to the final website content (text, images, and custom front-end code) are transferred to the Client. The Developer maintains ownership of pre-existing proprietary tools and methodologies. The Developer retains the right to display completed work in portfolios and marketing materials. Should the Client choose to move the website to an external host, the Developer will provide a full Code Export of the front-end files. Technical labor required to migrate files will be billed at the Standard Shop Rate.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">07 // POST-LAUNCH WARRANTY</div>
+        <div class="legal-section-body">The Developer provides a <strong>30-day post-launch warranty</strong> exclusively for the correction of technical bugs or errors related to the original scope of work. Requests for new features, content changes, or design modifications during this window will be billed at the Standard Shop Rate.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">08 // CLIENT RESPONSIBILITIES</div>
+        <div class="legal-section-body">The Client must provide assets and feedback within <strong>7 business days</strong> of a request. If a project remains stalled for more than 30 days due to Client inaction, the Developer reserves the right to terminate the project and bill for all labor completed. The Client warrants that all provided assets are legally owned.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">09 // CONFIDENTIALITY</div>
+        <div class="legal-section-body">Both parties agree to maintain the confidentiality of sensitive business information, proprietary data, and trade secrets disclosed during the project. This protection survives the termination of this Agreement.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">10 // LIMITATION OF LIABILITY</div>
+        <div class="legal-section-body">Total financial liability under this Agreement shall not exceed the total amount paid by the Client for the project. The Developer strives for 99.9% uptime but is not liable for service interruptions caused by third-party infrastructure failures, backbone internet outages, or Acts of God.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">11 // TERMINATION</div>
+        <div class="legal-section-body">Either party may terminate a project engagement with written notice. The Client is responsible for payment of all work completed up to the termination date. The 35% deposit is non-refundable.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">12 // DISPUTE RESOLUTION & GOVERNING LAW</div>
+        <div class="legal-section-body">This Agreement is governed by the laws of <strong>North Carolina</strong>. In the event of a dispute, the parties agree to first attempt resolution through good-faith mediation. If unresolved, disputes shall be settled through binding arbitration in the State of North Carolina, Rockingham County. If any part of this agreement is held unenforceable, the rest remains in full force.</div>
+      </div>
+
+      <div class="legal-section">
+        <div class="legal-section-head">13 // CONTACT</div>
+        <div class="legal-section-body">Questions about these terms? Contact us at <strong>FoustBrothersLLC@gmail.com</strong> or <strong>(336) 862-2999</strong>. MON-FRI 0900-1700.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT COORDINATES</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white);text-decoration:none">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">COMMAND CENTER</a></li><li><a onclick="navigate('about')">ABOUT UNIT</a></li><li><a onclick="navigate('billing')">BILLING PROTOCOL</a></li><li><a onclick="navigate('work-order')">INITIALIZE REQUEST</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
+</footer>
+</div>
+
 
 <script>
 // ── STAMP OBSERVER (must be defined before navigate) ──
@@ -868,7 +1032,7 @@ document.getElementById('workOrderForm').addEventListener('submit', async (e) =>
 // ── INITIAL PAGE LOAD: show correct page based on URL (must be last) ──
 (function() {
   const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
-  const validPages = ['about', 'billing', 'work-order'];
+  const validPages = ['about', 'billing', 'work-order', 'privacy', 'terms'];
   if (validPages.includes(path)) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + path).classList.add('active');

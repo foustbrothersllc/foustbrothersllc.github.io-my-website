@@ -1,16 +1,27 @@
 {
-  "rewrites": [
+  "headers": [
     {
-      "source": "/work-order",
-      "destination": "/work-order.html"
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "source": "/billing",
-      "destination": "/billing.html"
-    },
-    {
-      "source": "/about",
-      "destination": "/about.html"
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     }
+  ],
+  "rewrites": [
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/billing", "destination": "/index.html" },
+    { "source": "/work-order", "destination": "/index.html" }
   ]
 }

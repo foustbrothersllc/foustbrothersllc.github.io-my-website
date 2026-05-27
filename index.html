@@ -493,6 +493,8 @@ textarea{resize:vertical;min-height:120px}
   <div class="footer-bottom"><div class="footer-copy">© 2026 Foust Brothers LLC — Digital Division. All rights reserved.<span>Manual Invoice Only · Transparent Billing · No Auto-Charges</span></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY & CLEAR AGREEMENTS</div></div>
 </footer>
 </div>
+</div>
+<!-- /page-billing -->
 
 <!-- WORK ORDER PAGE -->
 <div id="page-work-order" class="page">
@@ -611,7 +613,7 @@ function navigate(page) {
   });
   document.querySelector('.nav-links').classList.remove('open');
   window.scrollTo(0, 0);
-  history.pushState({page}, '', page === 'home' ? '/' : '/' + page);
+  try { history.pushState({page}, '', page === 'home' ? '/' : '/' + page); } catch(e) {}
   document.querySelectorAll('.quality-badge').forEach(el => el.classList.remove('stamped'));
   setTimeout(() => {
     document.querySelectorAll('.quality-badge').forEach(el => stampObserver.observe(el));
@@ -833,7 +835,7 @@ document.getElementById('workOrderForm').addEventListener('submit', async (e) =>
       a.classList.toggle('active', a.dataset.page === path);
     });
   }
-  history.replaceState({ page: path || 'home' }, '', window.location.pathname);
+  try { history.replaceState({ page: path || 'home' }, '', window.location.pathname); } catch(e) {}
 })();
 </script>
 </body>

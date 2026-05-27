@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-:root{--bg-primary:#020810;--bg-secondary:#050d1a;--bg-card:#080f1e;--bg-card-hover:#0d1830;--cyan:#00e5ff;--cyan-dim:#00b8cc;--cyan-glow:rgba(0,229,255,.15);--cyan-glow-strong:rgba(0,229,255,.4);--orange:#ff6a00;--white:#e8f4f8;--white-dim:#8aa8b8;--border:rgba(0,229,255,.2);--font-display:'Orbitron',monospace;--font-mono:'Share Tech Mono',monospace;--font-body:'Rajdhani',sans-serif}
+:root{color-scheme:dark;--bg-primary:#020810;--bg-secondary:#050d1a;--bg-card:#080f1e;--bg-card-hover:#0d1830;--cyan:#00e5ff;--cyan-dim:#00b8cc;--cyan-glow:rgba(0,229,255,.15);--cyan-glow-strong:rgba(0,229,255,.4);--orange:#ff6a00;--white:#e8f4f8;--white-dim:#8aa8b8;--border:rgba(0,229,255,.2);--font-display:'Orbitron',monospace;--font-mono:'Share Tech Mono',monospace;--font-body:'Rajdhani',sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg-primary);color:var(--white);font-family:var(--font-body);font-size:16px;line-height:1.6;overflow-x:hidden}
@@ -187,10 +187,12 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .form-group{margin-bottom:1.5rem}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
 label{display:block;font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.15em;margin-bottom:6px}
-input,select,textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:.75rem;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+input,select,textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:.75rem;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none;color-scheme:dark}
 input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan-dim),inset 0 0 10px var(--cyan-glow)}
 input::placeholder,textarea::placeholder{color:rgba(138,168,184,.4)}
-select option{background:var(--bg-secondary)}
+select option{background:#050d1a !important;color:#e8f4f8 !important}
+select option:disabled{color:rgba(138,168,184,.4) !important;background:#050d1a !important}
+select option:checked,select option:hover{background:#0d1830 !important;color:#00e5ff !important}
 textarea{resize:vertical;min-height:120px}
 .form-submit{width:100%;padding:16px;background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:var(--font-display);font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);display:flex;align-items:center;justify-content:center;gap:8px}
 .form-submit:hover{background:var(--cyan-glow);box-shadow:0 0 30px var(--cyan-glow-strong)}
@@ -469,8 +471,8 @@ textarea{resize:vertical;min-height:120px}
               <div class="form-group"><label for="firstName">FIRST NAME *</label><input type="text" id="firstName" name="firstName" placeholder="John" required /></div>
               <div class="form-group"><label for="lastName">LAST NAME *</label><input type="text" id="lastName" name="lastName" placeholder="Smith" required /></div>
             </div>
-            <div class="form-group"><label for="email">EMAIL ADDRESS *</label><input type="email" id="email" name="email" placeholder="Your Contact Email" required /></div>
-            <div class="form-group"><label for="phone">PHONE NUMBER</label><input type="tel" id="phone" name="phone" placeholder="(336) 555-1234" /></div>
+            <div class="form-group"><label for="email">EMAIL ADDRESS *</label><input type="email" id="email" name="email" placeholder="you@example.com" required /></div>
+            <div class="form-group"><label for="phone">PHONE NUMBER</label><input type="tel" id="phone" name="phone" placeholder="(336) 862-2999" /></div>
             <div class="form-group"><label for="business">BUSINESS NAME</label><input type="text" id="business" name="business" placeholder="Your Business LLC" /></div>
             <div class="form-group"><label for="serviceType">SERVICE MODULE *</label>
               <select id="serviceType" name="serviceType" required>

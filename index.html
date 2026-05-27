@@ -747,8 +747,16 @@ function navigate(page) {
 }
 
 window.addEventListener('popstate', (e) => {
-  if (e.state && e.state.page) navigate(e.state.page);
-});
+  // ── INITIAL PAGE LOAD: detect correct page from URL ──
+    (function() {
+      const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+      const validPages = ['home', 'about', 'billing', 'work-order'];
+      const startPage = validPages.includes(path) ? path : 'home';
+      if (startPage !== 'home') {
+        navigate(startPage);
+      }
+      history.replaceState({ page: startPage }, '', window.location.pathname);
+    })();
 
 // ── CANVAS ORB ENGINE ──
 (function() {

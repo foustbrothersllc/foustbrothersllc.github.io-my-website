@@ -31,7 +31,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);
 .nav-cta::before{content:'⚡';font-size:.7rem}
 .nav-toggle{display:none;background:none;border:1px solid var(--border);color:var(--cyan);padding:6px 10px;cursor:pointer;font-size:1.2rem}
 .page{display:none}.page.active{display:block}
-/* HERO */
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:64px}
 .hero-grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
 .hero-module-bar{position:absolute;top:80px;left:0;right:0;padding:10px 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.65rem;color:var(--cyan);letter-spacing:.1em}
@@ -70,13 +69,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(2,8,16,.92);
 .btn-primary:hover{box-shadow:0 0 30px var(--cyan-glow-strong)}
 .btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;border:1px solid var(--border);color:var(--white-dim);font-family:var(--font-display);font-size:.65rem;font-weight:700;letter-spacing:.2em;text-decoration:none;text-transform:uppercase;transition:all .3s;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);cursor:pointer}
 .btn-secondary:hover{border-color:var(--white-dim);color:var(--white)}
-/* TICKER */
 .ticker{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;overflow:hidden;background:rgba(0,229,255,.02);margin-top:4rem}
 .ticker-inner{display:flex;gap:3rem;animation:ticker 25s linear infinite;white-space:nowrap;width:max-content}
 .ticker-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em}
 .ti{color:var(--orange)}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-/* SECTIONS */
 section{position:relative;z-index:1;padding:6rem 2rem}
 .section-module-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1.5rem}
 .section-module-label::after{content:'';flex:0 0 40px;height:1px;background:var(--cyan)}
@@ -84,7 +81,6 @@ section{position:relative;z-index:1;padding:6rem 2rem}
 .section-title{font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4rem);font-weight:900;text-transform:uppercase;letter-spacing:.02em;color:var(--white);line-height:1;margin-bottom:.5rem}
 .section-subtitle{font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);letter-spacing:.2em;margin-bottom:3rem}
 .section-subtitle::before{content:'— '}.section-subtitle::after{content:' —'}
-/* SERVICES */
 .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5px;background:var(--border);border:1px solid var(--border)}
 .service-card{background:var(--bg-card);padding:2rem 1.5rem;position:relative;transition:background .3s;cursor:pointer;overflow:hidden}
 .service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform:scaleX(0);transition:transform .4s}
@@ -101,7 +97,6 @@ section{position:relative;z-index:1;padding:6rem 2rem}
 .service-card:hover .service-card-cta{color:var(--cyan)}
 .ai-notice{display:flex;align-items:flex-start;gap:12px;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);padding:1rem 1.5rem;margin-bottom:2rem;font-family:var(--font-mono);font-size:.65rem;color:var(--white-dim);line-height:1.7;letter-spacing:.05em}
 .ai-badge{display:inline-block;background:rgba(0,229,255,0.15);border:1px solid var(--cyan);color:var(--cyan);font-family:var(--font-display);font-size:.55rem;font-weight:700;letter-spacing:.15em;padding:3px 8px;white-space:nowrap;margin-right:4px}
-/* FOOTER */
 footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding:4rem 2rem 2rem}
 .footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem;max-width:1200px;margin:0 auto 3rem}
 .footer-brand-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
@@ -131,7 +126,6 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .footer-copy{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em}
 .footer-copy span{display:block;margin-top:2px}
 .footer-philosophy{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.1em;text-align:right}
-/* ABOUT PAGE */
 .about-hero-section{padding-top:64px;min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}
 .about-module-bar{padding:10px 2rem;display:flex;align-items:center;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.65rem;color:var(--cyan);letter-spacing:.1em;background:rgba(2,8,16,.5)}
 .about-split{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:calc(100vh - 104px)}
@@ -149,7 +143,6 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .about-info-card:hover{background:var(--bg-card-hover)}
 .about-info-label{font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.2em;margin-bottom:6px}
 .about-info-value{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:.05em}
-/* RATE TABLES */
 .rate-section-label{font-family:var(--font-mono);font-size:.65rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
 .rate-table{border:1px solid var(--border);margin-bottom:2rem}
 .rate-table-header{display:flex;justify-content:space-between;padding:.6rem 1.5rem;background:rgba(0,229,255,.04);font-family:var(--font-mono);font-size:.55rem;color:var(--white-dim);letter-spacing:.2em;border-bottom:1px solid var(--border)}
@@ -188,7 +181,6 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border);padding
 .faq-item{border-bottom:1px solid var(--border);padding:1.5rem 0}
 .faq-q{font-family:var(--font-display);font-size:.8rem;font-weight:700;color:var(--cyan);letter-spacing:.05em;margin-bottom:.75rem}
 .faq-a{font-size:.85rem;color:var(--white-dim);line-height:1.7}
-/* WORK ORDER */
 .work-order-layout{display:grid;grid-template-columns:1fr 380px;gap:4rem;align-items:start;max-width:1200px;margin:0 auto}
 .wof{background:var(--bg-card);border:1px solid var(--border);padding:2.5rem}
 .wof-header{font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
@@ -346,70 +338,34 @@ textarea{resize:vertical;min-height:120px}
     <div style="display:flex;align-items:center;gap:8px"><div class="module-dot"></div><span>MODULE_02 // ABOUT_UNIT</span><div style="flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);margin-left:12px;max-width:300px"></div></div>
   </div>
   <div class="about-split">
-    <!-- LEFT: circuit board SVG panel -->
     <div class="about-img-panel">
       <div class="about-img-inner">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="100%" height="100%" style="position:absolute;inset:0;width:100%;height:100%">
           <defs>
-            <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.08"/>
-              <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.01"/>
-            </linearGradient>
-            <radialGradient id="glow1" cx="30%" cy="30%" r="60%">
-              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.14"/>
-              <stop offset="100%" stop-color="#010810" stop-opacity="0"/>
-            </radialGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
+            <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5ff" stop-opacity="0.08"/><stop offset="100%" stop-color="#00e5ff" stop-opacity="0.01"/></linearGradient>
+            <radialGradient id="glow1" cx="30%" cy="30%" r="60%"><stop offset="0%" stop-color="#00e5ff" stop-opacity="0.14"/><stop offset="100%" stop-color="#010810" stop-opacity="0"/></radialGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           </defs>
           <rect width="800" height="700" fill="#010810"/>
           <rect width="800" height="700" fill="url(#glow1)"/>
-          <!-- Grid lines -->
           <g stroke="#00e5ff" stroke-opacity="0.07" fill="none" stroke-width="1">
-            <line x1="0" y1="100" x2="800" y2="100"/><line x1="0" y1="200" x2="800" y2="200"/>
-            <line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="400" x2="800" y2="400"/>
-            <line x1="0" y1="500" x2="800" y2="500"/><line x1="0" y1="600" x2="800" y2="600"/>
-            <line x1="100" y1="0" x2="100" y2="700"/><line x1="200" y1="0" x2="200" y2="700"/>
-            <line x1="300" y1="0" x2="300" y2="700"/><line x1="400" y1="0" x2="400" y2="700"/>
-            <line x1="500" y1="0" x2="500" y2="700"/><line x1="600" y1="0" x2="600" y2="700"/>
-            <line x1="700" y1="0" x2="700" y2="700"/>
+            <line x1="0" y1="100" x2="800" y2="100"/><line x1="0" y1="200" x2="800" y2="200"/><line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="400" x2="800" y2="400"/><line x1="0" y1="500" x2="800" y2="500"/><line x1="0" y1="600" x2="800" y2="600"/>
+            <line x1="100" y1="0" x2="100" y2="700"/><line x1="200" y1="0" x2="200" y2="700"/><line x1="300" y1="0" x2="300" y2="700"/><line x1="400" y1="0" x2="400" y2="700"/><line x1="500" y1="0" x2="500" y2="700"/><line x1="600" y1="0" x2="600" y2="700"/><line x1="700" y1="0" x2="700" y2="700"/>
           </g>
-          <!-- IC chip outlines -->
           <g stroke="#00e5ff" stroke-opacity="0.6" fill="none" stroke-width="1.5">
-            <rect x="60" y="55" width="180" height="135" rx="5"/>
-            <rect x="80" y="75" width="140" height="95" rx="2" stroke-opacity="0.18"/>
-            <rect x="315" y="75" width="165" height="125" rx="5"/>
-            <rect x="335" y="95" width="125" height="85" rx="2" stroke-opacity="0.18"/>
-            <rect x="545" y="50" width="195" height="180" rx="5"/>
-            <rect x="565" y="70" width="155" height="140" rx="2" stroke-opacity="0.18"/>
-            <rect x="55" y="265" width="135" height="125" rx="5"/>
-            <rect x="245" y="250" width="195" height="160" rx="5"/>
-            <rect x="495" y="265" width="245" height="125" rx="5"/>
-            <rect x="55" y="465" width="295" height="160" rx="5"/>
-            <rect x="410" y="445" width="170" height="200" rx="5"/>
-            <rect x="635" y="465" width="115" height="160" rx="5"/>
+            <rect x="60" y="55" width="180" height="135" rx="5"/><rect x="315" y="75" width="165" height="125" rx="5"/><rect x="545" y="50" width="195" height="180" rx="5"/>
+            <rect x="55" y="265" width="135" height="125" rx="5"/><rect x="245" y="250" width="195" height="160" rx="5"/><rect x="495" y="265" width="245" height="125" rx="5"/>
+            <rect x="55" y="465" width="295" height="160" rx="5"/><rect x="410" y="445" width="170" height="200" rx="5"/><rect x="635" y="465" width="115" height="160" rx="5"/>
           </g>
-          <!-- PCB traces -->
           <g stroke="#00e5ff" stroke-opacity="0.55" stroke-width="2" fill="none" filter="url(#glow)">
-            <path d="M148 190 L148 265"/>
-            <path d="M398 200 L398 250"/>
-            <path d="M640 230 L640 265"/>
-            <path d="M190 125 L245 125 L245 185"/>
-            <path d="M480 135 L545 135"/>
-            <path d="M120 330 L245 330"/>
-            <path d="M440 325 L495 325"/>
-            <path d="M120 390 L120 465"/>
-            <path d="M342 408 L342 445"/>
-            <path d="M618 388 L618 465"/>
-            <path d="M742 388 L742 465"/>
-            <path d="M185 545 L185 625"/>
-            <path d="M495 540 L495 645"/>
-            <path d="M435 345 L410 345 L410 445"/>
-            <path d="M300 390 L300 465"/>
+            <path d="M148 190 L148 265"/><path d="M398 200 L398 250"/><path d="M640 230 L640 265"/>
+            <path d="M190 125 L245 125 L245 185"/><path d="M480 135 L545 135"/>
+            <path d="M120 330 L245 330"/><path d="M440 325 L495 325"/>
+            <path d="M120 390 L120 465"/><path d="M342 408 L342 445"/>
+            <path d="M618 388 L618 465"/><path d="M742 388 L742 465"/>
+            <path d="M185 545 L185 625"/><path d="M495 540 L495 645"/>
+            <path d="M435 345 L410 345 L410 445"/><path d="M300 390 L300 465"/>
           </g>
-          <!-- Solder pads -->
           <g fill="#00e5ff" fill-opacity="0.9" filter="url(#glow)">
             <circle cx="148" cy="190" r="5"/><circle cx="148" cy="265" r="5"/>
             <circle cx="398" cy="200" r="5"/><circle cx="398" cy="250" r="5"/>
@@ -422,63 +378,11 @@ textarea{resize:vertical;min-height:120px}
             <circle cx="742" cy="388" r="5"/><circle cx="742" cy="465" r="5"/>
             <circle cx="300" cy="390" r="5"/><circle cx="300" cy="465" r="5"/>
           </g>
-          <!-- Pin headers -->
-          <g fill="#00e5ff" fill-opacity="0.5">
-            <rect x="58" y="200" width="7" height="7" rx="1.5"/>
-            <rect x="71" y="200" width="7" height="7" rx="1.5"/>
-            <rect x="84" y="200" width="7" height="7" rx="1.5"/>
-            <rect x="97" y="200" width="7" height="7" rx="1.5"/>
-            <rect x="110" y="200" width="7" height="7" rx="1.5"/>
-            <rect x="65" y="528" width="7" height="7" rx="1.5"/>
-            <rect x="78" y="528" width="7" height="7" rx="1.5"/>
-            <rect x="91" y="528" width="7" height="7" rx="1.5"/>
-            <rect x="104" y="528" width="7" height="7" rx="1.5"/>
-            <rect x="117" y="528" width="7" height="7" rx="1.5"/>
-            <rect x="130" y="528" width="7" height="7" rx="1.5"/>
-          </g>
-          <!-- Sub-components -->
-          <g stroke="#00e5ff" stroke-opacity="0.32" fill="none" stroke-width="1">
-            <rect x="88" y="83" width="22" height="22" rx="2"/>
-            <rect x="116" y="83" width="22" height="22" rx="2"/>
-            <rect x="144" y="83" width="22" height="22" rx="2"/>
-            <rect x="88" y="115" width="52" height="8" rx="1"/>
-            <rect x="88" y="130" width="38" height="8" rx="1"/>
-            <rect x="345" y="105" width="30" height="30" rx="3"/>
-            <rect x="383" y="105" width="30" height="30" rx="3"/>
-            <rect x="345" y="143" width="68" height="7" rx="1"/>
-            <rect x="565" y="84" width="58" height="48" rx="3"/>
-            <rect x="631" y="84" width="58" height="48" rx="3"/>
-            <rect x="565" y="140" width="124" height="8" rx="1"/>
-            <rect x="565" y="155" width="92" height="8" rx="1"/>
-            <!-- Resistors on main board -->
-            <rect x="262" y="280" width="40" height="14" rx="2"/>
-            <rect x="315" y="280" width="40" height="14" rx="2"/>
-            <rect x="368" y="280" width="40" height="14" rx="2"/>
-            <rect x="262" y="302" width="40" height="14" rx="2"/>
-            <rect x="315" y="302" width="40" height="14" rx="2"/>
-          </g>
-          <!-- Chip labels -->
-          <g font-family="monospace" font-size="9" fill="#00e5ff" fill-opacity="0.42" text-anchor="middle">
-            <text x="150" y="150">FBDD-REV2.4</text>
-            <text x="397" y="153">MOD-AUTH-01</text>
-            <text x="642" y="250">PWR-CTRL</text>
-            <text x="342" y="375">NET-CORE</text>
-            <text x="692" y="546">IO-BUS</text>
-            <text x="122" y="355">MEM</text>
-          </g>
-          <!-- Animated pulse dots -->
           <g fill="#00e5ff">
-            <circle cx="148" cy="265" r="3" opacity="0.9">
-              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="640" cy="265" r="3" opacity="0.9">
-              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2.7s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="342" cy="445" r="3" opacity="0.9">
-              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.8s" repeatCount="indefinite"/>
-            </circle>
+            <circle cx="148" cy="265" r="3" opacity="0.9"><animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/></circle>
+            <circle cx="640" cy="265" r="3" opacity="0.9"><animate attributeName="opacity" values="0.9;0.2;0.9" dur="2.7s" repeatCount="indefinite"/></circle>
+            <circle cx="342" cy="445" r="3" opacity="0.9"><animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.8s" repeatCount="indefinite"/></circle>
           </g>
-          <!-- Overlay gradient -->
           <rect width="800" height="700" fill="url(#bg1)" opacity="0.35"/>
         </svg>
         <div class="about-img-caption">
@@ -487,30 +391,15 @@ textarea{resize:vertical;min-height:120px}
         </div>
       </div>
     </div>
-    <!-- RIGHT: content -->
     <div class="about-content-panel">
-      <h1 class="about-headline">
-        BUILT ON A <span class="about-headline-cyan">STRAIGHT-SHOOTING</span> PHILOSOPHY
-      </h1>
+      <h1 class="about-headline">BUILT ON A <span class="about-headline-cyan">STRAIGHT-SHOOTING</span> PHILOSOPHY</h1>
       <p class="about-body">Foust Brothers LLC — Digital Division operates the same way any expert shop operates: we assess the job honestly, quote it accurately, and deliver work that exceeds expectations every time. No fluff. No oversell. No hidden charges.</p>
       <p class="about-body">We are digital craftsmen who take pride in clean code, reliable architecture, and a client relationship built on transparency. Your project is our work order, and it gets our full attention from intake to delivery.</p>
       <div class="about-info-grid">
-        <div class="about-info-card">
-          <div class="about-info-label">CONTACT</div>
-          <div class="about-info-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div>
-        </div>
-        <div class="about-info-card">
-          <div class="about-info-label">SPECIALTY</div>
-          <div class="about-info-value">WEB DEV</div>
-        </div>
-        <div class="about-info-card">
-          <div class="about-info-label">LOCATION</div>
-          <div class="about-info-value">LOCAL</div>
-        </div>
-        <div class="about-info-card">
-          <div class="about-info-label">PHILOSOPHY</div>
-          <div class="about-info-value">RESULTS</div>
-        </div>
+        <div class="about-info-card"><div class="about-info-label">CONTACT</div><div class="about-info-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none">(336) 862-2999</a></div></div>
+        <div class="about-info-card"><div class="about-info-label">SPECIALTY</div><div class="about-info-value">WEB DEV</div></div>
+        <div class="about-info-card"><div class="about-info-label">LOCATION</div><div class="about-info-value">LOCAL</div></div>
+        <div class="about-info-card"><div class="about-info-label">PHILOSOPHY</div><div class="about-info-value">RESULTS</div></div>
       </div>
     </div>
   </div>
@@ -531,54 +420,28 @@ textarea{resize:vertical;min-height:120px}
   <div class="container">
     <div class="section-module-label"><div class="section-dot"></div> MODULE_04 // BILLING_PROTOCOL</div>
     <h1 class="section-title">BILLING PROTOCOL</h1>
-<!-- SECTION 01: MONTHLY MAINTENANCE -->
 <section style="padding-top:0;padding-bottom:2rem">
   <div class="container">
     <div class="rate-section-label">// SECTION 01 — MONTHLY MAINTENANCE &amp; MANAGEMENT</div>
     <div class="rate-table">
       <div class="rate-table-header"><span>SERVICE TIER</span><span>RATE BASIS</span></div>
-      <div class="rate-row rate-row-active">
-        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">BASIC — MONITORING &amp; UPTIME</div><div class="rate-sub">Security scans, uptime monitoring</div></div></div>
-        <div class="rate-amount included">INCLUDED</div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">STANDARD — MAINTENANCE &amp; UPDATES</div><div class="rate-sub">CMS updates, content changes, backups</div></div></div>
-        <div class="rate-amount cyan">$50 – $150</div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">MANAGED — FULL MANAGEMENT</div><div class="rate-sub">Hosting, domain, full site management</div></div></div>
-        <div class="rate-amount">$150 – $300</div>
-      </div>
+      <div class="rate-row rate-row-active"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">BASIC — MONITORING &amp; UPTIME</div><div class="rate-sub">Security scans, uptime monitoring</div></div></div><div class="rate-amount included">INCLUDED</div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">STANDARD — MAINTENANCE &amp; UPDATES</div><div class="rate-sub">CMS updates, content changes, backups</div></div></div><div class="rate-amount cyan">$50 – $150</div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">MANAGED — FULL MANAGEMENT</div><div class="rate-sub">Hosting, domain, full site management</div></div></div><div class="rate-amount">$150 – $300</div></div>
     </div>
   </div>
 </section>
-<!-- SECTION 02: HOURLY LABOR TABLE -->
 <section style="padding-top:0;padding-bottom:2rem">
   <div class="container">
     <div class="rate-section-label">// SECTION 02 — STANDARD HOURLY LABOR TABLE — REF: BM-001</div>
     <p style="font-size:.8rem;color:var(--white-dim);line-height:1.8;margin-bottom:2rem;">This table applies to maintenance calls — additions or changes to an existing website, including updates that fall outside of a service tier plan. Design and build projects are priced on a negotiated basis. The table below reflects standard hourly labor rates for this additional work and support.</p>
     <div class="rate-table">
       <div class="rate-table-header"><span>TIME ELAPSED</span><span>BILLABLE AMOUNT</span></div>
-      <div class="rate-row rate-row-active">
-        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">MINIMUM CHARGE</div><div class="rate-sub">0:00 – 1:00</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount cyan">$50.00</div><div class="rate-sub-right">1-HR MINIMUM</div></div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">FIRST INCREMENT</div><div class="rate-sub">1:01 – 1:15</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount">$62.50</div><div class="rate-sub-right">+15 MIN @ $12.50</div></div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">SECOND INCREMENT</div><div class="rate-sub">1:16 – 1:30</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount">$75.00</div><div class="rate-sub-right">+30 MIN @ $25.00</div></div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">THIRD INCREMENT</div><div class="rate-sub">1:31 – 1:45</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount">$87.50</div><div class="rate-sub-right">+45 MIN @ $37.50</div></div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">FULL SECOND HOUR</div><div class="rate-sub">1:46 – 2:00</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount">$100.00</div><div class="rate-sub-right">+60 MIN @ $50.00</div></div>
-      </div>
+      <div class="rate-row rate-row-active"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">MINIMUM CHARGE</div><div class="rate-sub">0:00 – 1:00</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan">$50.00</div><div class="rate-sub-right">1-HR MINIMUM</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">FIRST INCREMENT</div><div class="rate-sub">1:01 – 1:15</div></div></div><div class="rate-amount-block"><div class="rate-amount">$62.50</div><div class="rate-sub-right">+15 MIN @ $12.50</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">SECOND INCREMENT</div><div class="rate-sub">1:16 – 1:30</div></div></div><div class="rate-amount-block"><div class="rate-amount">$75.00</div><div class="rate-sub-right">+30 MIN @ $25.00</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">THIRD INCREMENT</div><div class="rate-sub">1:31 – 1:45</div></div></div><div class="rate-amount-block"><div class="rate-amount">$87.50</div><div class="rate-sub-right">+45 MIN @ $37.50</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">FULL SECOND HOUR</div><div class="rate-sub">1:46 – 2:00</div></div></div><div class="rate-amount-block"><div class="rate-amount">$100.00</div><div class="rate-sub-right">+60 MIN @ $50.00</div></div></div>
     </div>
     <div class="rate-stats">
       <div class="rate-stat"><div class="rate-stat-label">SHOP MINIMUM</div><div class="rate-stat-value">1.0 HR</div><div class="rate-stat-sub">FLAT MINIMUM</div></div>
@@ -588,7 +451,6 @@ textarea{resize:vertical;min-height:120px}
     </div>
   </div>
 </section>
-<!-- SECTION 03: SPECIALIZED SERVICES -->
 <section style="padding-top:0;padding-bottom:4rem">
   <div class="container">
     <div class="rate-section-label">// SECTION 03 — SPECIALIZED SERVICES &amp; DIRECT COSTS</div>
@@ -731,6 +593,16 @@ textarea{resize:vertical;min-height:120px}
 </div>
 
 <script>
+// ── STAMP OBSERVER (must be defined before navigate) ──
+const stampObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !entry.target.classList.contains('stamped')) {
+      setTimeout(() => { entry.target.classList.add('stamped'); }, 200);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.quality-badge').forEach(el => stampObserver.observe(el));
+
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
@@ -747,16 +619,8 @@ function navigate(page) {
 }
 
 window.addEventListener('popstate', (e) => {
-  // ── INITIAL PAGE LOAD: detect correct page from URL ──
-    (function() {
-  const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
-  const validPages = ['about', 'billing', 'work-order'];
-  if (validPages.includes(path)) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + path).classList.add('active');
-    // ... nav highlight + history state
-  }
-})();
+  if (e.state && e.state.page) navigate(e.state.page);
+});
 
 // ── CANVAS ORB ENGINE ──
 (function() {
@@ -933,15 +797,6 @@ function selectService(value) {
   }, 150);
 }
 
-const stampObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && !entry.target.classList.contains('stamped')) {
-      setTimeout(() => { entry.target.classList.add('stamped'); }, 200);
-    }
-  });
-}, { threshold: 0.5 });
-document.querySelectorAll('.quality-badge').forEach(el => stampObserver.observe(el));
-
 document.getElementById('workOrderForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = e.target.querySelector('.form-submit');
@@ -966,6 +821,20 @@ document.getElementById('workOrderForm').addEventListener('submit', async (e) =>
     btn.disabled = false;
   }
 });
+
+// ── INITIAL PAGE LOAD: show correct page based on URL (must be last) ──
+(function() {
+  const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  const validPages = ['about', 'billing', 'work-order'];
+  if (validPages.includes(path)) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + path).classList.add('active');
+    document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
+      a.classList.toggle('active', a.dataset.page === path);
+    });
+  }
+  history.replaceState({ page: path || 'home' }, '', window.location.pathname);
+})();
 </script>
 </body>
 </html>

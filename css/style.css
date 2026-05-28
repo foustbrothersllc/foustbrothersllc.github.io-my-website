@@ -176,7 +176,6 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
   border: 2px solid var(--cyan);
   padding: 14px 20px;
   text-align: center;
-  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
   width: 180px;
   height: 90px;
   display: flex;
@@ -185,6 +184,7 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
   justify-content: center;
   opacity: 0;
   transform: rotate(-4deg);
+  box-shadow: 0 0 10px rgba(0,229,255,0.2), inset 0 0 10px rgba(0,229,255,0.05);
 }
 .quality-badge.stamped { animation: stamp 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
 .quality-badge-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 900; color: var(--cyan); letter-spacing: 0.1em; line-height: 1.1; }

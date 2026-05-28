@@ -198,7 +198,7 @@ footer { background: var(--bg-secondary); border-top: 1px solid var(--border); p
 .footer-brand-name { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; }
 .footer-brand-sub { font-family: var(--font-mono); font-size: 0.5rem; color: var(--cyan); letter-spacing: 0.2em; }
 .footer-tagline { font-size: 0.8rem; color: var(--white-dim); line-height: 1.6; margin-bottom: 1.5rem; }
-.footer-motto { border: 1px solid var(--cyan); padding: 12px 16px; font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--cyan); letter-spacing: 0.1em; line-height: 1.4; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); }
+.footer-motto { border: 1px solid var(--cyan); padding: 12px 16px; font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--cyan); letter-spacing: 0.1em; line-height: 1.4; }
 .footer-section-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--white-dim); letter-spacing: 0.2em; margin-bottom: 1.5rem; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .footer-contact-item { margin-bottom: 1.2rem; }
 .footer-contact-label { font-family: var(--font-mono); font-size: 0.55rem; color: var(--cyan); letter-spacing: 0.15em; margin-bottom: 4px; }

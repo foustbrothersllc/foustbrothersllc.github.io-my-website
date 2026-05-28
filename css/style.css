@@ -194,7 +194,7 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
 @keyframes stamp {
   0%   { opacity: 0; transform: scale(2) rotate(-4deg); }
   60%  { opacity: 1; transform: scale(0.92) rotate(-4deg); }
-  80%  { transform: scale(1.04) rotate(-4deg); }
+  80%  { opacity: 1; transform: scale(1.04) rotate(-4deg); }
   100% { opacity: 1; transform: scale(1) rotate(-4deg); }
 }
 footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 4rem 2rem 2rem; overflow: visible; }

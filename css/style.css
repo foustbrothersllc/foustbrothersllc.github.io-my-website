@@ -165,12 +165,6 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
 .service-card:hover .service-card-cta { color: var(--cyan); }
 
 /* ── QUALITY BADGE ── */
-.quality-badge { margin-top: 1.5rem; border: 2px solid var(--cyan); padding: 14px; text-align: center; clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%); }
-.quality-badge-title { font-family: var(--font-display); font-size: 1rem; font-weight: 900; color: var(--cyan); letter-spacing: 0.1em; line-height: 1; }
-.quality-badge-sub { font-family: var(--font-mono); font-size: 0.5rem; color: var(--white-dim); letter-spacing: 0.1em; margin-top: 4px; }
-.quality-badge-dot { color: var(--cyan); }
-
-
 .quality-badge {
   margin-top: 1.5rem;
   border: 2px solid var(--cyan);
@@ -217,8 +211,8 @@ footer { background: var(--bg-secondary); border-top: 1px solid var(--border); p
 .footer-nav-links a::before { content: '›'; color: var(--cyan); }
 .footer-nav-links a:hover { color: var(--cyan); }
 .footer-bottom { border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1200px; margin: 0 auto; }
-.footer-copy { font-family: var(--font-mono); font-size: 0.55rem; color: var(--white-dim); letter-spacing: 0.1em; }
-.footer-copy span { display: block; margin-top: 2px; }
+.footer-copy { font-family: var(--font-mono); font-size: 0.55rem; color: var(--white-dim); letter-spacing: 0.1em; white-space: nowrap; }
+.footer-copy span { display: inline; }
 .footer-philosophy { font-family: var(--font-mono); font-size: 0.55rem; color: var(--white-dim); letter-spacing: 0.1em; text-align: right; }
 .footer-legal-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
 .footer-legal-links a { font-family: var(--font-mono); font-size: 0.5rem; color: var(--cyan); letter-spacing: 0.15em; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; cursor: pointer; }

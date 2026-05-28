@@ -174,10 +174,10 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
 .quality-badge {
   margin-top: 1.5rem;
   border: 2px solid var(--cyan);
-  padding: 14px 20px;
+  padding: 12px 16px;
   text-align: center;
-  width: 180px;
-  height: 90px;
+  width: 160px;
+  height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -185,19 +185,20 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
   opacity: 0;
   transform: rotate(-4deg);
   box-shadow: 0 0 10px rgba(0,229,255,0.2), inset 0 0 10px rgba(0,229,255,0.05);
+  overflow: visible;
 }
 .quality-badge.stamped { animation: stamp 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
 .quality-badge-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 900; color: var(--cyan); letter-spacing: 0.1em; line-height: 1.1; }
 .quality-badge-sub { font-family: var(--font-mono); font-size: 0.45rem; color: var(--white-dim); letter-spacing: 0.1em; margin-top: 6px; line-height: 1.6; }
 
 @keyframes stamp {
-  0%   { opacity: 0; transform: scale(1.8) rotate(-4deg); }
+  0%   { opacity: 0; transform: scale(2) rotate(-4deg); }
   60%  { opacity: 1; transform: scale(0.92) rotate(-4deg); }
   80%  { transform: scale(1.04) rotate(-4deg); }
   100% { opacity: 1; transform: scale(1) rotate(-4deg); }
 }
-footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 4rem 2rem 2rem; }
-.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto 3rem; }
+footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 4rem 2rem 2rem; overflow: visible; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto 3rem; overflow: visible; }
 .footer-brand-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
 .footer-orb { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #4af, #00e5ff 40%, #006688 80%, #002233); box-shadow: 0 0 10px rgba(0,229,255,0.4); }
 .footer-brand-name { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; }

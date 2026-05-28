@@ -17,10 +17,7 @@ function navigate(page) {
 
   try { history.pushState({ page }, '', page === 'home' ? '/' : '/' + page); } catch(e) {}
 
-  document.querySelectorAll('.quality-badge').forEach(el => el.classList.remove('stamped'));
-  setTimeout(() => {
-    document.querySelectorAll('.quality-badge').forEach(el => stampObserver.observe(el));
-  }, 100);
+  setTimeout(initStamps, 150);
 }
 
 window.addEventListener('popstate', (e) => {
@@ -76,8 +73,15 @@ var stampObserver = new IntersectionObserver((entries) => {
       stampObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.5 });
-document.querySelectorAll('.quality-badge').forEach(el => stampObserver.observe(el));
+}, { threshold: 0.3 });
+
+function initStamps() {
+  document.querySelectorAll('.quality-badge').forEach(el => {
+    el.classList.remove('stamped');
+    stampObserver.observe(el);
+  });
+}
+initStamps();
 
 // ── SERVICE CARD → WORK ORDER ──
 function selectService(value) {

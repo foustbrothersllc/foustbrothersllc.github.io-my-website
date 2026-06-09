@@ -3,7 +3,6 @@ export const config = { runtime: 'edge' };
 export default function handler(req) {
   const origin = req.headers.get('origin') || '';
 
-  // Allow requests from your own domain only
   const allowed = [
     'https://foustbrothers.com',
     'https://www.foustbrothers.com',
@@ -13,7 +12,6 @@ export default function handler(req) {
   ];
 
   const isAllowed = allowed.some(o => origin === o) || origin === '';
-
   if (!isAllowed) {
     return new Response('Forbidden', { status: 403 });
   }

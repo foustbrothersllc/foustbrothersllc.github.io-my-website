@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
@@ -658,6 +659,7 @@
 </div>
 <!-- /page-terms -->
 
+
 <!-- ═══════════════════════════════════════════
      ADMIN — LOGIN OVERLAY
 ═══════════════════════════════════════════ -->
@@ -836,6 +838,14 @@
 </div>
 <!-- /page-admin -->
   
+<!-- ── SUPABASE CONFIG ── -->
+<script>
+  // Temporary inline config until Vercel env vars are confirmed working
+  window.__SBCFG = {
+    url: 'https://gschfggmjdccpbvkvbyz.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzY2hmZ2dtamRjY3Bidmt2Ynl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NzEwNDgsImV4cCI6MjA5NjU0NzA0OH0.AKyPiyPKfxiZ7LurxB4w6ln1TY0tW6riDr9_uP5m5kM'
+  };
+</script>
 <!-- ── SCRIPTS (load order matters) ── -->
 <script src="js/main.js"></script>
 <script src="js/blob.js"></script>

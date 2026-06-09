@@ -721,6 +721,12 @@ const CMS_FIELDS = [
   ['WORK ORDER', 'step3', 'Step 3 — Quote Description', 'textarea'],
   ['WORK ORDER', 'step4', 'Step 4 — Deliver Description', 'textarea'],
   ['CONTACT', 'contact_phone', 'Phone Number', 'text'],
+  ['BILLING', 'spec_logo_price', 'Logo Design Price Range', 'text'],
+  ['BILLING', 'spec_logo_desc', 'Logo Design Description', 'text'],
+  ['BILLING', 'spec_flyer_price', 'Digital Flyers Price Range', 'text'],
+  ['BILLING', 'spec_flyer_desc', 'Digital Flyers Description', 'text'],
+  ['BILLING', 'spec_domain_price', 'Domain Privacy Price Range', 'text'],
+  ['BILLING', 'spec_domain_desc', 'Domain Privacy Description', 'text'],
 ];
 
 async function loadCMSEditor() {

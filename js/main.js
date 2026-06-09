@@ -515,10 +515,22 @@ function renderOrders(orders) {
             onclick="setStatus('${o.id}','complete')">COMPLETE</button>
           <button class="ao-sbtn ${o.status==='cancelled'?'active':''}"
             onclick="setStatus('${o.id}','cancelled')">CANCELLED</button>
+          <button class="ao-sbtn danger" onclick="deleteOrder('${o.id}','${o.first_name} ${o.last_name}')">✕ DELETE</button>
         </div>
       </div>` : ''}
     </div>
   `).join('');
+}
+
+async function deleteOrder(id, name) {
+  if (!confirm(`Delete order from ${name}?\nThis cannot be undone.`)) return;
+  try {
+    const sb = await getSB();
+    await sb.from('work_orders').delete().eq('id', id);
+    const { data } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
+    renderOrders(data); updateStats(data);
+    showToast(`✓ ORDER DELETED: ${name}`);
+  } catch (err) { alert('Delete failed: ' + err.message); }
 }
 
 function updateStats(orders) {

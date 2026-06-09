@@ -223,6 +223,13 @@ document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date
       a.classList.toggle('active', a.dataset.page === path);
     });
   }
+  // If refreshed on admin page, restore session instead of redirecting home
+  if (path === 'admin') {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const adminPg = document.getElementById('page-admin');
+    if (adminPg) adminPg.classList.add('active');
+    setTimeout(() => checkAdminAuth(), 300);
+  }
   try { history.replaceState({ page: path || 'home' }, '', window.location.pathname); } catch(e) {}
 })();
 
@@ -330,6 +337,8 @@ async function adminLogout() {
 async function checkAdminAuth() {
   try {
     const sb = await getSB();
+    // Give Supabase time to restore session from localStorage on page refresh
+    await new Promise(r => setTimeout(r, 200));
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { showAdminLogin(); navigate('home'); return; }
 
@@ -379,12 +388,13 @@ function showAdminTab(tab, el) {
 // ═══════════════════════════════════════════
 
 let _realtimeChannel = null;
+let _fallbackInterval = null;
 
 async function startAdminPolling() {
   if (_realtimeChannel) return;
   const sb = await getSB();
 
-  // Real-time subscription — fires instantly when a new order is inserted
+  // Real-time subscription — fires instantly on any change
   _realtimeChannel = sb
     .channel('work_orders_realtime')
     .on('postgres_changes', {
@@ -409,13 +419,24 @@ async function startAdminPolling() {
     }, () => {
       loadAdminOrders();
     })
-    .subscribe();
+    .subscribe((status) => {
+      console.log('Realtime status:', status);
+    });
+
+  // Fallback poll every 30s in case realtime drops
+  if (!_fallbackInterval) {
+    _fallbackInterval = setInterval(() => loadAdminOrders(), 30000);
+  }
 }
 
 function stopAdminPolling() {
   if (_realtimeChannel) {
     getSB().then(sb => sb.removeChannel(_realtimeChannel));
     _realtimeChannel = null;
+  }
+  if (_fallbackInterval) {
+    clearInterval(_fallbackInterval);
+    _fallbackInterval = null;
   }
 }
 

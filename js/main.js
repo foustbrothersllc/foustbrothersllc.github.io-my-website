@@ -378,31 +378,45 @@ function showAdminTab(tab, el) {
 //  LIVE POLLING
 // ═══════════════════════════════════════════
 
-let _pollInterval = null;
-let _knownIds     = new Set();
-let _firstLoad    = true;
+let _realtimeChannel = null;
 
-function startAdminPolling() {
-  if (_pollInterval) return;
-  _pollInterval = setInterval(async () => {
-    if (_firstLoad) return;
-    try {
-      const sb = await getSB();
-      const { data: orders } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
-      if (!orders) return;
-      const newOnes = orders.filter(o => !_knownIds.has(o.id));
-      if (newOnes.length && _knownIds.size) {
-        newOnes.forEach(triggerNotification);
-        renderOrders(orders);
-        updateStats(orders);
-      }
-      _knownIds = new Set(orders.map(o => o.id));
-    } catch {}
-  }, 15000);
+async function startAdminPolling() {
+  if (_realtimeChannel) return;
+  const sb = await getSB();
+
+  // Real-time subscription — fires instantly when a new order is inserted
+  _realtimeChannel = sb
+    .channel('work_orders_realtime')
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'work_orders'
+    }, (payload) => {
+      triggerNotification(payload.new);
+      loadAdminOrders();
+    })
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'work_orders'
+    }, () => {
+      loadAdminOrders();
+    })
+    .on('postgres_changes', {
+      event: 'DELETE',
+      schema: 'public',
+      table: 'work_orders'
+    }, () => {
+      loadAdminOrders();
+    })
+    .subscribe();
 }
 
 function stopAdminPolling() {
-  clearInterval(_pollInterval); _pollInterval = null; _firstLoad = true;
+  if (_realtimeChannel) {
+    getSB().then(sb => sb.removeChannel(_realtimeChannel));
+    _realtimeChannel = null;
+  }
 }
 
 function triggerNotification(order) {

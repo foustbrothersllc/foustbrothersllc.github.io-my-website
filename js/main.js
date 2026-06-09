@@ -1,39 +1,45 @@
-/* js/main.js — Navigation, clock, ticker, forms, routing + Secure Admin Panel */
-/* NO KEYS OR PASSWORDS IN THIS FILE — all credentials served from /api/config */
+/* ═══════════════════════════════════════════════════════════
+   js/main.js — Foust Brothers LLC
+   Navigation · Clock · Ticker · Forms · Admin Panel
+   NO KEYS OR PASSWORDS IN THIS FILE
+   All credentials fetched securely from /api/config
+═══════════════════════════════════════════════════════════ */
 
-// ── SUPABASE CLIENT (loaded securely at runtime) ──
-let _supabase = null;
+// ── SUPABASE CLIENT — loaded once at runtime ──
+let _sb = null;
+let _cfg = null;
 
-async function getSupabase() {
-  if (_supabase) return _supabase;
-  try {
-    const res = await fetch('/api/config');
-    if (!res.ok) throw new Error('Config fetch failed');
-    const { url, key } = await res.json();
-    // Load Supabase SDK dynamically
-    if (!window.supabase) {
-      await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
-    }
-    _supabase = window.supabase.createClient(url, key);
-    return _supabase;
-  } catch (err) {
-    console.error('Supabase init failed:', err);
-    return null;
+async function getCfg() {
+  if (_cfg) return _cfg;
+  const res = await fetch('/api/config');
+  if (!res.ok) throw new Error('Config unavailable');
+  _cfg = await res.json();
+  return _cfg;
+}
+
+async function getSB() {
+  if (_sb) return _sb;
+  const cfg = await getCfg();
+  if (!window.supabase) {
+    await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
   }
+  _sb = window.supabase.createClient(cfg.url, cfg.key);
+  return _sb;
 }
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
     if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
     const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = reject;
+    s.src = src; s.onload = resolve; s.onerror = reject;
     document.head.appendChild(s);
   });
 }
 
-// ── NAVIGATION ──
+// ═══════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════
+
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById('page-' + page);
@@ -47,7 +53,6 @@ function navigate(page) {
   window.scrollTo(0, 0);
 
   try { history.pushState({ page }, '', page === 'home' ? '/' : '/' + page); } catch(e) {}
-
   setTimeout(initStamps, 150);
 
   if (page === 'admin') {
@@ -58,51 +63,45 @@ function navigate(page) {
 }
 
 window.addEventListener('popstate', (e) => {
-  if (e.state && e.state.page) navigate(e.state.page);
+  if (e.state?.page) navigate(e.state.page);
 });
 
-// ── MOBILE NAV TOGGLE ──
+// ── MOBILE NAV ──
 document.querySelector('.nav-toggle').addEventListener('click', function () {
   document.querySelector('.nav-links').classList.toggle('open');
 });
-
 document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => {
-    document.querySelector('.nav-links').classList.remove('open');
-  });
+  link.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open'));
 });
 
 // ── LIVE CLOCK ──
 (function () {
-  function updateClock() {
-    var now = new Date();
-    var h = String(now.getHours()).padStart(2, '0');
-    var m = String(now.getMinutes()).padStart(2, '0');
-    var s = String(now.getSeconds()).padStart(2, '0');
-    var el = document.getElementById('navClock');
-    if (el) el.textContent = h + ':' + m + ':' + s;
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-})();
-
-// ── SEAMLESS TICKER ──
-(function () {
-  var inner = document.querySelector('.ticker-inner');
-  if (!inner) return;
-  var pos = 0;
-  var speed = 0.4;
   function tick() {
-    pos -= speed;
-    if (-pos >= inner.scrollWidth / 2) pos = 0;
-    inner.style.transform = 'translateX(' + pos + 'px)';
-    requestAnimationFrame(tick);
+    const now = new Date();
+    const el = document.getElementById('navClock');
+    if (el) el.textContent =
+      String(now.getHours()).padStart(2,'0') + ':' +
+      String(now.getMinutes()).padStart(2,'0') + ':' +
+      String(now.getSeconds()).padStart(2,'0');
   }
-  requestAnimationFrame(tick);
+  tick(); setInterval(tick, 1000);
 })();
 
-// ── QUALITY BADGE STAMP ──
-var stampObserver = new IntersectionObserver((entries) => {
+// ── TICKER ──
+(function () {
+  const inner = document.querySelector('.ticker-inner');
+  if (!inner) return;
+  let pos = 0;
+  (function tick() {
+    pos -= 0.4;
+    if (-pos >= inner.scrollWidth / 2) pos = 0;
+    inner.style.transform = `translateX(${pos}px)`;
+    requestAnimationFrame(tick);
+  })();
+})();
+
+// ── QUALITY BADGE STAMPS ──
+const stampObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('stamped');
@@ -124,92 +123,82 @@ function selectService(value) {
   navigate('work-order');
   setTimeout(() => {
     const sel = document.getElementById('serviceType');
-    if (sel) {
-      sel.value = value;
-      sel.dispatchEvent(new Event('change'));
-      sel.closest('.form-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      sel.style.borderColor = 'var(--cyan)';
-      sel.style.boxShadow = '0 0 0 1px var(--cyan-dim), inset 0 0 10px var(--cyan-glow)';
-      setTimeout(() => { sel.style.borderColor = ''; sel.style.boxShadow = ''; }, 2000);
-    }
+    if (!sel) return;
+    sel.value = value;
+    sel.dispatchEvent(new Event('change'));
+    sel.closest('.form-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    sel.style.borderColor = 'var(--cyan)';
+    sel.style.boxShadow = '0 0 0 1px var(--cyan-dim), inset 0 0 10px var(--cyan-glow)';
+    setTimeout(() => { sel.style.borderColor = ''; sel.style.boxShadow = ''; }, 2000);
   }, 150);
 }
 
-// ── WORK ORDER FORM SUBMIT ──
+// ── PHONE FORMATTING ──
+const phoneInput = document.getElementById('phone');
+if (phoneInput) {
+  phoneInput.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length >= 6) v = `(${v.slice(0,3)}) ${v.slice(3,6)}-${v.slice(6,10)}`;
+    else if (v.length >= 3) v = `(${v.slice(0,3)}) ${v.slice(3)}`;
+    e.target.value = v;
+  });
+}
+
+// ── WORK ORDER FORM ──
 document.getElementById('workOrderForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = e.target.querySelector('.form-submit');
   btn.innerHTML = 'TRANSMITTING...';
   btn.disabled = true;
 
-  const formData = new FormData(e.target);
+  const fd = new FormData(e.target);
 
-  // Web3Forms email notification
-  const web3Data = new FormData(e.target);
-  web3Data.append('access_key', 'e9d0aa34-4229-4f32-bec4-02b98db6c0e9');
-  web3Data.append('subject', 'New Work Order — Foust Brothers LLC');
+  // Web3Forms (email)
+  const w3 = new FormData(e.target);
+  w3.append('access_key', 'e9d0aa34-4229-4f32-bec4-02b98db6c0e9');
+  w3.append('subject', 'New Work Order — Foust Brothers LLC');
 
-  // Supabase insert payload
-  const orderData = {
-    first_name: formData.get('firstName'),
-    last_name: formData.get('lastName'),
-    email: formData.get('email'),
-    phone: formData.get('phone') || '',
-    business: formData.get('business') || '',
-    service_type: formData.get('serviceType'),
-    timeline: formData.get('timeline') || '',
-    budget: formData.get('budget') || '',
-    existing_site: formData.get('existingSite') || '',
-    description: formData.get('description'),
-    how_heard: formData.get('howHeard') || '',
+  // Supabase payload
+  const order = {
+    first_name:    fd.get('firstName'),
+    last_name:     fd.get('lastName'),
+    email:         fd.get('email'),
+    phone:         fd.get('phone')       || '',
+    business:      fd.get('business')    || '',
+    service_type:  fd.get('serviceType'),
+    timeline:      fd.get('timeline')    || '',
+    budget:        fd.get('budget')      || '',
+    existing_site: fd.get('existingSite')|| '',
+    description:   fd.get('description'),
+    how_heard:     fd.get('howHeard')    || '',
     status: 'new'
   };
 
   try {
-    const sb = await getSupabase();
-    const promises = [
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST', body: web3Data, headers: { Accept: 'application/json' }
-      })
-    ];
-    if (sb) {
-      promises.push(sb.from('work_orders').insert(orderData));
-    }
-    await Promise.all(promises);
-
+    const sb = await getSB();
+    await Promise.all([
+      fetch('https://api.web3forms.com/submit', { method:'POST', body:w3, headers:{ Accept:'application/json' } }),
+      sb.from('work_orders').insert(order)
+    ]);
     document.getElementById('successMsg').classList.add('show');
     btn.innerHTML = '✓ REQUEST TRANSMITTED';
     btn.classList.add('success');
     e.target.reset();
   } catch (err) {
-    console.error('Submit error:', err);
+    console.error(err);
     btn.innerHTML = 'ERROR — RETRY';
     btn.disabled = false;
   }
 });
 
-// ── PHONE FORMATTING ──
-const phoneInput = document.getElementById('phone');
-if (phoneInput) {
-  phoneInput.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length >= 6) {
-      value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6,10)}`;
-    } else if (value.length >= 3) {
-      value = `(${value.slice(0,3)}) ${value.slice(3)}`;
-    }
-    e.target.value = value;
-  });
-}
-
 // ── AUTO YEAR ──
 document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date().getFullYear());
 
-// ── INITIAL PAGE LOAD ──
+// ── INITIAL PAGE LOAD FROM URL ──
 (function () {
   const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
-  const validPages = ['about', 'billing', 'work-order', 'privacy', 'terms'];
-  if (validPages.includes(path)) {
+  const valid = ['about','billing','work-order','privacy','terms'];
+  if (valid.includes(path)) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const pg = document.getElementById('page-' + path);
     if (pg) pg.classList.add('active');
@@ -222,461 +211,428 @@ document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date
 
 // ═══════════════════════════════════════════
 //  ADMIN — HIDDEN TRIGGER
-//  Click bottom-left corner 5 times quickly
+//  Click the bottom-left corner 5× quickly
 // ═══════════════════════════════════════════
 
-let adminClickCount = 0;
-let adminClickTimer = null;
+let _clickCount = 0, _clickTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const trigger = document.getElementById('adminSecretTrigger');
-  if (trigger) {
-    trigger.addEventListener('click', () => {
-      adminClickCount++;
-      clearTimeout(adminClickTimer);
-      adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 3000);
-      if (adminClickCount >= 5) {
-        adminClickCount = 0;
-        showAdminLogin();
-      }
+  if (!trigger) return;
+  trigger.addEventListener('click', () => {
+    _clickCount++;
+    clearTimeout(_clickTimer);
+    _clickTimer = setTimeout(() => { _clickCount = 0; }, 3000);
+    if (_clickCount >= 5) { _clickCount = 0; showAdminLogin(); }
+  });
+
+  // Keyboard listeners for login modal
+  ['adminEmailInput','adminPasswordInput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') submitAdminLogin();
+      if (ev.key === 'Escape') closeAdminLogin();
     });
-  }
+  });
 });
 
-// ── ADMIN LOGIN ──
+// ── ADMIN LOGIN MODAL ──
 function showAdminLogin() {
-  const overlay = document.getElementById('adminLoginOverlay');
-  if (overlay) {
-    overlay.classList.add('show');
-    setTimeout(() => {
-      const inp = document.getElementById('adminEmailInput');
-      if (inp) inp.focus();
-    }, 100);
-  }
+  const ov = document.getElementById('adminLoginOverlay');
+  if (ov) { ov.classList.add('show'); setTimeout(() => document.getElementById('adminEmailInput')?.focus(), 100); }
 }
 
 function closeAdminLogin() {
-  const overlay = document.getElementById('adminLoginOverlay');
-  if (overlay) overlay.classList.remove('show');
-  const email = document.getElementById('adminEmailInput');
-  const pass = document.getElementById('adminPasswordInput');
-  const err = document.getElementById('adminLoginError');
-  if (email) email.value = '';
-  if (pass) pass.value = '';
-  if (err) err.style.display = 'none';
+  document.getElementById('adminLoginOverlay')?.classList.remove('show');
+  document.getElementById('adminEmailInput').value    = '';
+  document.getElementById('adminPasswordInput').value = '';
+  document.getElementById('adminLoginError').style.display = 'none';
 }
 
 async function submitAdminLogin() {
-  const email = document.getElementById('adminEmailInput').value.trim();
+  const email    = document.getElementById('adminEmailInput').value.trim();
   const password = document.getElementById('adminPasswordInput').value;
-  const err = document.getElementById('adminLoginError');
-  const btn = document.getElementById('adminLoginBtn');
+  const errEl    = document.getElementById('adminLoginError');
+  const btn      = document.getElementById('adminLoginBtn');
 
+  errEl.style.display = 'none';
   if (!email || !password) {
-    err.textContent = '⚠ ENTER EMAIL AND PASSWORD';
-    err.style.display = 'block';
-    return;
+    errEl.textContent = '⚠ ENTER EMAIL AND PASSWORD';
+    errEl.style.display = 'block'; return;
   }
 
-  btn.textContent = 'AUTHENTICATING...';
-  btn.disabled = true;
-  err.style.display = 'none';
+  btn.textContent = 'AUTHENTICATING...'; btn.disabled = true;
 
   try {
-    const sb = await getSupabase();
-    if (!sb) throw new Error('Connection failed');
-
+    const sb = await getSB();
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    // Check role in profiles table
-    const { data: profile, error: profileErr } = await sb
-      .from('profiles')
-      .select('role, is_master')
-      .eq('id', data.user.id)
-      .single();
+    const { data: profile, error: pErr } = await sb
+      .from('profiles').select('role, is_master').eq('id', data.user.id).single();
+    if (pErr || !profile) throw new Error('Profile not found — contact admin');
 
-    if (profileErr || !profile) throw new Error('Profile not found');
-
-    const allowed = ['master', 'admin', 'user'];
-    if (!allowed.includes(profile.role)) throw new Error('Access denied');
-
-    // Store role for UI
-    window._adminRole = profile.role;
+    window._adminRole     = profile.role;
     window._adminIsMaster = profile.is_master;
 
     closeAdminLogin();
     navigate('admin');
-  } catch (e) {
-    err.textContent = '⚠ ' + (e.message || 'ACCESS DENIED');
-    err.style.display = 'block';
-    btn.textContent = 'AUTHENTICATE';
-    btn.disabled = false;
+  } catch (err) {
+    errEl.textContent = '⚠ ' + (err.message || 'ACCESS DENIED');
+    errEl.style.display = 'block';
+    btn.textContent = 'AUTHENTICATE'; btn.disabled = false;
   }
 }
 
 async function adminLogout() {
-  const sb = await getSupabase();
+  const sb = await getSB();
   if (sb) await sb.auth.signOut();
-  window._adminRole = null;
-  window._adminIsMaster = false;
+  window._adminRole = null; window._adminIsMaster = false;
   navigate('home');
 }
 
-// ── CHECK AUTH ON ADMIN PAGE LOAD ──
+// ── CHECK AUTH WHEN ADMIN PAGE OPENS ──
 async function checkAdminAuth() {
-  const sb = await getSupabase();
-  if (!sb) { navigate('home'); return; }
+  try {
+    const sb = await getSB();
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { showAdminLogin(); navigate('home'); return; }
 
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    showAdminLogin();
-    navigate('home');
-    return;
+    const { data: profile } = await sb
+      .from('profiles').select('role, is_master').eq('id', session.user.id).single();
+    if (!profile) { navigate('home'); return; }
+
+    window._adminRole     = profile.role;
+    window._adminIsMaster = profile.is_master;
+
+    // Show/hide master-only UI
+    document.querySelectorAll('.master-only').forEach(el => {
+      el.style.display = profile.is_master ? '' : 'none';
+    });
+
+    renderAdminHeader(session.user.email, profile.role, profile.is_master);
+    loadAdminOrders();
+    startAdminPolling();
+  } catch (err) {
+    console.error('Auth check failed:', err);
+    showAdminLogin(); navigate('home');
   }
-
-  // Re-fetch role
-  const { data: profile } = await sb
-    .from('profiles')
-    .select('role, is_master')
-    .eq('id', session.user.id)
-    .single();
-
-  if (!profile) { navigate('home'); return; }
-
-  window._adminRole = profile.role;
-  window._adminIsMaster = profile.is_master;
-
-  renderAdminHeader(session.user.email, profile.role);
-  loadAdminOrders();
-  startAdminPolling();
-
-  // Show/hide master-only controls
-  document.querySelectorAll('.master-only').forEach(el => {
-    el.style.display = profile.is_master ? '' : 'none';
-  });
 }
 
-function renderAdminHeader(email, role) {
+function renderAdminHeader(email, role, isMaster) {
   const el = document.getElementById('adminUserInfo');
-  if (el) el.innerHTML = `
-    <span style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.1em">${email}</span>
-    <span class="admin-role-badge role-${role}">${role.toUpperCase()}</span>
-    <button onclick="adminLogout()" style="padding:5px 12px;background:transparent;border:1px solid #ff4466;color:#ff4466;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.1em;cursor:pointer;">LOGOUT</button>
+  if (!el) return;
+  el.innerHTML = `
+    <span class="au-email">${email}</span>
+    <span class="admin-role-badge role-${role}">${role.toUpperCase()}${isMaster ? ' ★' : ''}</span>
+    <button class="admin-logout-btn" onclick="adminLogout()">⏻ LOGOUT</button>
   `;
 }
 
-// ── ADMIN POLLING ──
-let adminPollInterval = null;
-let lastOrderIds = new Set();
-let firstLoad = true;
+// ── ADMIN TABS ──
+function showAdminTab(tab, el) {
+  document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+  document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('adminTab-' + tab).style.display = 'block';
+  if (el) el.classList.add('active');
+  if (tab === 'users') loadAdminUsers();
+  if (tab === 'orders') loadAdminOrders();
+}
+
+// ═══════════════════════════════════════════
+//  LIVE POLLING
+// ═══════════════════════════════════════════
+
+let _pollInterval = null;
+let _knownIds     = new Set();
+let _firstLoad    = true;
 
 function startAdminPolling() {
-  if (adminPollInterval) return;
-  adminPollInterval = setInterval(async () => {
-    if (firstLoad) return;
-    await checkForNewOrders();
+  if (_pollInterval) return;
+  _pollInterval = setInterval(async () => {
+    if (_firstLoad) return;
+    try {
+      const sb = await getSB();
+      const { data: orders } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
+      if (!orders) return;
+      const newOnes = orders.filter(o => !_knownIds.has(o.id));
+      if (newOnes.length && _knownIds.size) {
+        newOnes.forEach(triggerNotification);
+        renderOrders(orders);
+        updateStats(orders);
+      }
+      _knownIds = new Set(orders.map(o => o.id));
+    } catch {}
   }, 15000);
 }
 
 function stopAdminPolling() {
-  if (adminPollInterval) {
-    clearInterval(adminPollInterval);
-    adminPollInterval = null;
-  }
-  firstLoad = true;
+  clearInterval(_pollInterval); _pollInterval = null; _firstLoad = true;
 }
 
-async function checkForNewOrders() {
-  try {
-    const sb = await getSupabase();
-    if (!sb) return;
-    const { data: orders } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
-    if (!orders) return;
-
-    const currentIds = new Set(orders.map(o => o.id));
-    const newOrders = orders.filter(o => !lastOrderIds.has(o.id));
-
-    if (newOrders.length > 0 && lastOrderIds.size > 0) {
-      newOrders.forEach(order => triggerAdminNotification(order));
-      renderAdminOrders(orders);
-    }
-    lastOrderIds = currentIds;
-  } catch (err) {
-    console.error('Poll error:', err);
-  }
-}
-
-function triggerAdminNotification(order) {
-  playNotificationSound();
-  showAdminToast(`⚡ NEW ORDER: ${order.first_name} ${order.last_name} — ${formatService(order.service_type)}`);
+function triggerNotification(order) {
+  playBeep();
+  showToast(`⚡ NEW ORDER: ${order.first_name} ${order.last_name} — ${svcLabel(order.service_type)}`);
   if (Notification.permission === 'granted') {
     new Notification('⚡ New Work Order — Foust Brothers', {
-      body: `${order.first_name} ${order.last_name} submitted a ${formatService(order.service_type)} request.`
+      body: `${order.first_name} ${order.last_name} — ${svcLabel(order.service_type)}`
     });
   }
 }
 
-function playNotificationSound() {
+function playBeep() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+    osc.connect(gain); gain.connect(ctx.destination);
     osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
-    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.12);
+    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.24);
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.5);
-  } catch(e) {}
+    osc.start(); osc.stop(ctx.currentTime + 0.5);
+  } catch {}
 }
 
-function showAdminToast(message) {
-  const toast = document.getElementById('adminToast');
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 6000);
+function showToast(msg) {
+  const t = document.getElementById('adminToast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 6000);
 }
 
-// ── LOAD & RENDER ORDERS ──
+// ═══════════════════════════════════════════
+//  ORDERS
+// ═══════════════════════════════════════════
+
 async function loadAdminOrders() {
-  const container = document.getElementById('adminOrdersContainer');
-  if (!container) return;
-  container.innerHTML = '<div class="admin-loading">// LOADING ORDERS...</div>';
-
+  const box = document.getElementById('adminOrdersContainer');
+  if (!box) return;
+  box.innerHTML = '<div class="admin-empty">// LOADING ORDERS...</div>';
   try {
-    const sb = await getSupabase();
-    if (!sb) throw new Error('No connection');
-
+    const sb = await getSB();
     const { data: orders, error } = await sb
-      .from('work_orders')
-      .select('*')
-      .order('created_at', { ascending: false });
-
+      .from('work_orders').select('*').order('created_at', { ascending: false });
     if (error) throw error;
-
-    lastOrderIds = new Set(orders.map(o => o.id));
-    firstLoad = false;
-
+    _knownIds = new Set(orders.map(o => o.id));
+    _firstLoad = false;
     if (Notification.permission === 'default') Notification.requestPermission();
-
-    renderAdminOrders(orders);
-    updateAdminStats(orders);
+    renderOrders(orders);
+    updateStats(orders);
   } catch (err) {
-    container.innerHTML = `<div class="admin-loading" style="color:#ff4466">// ERROR: ${err.message}</div>`;
+    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
   }
 }
 
-function renderAdminOrders(orders) {
-  const container = document.getElementById('adminOrdersContainer');
-  if (!container) return;
-
+function renderOrders(orders) {
+  const box = document.getElementById('adminOrdersContainer');
+  if (!box) return;
   const filter = document.getElementById('adminStatusFilter')?.value || 'all';
-  const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="admin-loading">// NO ORDERS FOUND</div>';
-    return;
-  }
-
+  const list   = filter === 'all' ? orders : orders.filter(o => o.status === filter);
   const canEdit = window._adminRole === 'master' || window._adminRole === 'admin';
 
-  container.innerHTML = filtered.map(order => `
-    <div class="admin-order-card" data-id="${order.id}">
-      <div class="admin-order-header">
-        <div class="admin-order-meta">
-          <span class="admin-order-id">// ORDER-${order.id.slice(0,8).toUpperCase()}</span>
-          <span class="admin-order-time">${formatDate(order.created_at)}</span>
+  if (!list.length) {
+    box.innerHTML = '<div class="admin-empty">// NO ORDERS MATCH THIS FILTER</div>'; return;
+  }
+
+  box.innerHTML = list.map(o => `
+    <div class="ao-card" id="order-${o.id}">
+      <div class="ao-header">
+        <div class="ao-meta">
+          <span class="ao-id">// ORDER-${o.id.slice(0,8).toUpperCase()}</span>
+          <span class="ao-time">${fmtDate(o.created_at)}</span>
         </div>
-        <span class="admin-status-badge status-${order.status}">${order.status.replace('_',' ').toUpperCase()}</span>
+        <span class="ao-badge status-${o.status}">${o.status.replace('_',' ').toUpperCase()}</span>
       </div>
-      <div class="admin-order-body">
-        <div class="admin-order-grid">
-          <div class="admin-field"><div class="admin-field-label">CLIENT</div><div class="admin-field-value">${order.first_name} ${order.last_name}</div></div>
-          <div class="admin-field"><div class="admin-field-label">EMAIL</div><div class="admin-field-value"><a href="mailto:${order.email}" style="color:var(--cyan)">${order.email}</a></div></div>
-          <div class="admin-field"><div class="admin-field-label">PHONE</div><div class="admin-field-value">${order.phone || '—'}</div></div>
-          <div class="admin-field"><div class="admin-field-label">BUSINESS</div><div class="admin-field-value">${order.business || '—'}</div></div>
-          <div class="admin-field"><div class="admin-field-label">SERVICE</div><div class="admin-field-value">${formatService(order.service_type)}</div></div>
-          <div class="admin-field"><div class="admin-field-label">TIMELINE</div><div class="admin-field-value">${order.timeline || '—'}</div></div>
-          <div class="admin-field"><div class="admin-field-label">BUDGET</div><div class="admin-field-value">${order.budget || '—'}</div></div>
-          <div class="admin-field"><div class="admin-field-label">SOURCE</div><div class="admin-field-value">${order.how_heard || '—'}</div></div>
+
+      <div class="ao-body">
+        <div class="ao-grid">
+          <div class="ao-field"><div class="ao-label">CLIENT</div>
+            <div class="ao-val">${o.first_name} ${o.last_name}</div></div>
+          <div class="ao-field"><div class="ao-label">EMAIL</div>
+            <div class="ao-val"><a href="mailto:${o.email}" style="color:var(--cyan);text-decoration:none">${o.email}</a></div></div>
+          <div class="ao-field"><div class="ao-label">PHONE</div>
+            <div class="ao-val">${o.phone ? `<a href="tel:${o.phone}" style="color:var(--white);text-decoration:none">${o.phone}</a>` : '—'}</div></div>
+          <div class="ao-field"><div class="ao-label">BUSINESS</div>
+            <div class="ao-val">${o.business || '—'}</div></div>
+          <div class="ao-field"><div class="ao-label">SERVICE</div>
+            <div class="ao-val">${svcLabel(o.service_type)}</div></div>
+          <div class="ao-field"><div class="ao-label">TIMELINE</div>
+            <div class="ao-val">${o.timeline || '—'}</div></div>
+          <div class="ao-field"><div class="ao-label">BUDGET</div>
+            <div class="ao-val">${o.budget || '—'}</div></div>
+          <div class="ao-field"><div class="ao-label">SOURCE</div>
+            <div class="ao-val">${o.how_heard || '—'}</div></div>
+          ${o.existing_site ? `<div class="ao-field"><div class="ao-label">EXISTING SITE</div>
+            <div class="ao-val"><a href="${o.existing_site}" target="_blank" style="color:var(--cyan);text-decoration:none">${o.existing_site}</a></div></div>` : ''}
         </div>
-        ${order.description ? `<div class="admin-field" style="margin-top:1rem"><div class="admin-field-label">PROJECT DESCRIPTION</div><div class="admin-field-value admin-description">${order.description}</div></div>` : ''}
-        ${order.existing_site ? `<div class="admin-field" style="margin-top:.5rem"><div class="admin-field-label">EXISTING SITE</div><div class="admin-field-value">${order.existing_site}</div></div>` : ''}
+
+        ${o.description ? `
+        <div class="ao-desc-wrap">
+          <div class="ao-label">PROJECT DESCRIPTION</div>
+          <div class="ao-desc">${o.description}</div>
+        </div>` : ''}
       </div>
+
       ${canEdit ? `
-      <div class="admin-order-footer">
-        <div class="admin-field-label">UPDATE STATUS:</div>
-        <div class="admin-status-buttons">
-          <button class="admin-status-btn ${order.status==='new'?'active':''}" onclick="setOrderStatus('${order.id}','new')">NEW</button>
-          <button class="admin-status-btn ${order.status==='in_progress'?'active':''}" onclick="setOrderStatus('${order.id}','in_progress')">IN PROGRESS</button>
-          <button class="admin-status-btn ${order.status==='complete'?'active':''}" onclick="setOrderStatus('${order.id}','complete')">COMPLETE</button>
-          <button class="admin-status-btn ${order.status==='cancelled'?'active':''}" onclick="setOrderStatus('${order.id}','cancelled')">CANCELLED</button>
+      <div class="ao-footer">
+        <span class="ao-label">STATUS:</span>
+        <div class="ao-status-btns">
+          <button class="ao-sbtn ${o.status==='new'?'active':''}"
+            onclick="setStatus('${o.id}','new')">NEW</button>
+          <button class="ao-sbtn ${o.status==='in_progress'?'active':''}"
+            onclick="setStatus('${o.id}','in_progress')">IN PROGRESS</button>
+          <button class="ao-sbtn ${o.status==='complete'?'active':''}"
+            onclick="setStatus('${o.id}','complete')">COMPLETE</button>
+          <button class="ao-sbtn ${o.status==='cancelled'?'active':''}"
+            onclick="setStatus('${o.id}','cancelled')">CANCELLED</button>
         </div>
       </div>` : ''}
     </div>
   `).join('');
 }
 
-function updateAdminStats(orders) {
-  const set = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
-  set('adminStatTotal', orders.length);
-  set('adminStatNew', orders.filter(o => o.status === 'new').length);
-  set('adminStatProgress', orders.filter(o => o.status === 'in_progress').length);
-  set('adminStatComplete', orders.filter(o => o.status === 'complete').length);
+function updateStats(orders) {
+  const s = id => { const e = document.getElementById(id); if(e) e.textContent = id === 'adminStatTotal' ? orders.length
+    : orders.filter(o => o.status === ({ adminStatNew:'new', adminStatProgress:'in_progress', adminStatComplete:'complete' }[id])).length; };
+  ['adminStatTotal','adminStatNew','adminStatProgress','adminStatComplete'].forEach(s);
 }
 
-async function setOrderStatus(id, status) {
+async function setStatus(id, status) {
   try {
-    const sb = await getSupabase();
-    if (!sb) return;
+    const sb = await getSB();
     await sb.from('work_orders').update({ status }).eq('id', id);
-    const { data: orders } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
-    renderAdminOrders(orders);
-    updateAdminStats(orders);
-  } catch (err) {
-    alert('Failed to update: ' + err.message);
-  }
+    const { data } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
+    renderOrders(data); updateStats(data);
+  } catch (err) { alert('Update failed: ' + err.message); }
 }
 
-function adminFilterOrders() {
-  getSupabase().then(sb => {
-    if (!sb) return;
-    sb.from('work_orders').select('*').order('created_at', { ascending: false }).then(({ data }) => {
-      if (data) { renderAdminOrders(data); updateAdminStats(data); }
-    });
-  });
+async function adminFilterOrders() {
+  const sb = await getSB();
+  const { data } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
+  if (data) { renderOrders(data); updateStats(data); }
 }
 
 function refreshAdminOrders() { loadAdminOrders(); }
 
-// ── USER MANAGEMENT (master only) ──
+// ═══════════════════════════════════════════
+//  USER MANAGEMENT  (master admin only)
+// ═══════════════════════════════════════════
+
 async function loadAdminUsers() {
-  const container = document.getElementById('adminUsersContainer');
-  if (!container) return;
-  container.innerHTML = '<div class="admin-loading">// LOADING USERS...</div>';
-
+  const box = document.getElementById('adminUsersContainer');
+  if (!box) return;
+  box.innerHTML = '<div class="admin-empty">// LOADING USERS...</div>';
   try {
-    const sb = await getSupabase();
-    const { data: users, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    const sb = await getSB();
+    const { data: users, error } = await sb
+      .from('profiles').select('*').order('created_at', { ascending: true });
     if (error) throw error;
-
-    container.innerHTML = users.map(u => `
-      <div class="admin-order-card" style="margin-bottom:1px">
-        <div class="admin-order-header">
-          <div class="admin-order-meta">
-            <span class="admin-order-id">${u.email}</span>
-            <span class="admin-order-time">${formatDate(u.created_at)}</span>
-          </div>
-          <span class="admin-role-badge role-${u.role}">${u.role.toUpperCase()}${u.is_master ? ' ★' : ''}</span>
-        </div>
-        ${!u.is_master ? `
-        <div class="admin-order-footer">
-          <div class="admin-field-label">ROLE:</div>
-          <div class="admin-status-buttons">
-            <button class="admin-status-btn ${u.role==='admin'?'active':''}" onclick="setUserRole('${u.id}','admin')">ADMIN</button>
-            <button class="admin-status-btn ${u.role==='user'?'active':''}" onclick="setUserRole('${u.id}','user')">USER</button>
-            <button class="admin-status-btn" style="border-color:#ff4466;color:#ff4466" onclick="deleteUser('${u.id}','${u.email}')">REMOVE</button>
-          </div>
-        </div>` : `<div style="padding:.75rem 1.25rem;font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em">// MASTER ADMIN — PROTECTED</div>`}
-      </div>
-    `).join('');
+    renderUsers(users);
   } catch (err) {
-    container.innerHTML = `<div class="admin-loading" style="color:#ff4466">// ERROR: ${err.message}</div>`;
+    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
   }
 }
 
+function renderUsers(users) {
+  const box = document.getElementById('adminUsersContainer');
+  if (!box) return;
+  box.innerHTML = users.map(u => `
+    <div class="ao-card" style="margin-bottom:1px">
+      <div class="ao-header">
+        <div class="ao-meta">
+          <span class="ao-id">${u.email}</span>
+          <span class="ao-time">${fmtDate(u.created_at)}</span>
+        </div>
+        <span class="admin-role-badge role-${u.role}">${u.role.toUpperCase()}${u.is_master ? ' ★' : ''}</span>
+      </div>
+      ${u.is_master
+        ? `<div style="padding:.6rem 1.25rem;font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em">// MASTER ADMIN — PROTECTED ACCOUNT</div>`
+        : `<div class="ao-footer">
+            <span class="ao-label">ROLE:</span>
+            <div class="ao-status-btns">
+              <button class="ao-sbtn ${u.role==='admin'?'active':''}" onclick="setUserRole('${u.id}','admin')">ADMIN</button>
+              <button class="ao-sbtn ${u.role==='user'?'active':''}"  onclick="setUserRole('${u.id}','user')">USER</button>
+              <button class="ao-sbtn danger" onclick="removeUser('${u.id}','${u.email}')">✕ REMOVE</button>
+            </div>
+           </div>`
+      }
+    </div>
+  `).join('');
+}
+
 async function setUserRole(userId, role) {
-  const sb = await getSupabase();
+  const sb = await getSB();
   await sb.from('profiles').update({ role }).eq('id', userId);
   loadAdminUsers();
 }
 
-async function deleteUser(userId, email) {
-  if (!confirm(`Remove user ${email}? This cannot be undone.`)) return;
-  const sb = await getSupabase();
+async function removeUser(userId, email) {
+  if (!confirm(`Remove ${email}?\nThis cannot be undone.`)) return;
+  const sb = await getSB();
   await sb.from('profiles').delete().eq('id', userId);
   loadAdminUsers();
 }
 
-async function inviteUser() {
-  const email = document.getElementById('inviteEmail').value.trim();
-  const role = document.getElementById('inviteRole').value;
-  const msg = document.getElementById('inviteMsg');
+async function sendInvite() {
+  const emailEl = document.getElementById('inviteEmail');
+  const roleEl  = document.getElementById('inviteRole');
+  const msgEl   = document.getElementById('inviteMsg');
+  const email   = emailEl.value.trim();
+  if (!email) { msgEl.style.color='#ff4466'; msgEl.textContent='⚠ Enter an email address'; return; }
 
-  if (!email) { msg.textContent = '⚠ Enter an email address'; msg.style.color = '#ff4466'; return; }
-
-  msg.textContent = 'Sending invite...';
-  msg.style.color = 'var(--cyan)';
+  msgEl.style.color = 'var(--cyan)'; msgEl.textContent = '// SENDING INVITE...';
 
   try {
-    const sb = await getSupabase();
-    // Use Supabase admin invite
-    const res = await fetch(`${(await fetch('/api/config').then(r=>r.json())).url}/auth/v1/invite`, {
+    const [sb, cfg] = await Promise.all([getSB(), getCfg()]);
+    const { data: { session } } = await sb.auth.getSession();
+
+    const res = await fetch(`${cfg.url}/auth/v1/invite`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': (await fetch('/api/config').then(r=>r.json())).key,
-        'Authorization': `Bearer ${(await sb.auth.getSession()).data.session.access_token}`
+        'apikey': cfg.key,
+        'Authorization': `Bearer ${session.access_token}`
       },
       body: JSON.stringify({ email })
     });
 
-    if (res.ok) {
-      // Pre-set their role
-      msg.textContent = '✓ Invite sent — they will receive an email to set their password.';
-      msg.style.color = '#00ff88';
-      document.getElementById('inviteEmail').value = '';
-      // Role will be set by trigger, but update it if needed
-      setTimeout(() => loadAdminUsers(), 2000);
-    } else {
+    if (!res.ok) {
       const err = await res.json();
       throw new Error(err.message || 'Invite failed');
     }
+
+    // Pre-set role in profiles (trigger will create the row; we update after a moment)
+    const role = roleEl.value;
+    setTimeout(async () => {
+      const { data: prof } = await sb.from('profiles').select('id').eq('email', email).single();
+      if (prof) await sb.from('profiles').update({ role }).eq('id', prof.id);
+    }, 2000);
+
+    msgEl.style.color = '#00ff88';
+    msgEl.textContent = `✓ Invite sent to ${email} — they will receive an email to set their password.`;
+    emailEl.value = '';
+    setTimeout(() => loadAdminUsers(), 3000);
   } catch (err) {
-    msg.textContent = '⚠ ' + err.message;
-    msg.style.color = '#ff4466';
+    msgEl.style.color = '#ff4466'; msgEl.textContent = '⚠ ' + err.message;
   }
 }
 
-function showAdminTab(tab) {
-  document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('.admin-tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('adminTab-' + tab).style.display = 'block';
-  event.target.classList.add('active');
-  if (tab === 'users') loadAdminUsers();
-}
+// ═══════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════
 
-// ── HELPERS ──
-function formatDate(iso) {
+function fmtDate(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
-    ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString('en-US',{ month:'short', day:'numeric', year:'numeric' }) +
+    ' ' + d.toLocaleTimeString('en-US',{ hour:'2-digit', minute:'2-digit' });
 }
 
-function formatService(val) {
-  const map = {
-    consultation: 'Consultation', logo: 'Logo Design', flyer: 'Digital Flyers',
-    brochure: 'Brochure Site', simple: '1–3 Page Build', standard: '3–5 Page Build',
-    full: '5–10 Page Build', unsure: 'Needs Guidance'
-  };
-  return map[val] || val || '—';
+function svcLabel(val) {
+  return ({ consultation:'Consultation', logo:'Logo Design', flyer:'Digital Flyers',
+    brochure:'Brochure Site', simple:'1–3 Page Build', standard:'3–5 Page Build',
+    full:'5–10 Page Build', unsure:'Needs Guidance' })[val] || val || '—';
 }
-
-// Enter key on login fields
-document.addEventListener('DOMContentLoaded', () => {
-  ['adminEmailInput','adminPasswordInput'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('keydown', e => {
-        if (e.key === 'Enter') submitAdminLogin();
-        if (e.key === 'Escape') closeAdminLogin();
-      });
-    }
-  });
-});

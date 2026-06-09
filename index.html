@@ -20,7 +20,7 @@
   <div class="nav-brand" onclick="navigate('home')">
     <div class="nav-brand-text">
       <span class="nav-brand-name">FOUST BROTHERS</span>
-      <span class="nav-brand-sub">DIGITAL DIVISION // ONLINE</span>
+      <span class="nav-brand-sub" data-cms="nav_status">DIGITAL DIVISION // ONLINE</span>
     </div>
   </div>
   <!-- FIX: Toggle button comes immediately after brand, before clock -->
@@ -54,10 +54,10 @@
     <span>▶ ALL SYSTEMS NOMINAL.</span>
   </div>
   <div class="hero-panel-left">
-    <div class="sys-card"><div class="sys-card-label">SYS-001 // PHILOSOPHY</div><div class="sys-card-value" style="font-size:.7rem">BUILT RIGHT. BUILT ONCE.</div></div>
-    <div class="sys-card"><div class="sys-card-label">SYS-002 // STANDARD</div><div class="sys-card-value" style="font-size:.7rem">DETAILS MATTER HERE.</div></div>
-    <div class="sys-card"><div class="sys-card-label">SYS-003 // COMMITMENT</div><div class="sys-card-value" style="font-size:.7rem">YOU APPROVE. WE DELIVER.</div></div>
-    <div class="sys-card"><div class="sys-card-label">SYS-004 // WARRANTY</div><div class="sys-card-value" style="font-size:.7rem">30-DAY BUG WARRANTY.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-001 // PHILOSOPHY</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_philosophy">BUILT RIGHT. BUILT ONCE.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-002 // STANDARD</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_standard">DETAILS MATTER HERE.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-003 // COMMITMENT</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_commitment">YOU APPROVE. WE DELIVER.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-004 // WARRANTY</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_warranty">30-DAY BUG WARRANTY.</div></div>
   </div>
   <div class="hero-panel-right">
     <div class="sys-card"><div class="sys-card-label">STATUS</div><div class="sys-card-value online">ONLINE</div></div>
@@ -70,13 +70,13 @@
       <div id="orbThree"></div>
       <div class="orb-status-ring"></div>
     </div>
-    <div class="hero-directive">— PRIMARY DIRECTIVE —</div>
+    <div class="hero-directive" data-cms="hero_directive">— PRIMARY DIRECTIVE —</div>
     <h1 class="hero-headline">
       <span class="line1">UNDER</span>
       <span class="line2">PROMISE,</span>
       <span class="line3">OVER DELIVER</span>
     </h1>
-    <div class="hero-sub">FOUST BROTHERS LLC — DIGITAL DIVISION</div>
+    <div class="hero-sub" data-cms="hero_sub">FOUST BROTHERS LLC — DIGITAL DIVISION</div>
     <div class="hero-buttons">
       <button class="btn-primary" onclick="navigate('work-order')">⚡ INITIALIZE REQUEST</button>
       <button class="btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">VIEW SYSTEMS</button>
@@ -114,49 +114,49 @@
     <div class="services-grid">
       <div class="service-card" onclick="selectService('consultation')">
         <div class="service-card-module">MODULE-01 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Consultation</h3>
+        <h3 class="service-card-title" data-cms="svc_consultation_title">Consultation</h3>
         <p class="service-card-desc">Not sure where to start? Book a direct consultation. We assess your needs, advise on the best path forward, and give you an honest scope — no pressure, no fluff.</p>
         <ul class="service-card-features"><li>Needs assessment</li><li>Strategy &amp; roadmap</li><li>No obligation advice</li><li>Honest recommendations</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
       <div class="service-card" onclick="selectService('logo')">
         <div class="service-card-module">MODULE-02 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Business Logo Design</h3>
+        <h3 class="service-card-title" data-cms="svc_logo_title">Business Logo Design</h3>
         <p class="service-card-desc">A professional logo built to represent your brand with impact. AI-assisted design process delivers polished, unique concepts fast — refined until it's exactly right.</p>
         <ul class="service-card-features"><li>Custom logo concepts</li><li>Multiple format delivery</li><li>AI-accelerated design</li><li>Revisions included</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
       <div class="service-card" onclick="selectService('flyer')">
         <div class="service-card-module">MODULE-03 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Digital Flyers</h3>
+        <h3 class="service-card-title" data-cms="svc_flyer_title">Digital Flyers</h3>
         <p class="service-card-desc">Eye-catching digital flyers for promotions, events, or announcements. Designed for social media, email, and web — built to grab attention and drive action.</p>
         <ul class="service-card-features"><li>Social media ready</li><li>Print-ready formats</li><li>AI-assisted design</li><li>Fast turnaround</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
       <div class="service-card" onclick="selectService('brochure')">
         <div class="service-card-module">MODULE-04 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Brochure Site Build</h3>
+        <h3 class="service-card-title" data-cms="svc_brochure_title">Brochure Site Build</h3>
         <p class="service-card-desc">A Fixed-Content Website built on a static architecture — locked-down and reliable. Perfect for businesses that need a clean, professional presence without dynamic complexity.</p>
         <ul class="service-card-features"><li>Static architecture</li><li>Fixed, locked-down content</li><li>Fast &amp; reliable delivery</li><li>Mobile responsive</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
       <div class="service-card" onclick="selectService('simple')">
         <div class="service-card-module">MODULE-05 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Simple 1–3 Page Build</h3>
+        <h3 class="service-card-title" data-cms="svc_simple_title">Simple 1–3 Page Build</h3>
         <p class="service-card-desc">Clean, purpose-built, and delivered with zero fluff. Everything a small business needs to show up online the right way.</p>
         <ul class="service-card-features"><li>Professional landing page</li><li>Contact system included</li><li>Mobile responsive</li><li>Built to perform</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
       <div class="service-card" onclick="selectService('standard')">
         <div class="service-card-module">MODULE-06 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Standard 3–5 Page Build</h3>
+        <h3 class="service-card-title" data-cms="svc_standard_title">Standard 3–5 Page Build</h3>
         <p class="service-card-desc">Designed for growing businesses needing detailed service menus and project galleries. More scope, same precision.</p>
         <ul class="service-card-features"><li>Service menu pages</li><li>Project gallery</li><li>Mobile responsive</li><li>Scalable architecture</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
       <div class="service-card" onclick="selectService('full')">
         <div class="service-card-module">MODULE-07 <span class="sc-indicator"></span></div>
-        <h3 class="service-card-title">Full 5–10 Page Build</h3>
+        <h3 class="service-card-title" data-cms="svc_full_title">Full 5–10 Page Build</h3>
         <p class="service-card-desc">Engineered for comprehensive site architectures and high-performance content. Heavy-duty builds for operations that demand reliability, depth, and a site that actually works under load.</p>
         <ul class="service-card-features"><li>Full site architecture</li><li>High-performance content</li><li>Mobile responsive</li><li>Technical reliability</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
@@ -178,7 +178,7 @@
     <div>
       <div class="footer-section-label">// CONTACT COORDINATES</div>
       <div class="footer-contact-item"><div class="footer-contact-label">EMAIL:</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div>
-      <div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div>
+      <div class="footer-contact-item"><div class="footer-contact-label">PHONE:</div><div class="footer-contact-value"><a href="tel:3368622999" data-cms="contact_phone">(336) 862-2999</a></div></div>
       <div class="footer-contact-item"><div class="footer-contact-label">LOCATION:</div><div class="footer-contact-value">LOCAL &amp; RELIABLE</div></div>
       <div class="footer-contact-item"><div class="footer-contact-label">HOURS:</div><div class="footer-contact-value">MON-FRI 0900-1700</div></div>
     </div>
@@ -226,7 +226,7 @@
       </div>
     </div>
     <div class="about-content-panel">
-      <h1 class="about-headline">BUILT ON A <span class="about-headline-cyan">STRAIGHT-SHOOTING</span> PHILOSOPHY</h1>
+      <h1 class="about-headline" data-cms="about_headline">BUILT ON A <span class="about-headline-cyan">STRAIGHT-SHOOTING</span> PHILOSOPHY</h1>
       <p class="about-body">Foust Brothers LLC — Digital Division operates the same way any expert shop operates: we assess the job honestly, quote it accurately, and deliver work that exceeds expectations every time. No fluff. No oversell. No hidden charges.</p>
       <p class="about-body">We are digital craftsmen who take pride in clean code, reliable architecture, and a client relationship built on transparency. We use AI tools to move faster and deliver better — but a human reviews and approves every line before it ships.</p>
       <div class="about-info-grid">
@@ -280,7 +280,7 @@
   <div class="container">
     <div class="section-module-label"><div class="section-dot"></div> MODULE_04 // BILLING_PROTOCOL</div>
     <h1 class="section-title">BILLING PROTOCOL</h1>
-    <p class="billing-intro">Transparent, flat-rate pricing. No surprises, no hidden fees — just honest rates and clear agreements.</p>
+    <p class="billing-intro" data-cms="billing_intro">Transparent, flat-rate pricing. No surprises, no hidden fees — just honest rates and clear agreements.</p>
 </div></section>
 
 <!-- SECTION 01 — SITE BUILD FEES -->
@@ -305,7 +305,7 @@
           </div>
         </div>
         <div class="rate-amount-block">
-          <div class="rate-amount cyan">$250</div>
+          <div class="rate-amount cyan" data-cms="price_tier1">$250</div>
           <div class="rate-amount-unit">ONE-TIME</div>
         </div>
       </div>
@@ -324,7 +324,7 @@
           </div>
         </div>
         <div class="rate-amount-block">
-          <div class="rate-amount cyan">$500</div>
+          <div class="rate-amount cyan" data-cms="price_tier2">$500</div>
           <div class="rate-amount-unit">ONE-TIME</div>
         </div>
       </div>
@@ -343,7 +343,7 @@
           </div>
         </div>
         <div class="rate-amount-block">
-          <div class="rate-amount">$750+</div>
+          <div class="rate-amount" data-cms="price_tier3">$750+</div>
           <div class="rate-amount-unit">ONE-TIME</div>
         </div>
       </div>
@@ -367,11 +367,11 @@
       <div class="rate-table-header"><span>PLAN</span><span>RATE</span></div>
       <div class="rate-row rate-row-active">
         <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">MONTHLY RETAINER</div><div class="rate-sub">Full management, hosting, &amp; security — no contracts</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount cyan">$25</div><div class="rate-amount-unit">/ MO</div></div>
+        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_retainer_mo">$25</div><div class="rate-amount-unit">/ MO</div></div>
       </div>
       <div class="rate-row">
         <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">ANNUAL RETAINER <span style="color:#00ff88;font-size:.6rem;letter-spacing:.1em;margin-left:8px">15% OFF — SAVE $45</span></div><div class="rate-sub">Same full plan, billed annually</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount cyan">$255</div><div class="rate-amount-unit">/ YR</div></div>
+        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_retainer_yr">$255</div><div class="rate-amount-unit">/ YR</div></div>
       </div>
     </div>
 
@@ -402,9 +402,9 @@
     <p style="font-size:.85rem;color:var(--white-dim);line-height:1.8;margin-bottom:2rem;">Applies to maintenance calls, additions, or changes outside of a retainer plan.</p>
     <div class="rate-table">
       <div class="rate-table-header"><span>LABOR CATEGORY</span><span>RATE</span></div>
-      <div class="rate-row rate-row-active"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">STANDARD SHOP RATE</div><div class="rate-sub">General web work, content updates, minor fixes — 1 hr minimum</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan">$20</div><div class="rate-amount-unit">/ HR</div></div></div>
-      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">OVERTIME RATE</div><div class="rate-sub">Extended or after-hours work</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan">$30</div><div class="rate-amount-unit">/ HR</div></div></div>
-      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">RUSH / EMERGENCY</div><div class="rate-sub">Same-day or critical response</div></div></div><div class="rate-amount-block"><div class="rate-amount">2.5×</div><div class="rate-amount-unit">STANDARD RATE</div></div></div>
+      <div class="rate-row rate-row-active"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">STANDARD SHOP RATE</div><div class="rate-sub">General web work, content updates, minor fixes — 1 hr minimum</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_standard">$20</div><div class="rate-amount-unit">/ HR</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">OVERTIME RATE</div><div class="rate-sub">Extended or after-hours work</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_overtime">$30</div><div class="rate-amount-unit">/ HR</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">RUSH / EMERGENCY</div><div class="rate-sub">Same-day or critical response</div></div></div><div class="rate-amount-block"><div class="rate-amount" data-cms="rate_rush">2.5×</div><div class="rate-amount-unit">STANDARD RATE</div></div></div>
     </div>
   </div>
 </section>
@@ -543,10 +543,10 @@
       </div>
       <div>
         <div class="section-module-label" style="margin-bottom:1rem"><div class="section-dot"></div> WHAT TO EXPECT</div>
-        <div class="woi-card"><div class="woi-label">STEP 01 // SUBMIT</div><div class="woi-value">Fill out the work order form with as much detail as possible. The more context you give us, the faster we can scope your project.</div></div>
-        <div class="woi-card"><div class="woi-label">STEP 02 // REVIEW</div><div class="woi-value">We review your request within 1 business day and reach out to confirm scope, timeline, and any clarifying questions.</div></div>
-        <div class="woi-card"><div class="woi-label">STEP 03 // QUOTE</div><div class="woi-value">You receive a detailed, itemized quote. No hidden fees. No surprises. You approve the scope before any work begins.</div></div>
-        <div class="woi-card"><div class="woi-label">STEP 04 // DELIVER</div><div class="woi-value">We build it. You approve it. We deploy it. 30-day post-launch warranty included on all builds.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 01 // SUBMIT</div><div class="woi-value" data-cms="step1">Fill out the work order form with as much detail as possible. The more context you give us, the faster we can scope your project.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 02 // REVIEW</div><div class="woi-value" data-cms="step2">We review your request within 1 business day and reach out to confirm scope, timeline, and any clarifying questions.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 03 // QUOTE</div><div class="woi-value" data-cms="step3">You receive a detailed, itemized quote. No hidden fees. No surprises. You approve the scope before any work begins.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 04 // DELIVER</div><div class="woi-value" data-cms="step4">We build it. You approve it. We deploy it. 30-day post-launch warranty included on all builds.</div></div>
       </div>
     </div>
   </div>
@@ -754,6 +754,9 @@
       <button class="admin-tab-btn master-only" onclick="showAdminTab('users', this)">
         ⚙ &nbsp;USERS
       </button>
+      <button class="admin-tab-btn master-only" onclick="showAdminTab('editor', this)">
+        ✏ &nbsp;EDITOR
+      </button>
     </div>
 
 
@@ -801,6 +804,16 @@
       </div>
 
     </div><!-- /users tab -->
+
+
+    <!-- ════════════════════════
+         EDITOR TAB  (master only)
+    ════════════════════════ -->
+    <div id="adminTab-editor" class="admin-tab-content master-only" style="display:none">
+      <div id="adminEditorContainer">
+        <div class="admin-empty">// SELECT EDITOR TAB TO LOAD</div>
+      </div>
+    </div><!-- /editor tab -->
 
   </div>
 </section>

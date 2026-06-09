@@ -33,7 +33,14 @@ async function getSB() {
   if (!window.supabase) {
     await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
   }
-  _sb = window.supabase.createClient(cfg.url, cfg.key);
+  _sb = window.supabase.createClient(cfg.url, cfg.key, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      storageKey: 'fb-admin-session',
+      storage: window.localStorage
+    }
+  });
   return _sb;
 }
 

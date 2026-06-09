@@ -52,6 +52,32 @@ function loadScript(src) {
     document.head.appendChild(s);
   });
 }
+// ═══════════════════════════════════════════
+//  CMS — CONTENT LOADER
+//  Fetches content from Supabase and injects
+//  into all elements with data-cms attributes
+// ═══════════════════════════════════════════
+
+async function loadCMSContent() {
+  try {
+    const sb = await getSB();
+    const { data: rows, error } = await sb.from('content').select('key, value');
+    if (error || !rows) return;
+    const map = {};
+    rows.forEach(r => map[r.key] = r.value);
+    document.querySelectorAll('[data-cms]').forEach(el => {
+      const key = el.getAttribute('data-cms');
+      if (map[key] !== undefined) el.textContent = map[key];
+    });
+  } catch(e) {
+    console.warn('CMS load failed:', e);
+  }
+}
+
+// Load CMS content on page start
+loadCMSContent();
+
+
 
 // ═══════════════════════════════════════════
 //  NAVIGATION
@@ -381,6 +407,7 @@ function showAdminTab(tab, el) {
   if (el) el.classList.add('active');
   if (tab === 'users') loadAdminUsers();
   if (tab === 'orders') loadAdminOrders();
+  if (tab === 'editor') loadCMSEditor();
 }
 
 // ═══════════════════════════════════════════
@@ -657,6 +684,133 @@ async function removeUser(userId, email) {
   loadAdminUsers();
 }
 
+
+
+// ═══════════════════════════════════════════
+//  CMS EDITOR — Admin Panel
+// ═══════════════════════════════════════════
+
+const CMS_FIELDS = [
+  // Section, key, label, type (text/textarea)
+  ['HOME', 'nav_status', 'Nav Status Text', 'text'],
+  ['HOME', 'hero_directive', 'Hero Directive Label', 'text'],
+  ['HOME', 'hero_sub', 'Hero Sub Headline', 'text'],
+  ['HOME', 'sys_philosophy', 'Sys Card — Philosophy', 'text'],
+  ['HOME', 'sys_standard', 'Sys Card — Standard', 'text'],
+  ['HOME', 'sys_commitment', 'Sys Card — Commitment', 'text'],
+  ['HOME', 'sys_warranty', 'Sys Card — Warranty', 'text'],
+  ['SERVICES', 'svc_consultation_title', 'Service: Consultation Title', 'text'],
+  ['SERVICES', 'svc_logo_title', 'Service: Logo Design Title', 'text'],
+  ['SERVICES', 'svc_flyer_title', 'Service: Digital Flyers Title', 'text'],
+  ['SERVICES', 'svc_brochure_title', 'Service: Brochure Site Title', 'text'],
+  ['SERVICES', 'svc_simple_title', 'Service: Simple Build Title', 'text'],
+  ['SERVICES', 'svc_standard_title', 'Service: Standard Build Title', 'text'],
+  ['SERVICES', 'svc_full_title', 'Service: Full Build Title', 'text'],
+  ['BILLING', 'billing_intro', 'Billing Intro Text', 'textarea'],
+  ['BILLING', 'price_tier1', 'Tier 1 Price', 'text'],
+  ['BILLING', 'price_tier2', 'Tier 2 Price', 'text'],
+  ['BILLING', 'price_tier3', 'Tier 3 Price', 'text'],
+  ['BILLING', 'price_retainer_mo', 'Retainer Monthly Price', 'text'],
+  ['BILLING', 'price_retainer_yr', 'Retainer Annual Price', 'text'],
+  ['BILLING', 'rate_standard', 'Standard Shop Rate', 'text'],
+  ['BILLING', 'rate_overtime', 'Overtime Rate', 'text'],
+  ['BILLING', 'rate_rush', 'Rush Rate Multiplier', 'text'],
+  ['ABOUT', 'about_headline', 'About Page Headline', 'textarea'],
+  ['WORK ORDER', 'step1', 'Step 1 — Submit Description', 'textarea'],
+  ['WORK ORDER', 'step2', 'Step 2 — Review Description', 'textarea'],
+  ['WORK ORDER', 'step3', 'Step 3 — Quote Description', 'textarea'],
+  ['WORK ORDER', 'step4', 'Step 4 — Deliver Description', 'textarea'],
+  ['CONTACT', 'contact_phone', 'Phone Number', 'text'],
+];
+
+async function loadCMSEditor() {
+  const box = document.getElementById('adminEditorContainer');
+  if (!box) return;
+  box.innerHTML = '<div class="admin-empty">// LOADING EDITOR...</div>';
+
+  try {
+    const sb = await getSB();
+    const { data: rows } = await sb.from('content').select('key, value');
+    const map = {};
+    if (rows) rows.forEach(r => map[r.key] = r.value);
+
+    // Group by section
+    const sections = {};
+    CMS_FIELDS.forEach(([section, key, label, type]) => {
+      if (!sections[section]) sections[section] = [];
+      sections[section].push({ key, label, type, value: map[key] || '' });
+    });
+
+    box.innerHTML = `
+      <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
+          // Edit fields below and click SAVE ALL CHANGES
+        </div>
+        <button class="admin-login-btn" style="padding:10px 24px" onclick="saveCMSContent()">
+          ⚡ SAVE ALL CHANGES
+        </button>
+      </div>
+      ${Object.entries(sections).map(([section, fields]) => `
+        <div style="margin-bottom:1.5rem">
+          <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--cyan);
+            letter-spacing:.2em;padding:.6rem 1.25rem;border:1px solid var(--border);
+            background:rgba(0,229,255,.04);border-bottom:none">
+            // ${section}
+          </div>
+          <div style="border:1px solid var(--border);background:var(--bg-card)">
+            ${fields.map(f => `
+              <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border)">
+                <label class="admin-input-label" style="margin-bottom:5px">${f.label}</label>
+                ${f.type === 'textarea'
+                  ? `<textarea data-cms-key="${f.key}" class="admin-input-field"
+                      style="min-height:70px;resize:vertical;padding:8px 12px;width:100%;box-sizing:border-box"
+                    >${f.value}</textarea>`
+                  : `<input type="text" data-cms-key="${f.key}" class="admin-input-field"
+                      value="${f.value.replace(/"/g,'&quot;')}" />`
+                }
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+      <div style="text-align:right;margin-top:1rem">
+        <button class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
+          ⚡ SAVE ALL CHANGES
+        </button>
+      </div>
+      <div id="editorSaveMsg" style="font-family:var(--font-mono);font-size:.65rem;
+        letter-spacing:.1em;margin-top:.75rem;text-align:right;min-height:1.5rem"></div>
+    `;
+  } catch(err) {
+    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
+  }
+}
+
+async function saveCMSContent() {
+  const msg = document.getElementById('editorSaveMsg');
+  if (msg) { msg.style.color = 'var(--cyan)'; msg.textContent = '// SAVING...'; }
+
+  try {
+    const sb = await getSB();
+    const inputs = document.querySelectorAll('[data-cms-key]');
+    const upserts = Array.from(inputs).map(el => ({
+      key: el.getAttribute('data-cms-key'),
+      value: el.value || el.textContent,
+      updated_at: new Date().toISOString()
+    }));
+
+    const { error } = await sb.from('content').upsert(upserts, { onConflict: 'key' });
+    if (error) throw error;
+
+    // Reload live content on the page
+    await loadCMSContent();
+
+    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ ALL CHANGES SAVED — SITE UPDATED LIVE'; }
+    setTimeout(() => { if (msg) msg.textContent = ''; }, 4000);
+  } catch(err) {
+    if (msg) { msg.style.color = '#ff4466'; msg.textContent = '⚠ SAVE FAILED: ' + err.message; }
+  }
+}
 
 // ═══════════════════════════════════════════
 //  HELPERS

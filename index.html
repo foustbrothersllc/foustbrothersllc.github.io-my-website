@@ -658,6 +658,195 @@
 </div>
 <!-- /page-terms -->
 
+  <!-- ═══════════════════════════════════════════════════════════════
+  ⚠  PASTE THIS ENTIRE BLOCK INTO index.html
+     Find this line near the very bottom of the file:
+
+       <!-- ── SCRIPTS (load order matters) ── -->
+
+     Paste everything below THIS comment, directly ABOVE that line.
+     Do not change anything else in index.html.
+════════════════════════════════════════════════════════════════ -->
+
+
+<!-- ═══════════════════════════════════════════
+     ADMIN — LOGIN OVERLAY
+═══════════════════════════════════════════ -->
+<div id="adminLoginOverlay" class="admin-login-overlay">
+  <div class="admin-login-box">
+    <div class="admin-login-header">
+      <div class="section-module-label" style="margin-bottom:.5rem">
+        <div class="section-dot"></div>&nbsp;RESTRICTED ACCESS
+      </div>
+      <div style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--white);letter-spacing:.1em">
+        // ADMIN TERMINAL
+      </div>
+      <div style="font-family:var(--font-mono);font-size:.52rem;color:var(--white-dim);letter-spacing:.18em;margin-top:4px">
+        AUTHORIZED PERSONNEL ONLY
+      </div>
+    </div>
+    <div class="admin-login-body">
+      <div style="margin-bottom:.85rem">
+        <label class="admin-input-label">EMAIL ADDRESS</label>
+        <input type="email" id="adminEmailInput" class="admin-input-field"
+          placeholder="your@email.com" autocomplete="email" />
+      </div>
+      <div style="margin-bottom:1.1rem">
+        <label class="admin-input-label">PASSWORD</label>
+        <input type="password" id="adminPasswordInput" class="admin-input-field"
+          placeholder="••••••••••" autocomplete="current-password" />
+      </div>
+      <div id="adminLoginError" class="admin-login-error"></div>
+      <div style="display:flex;gap:.75rem">
+        <button id="adminLoginBtn" class="admin-login-btn" onclick="submitAdminLogin()">
+          ⚡ AUTHENTICATE
+        </button>
+        <button class="admin-abort-btn" onclick="closeAdminLogin()">ABORT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIVE NOTIFICATION TOAST ── -->
+<div id="adminToast" class="admin-toast"></div>
+
+<!-- ── HIDDEN TRIGGER: click bottom-left corner 5× quickly to open login ── -->
+<div id="adminSecretTrigger"
+  style="position:fixed;bottom:0;left:0;width:50px;height:50px;z-index:9000;cursor:default;user-select:none;">
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     ADMIN PAGE
+═══════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+<section style="padding-top:90px;padding-bottom:6rem;min-height:100vh">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="admin-page-header">
+      <div>
+        <div class="section-module-label">
+          <div class="section-dot"></div> MODULE_ADMIN // COMMAND_CENTER
+        </div>
+        <h1 class="section-title">ADMIN PANEL</h1>
+        <div class="section-subtitle">WORK ORDER MONITORING // LIVE FEED</div>
+      </div>
+      <div id="adminUserInfo" class="admin-user-info"></div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="admin-stats-bar">
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">TOTAL ORDERS</div>
+        <div class="admin-stat-value" id="adminStatTotal">—</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">NEW</div>
+        <div class="admin-stat-value" id="adminStatNew" style="color:#00e5ff">—</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">IN PROGRESS</div>
+        <div class="admin-stat-value" id="adminStatProgress" style="color:#ffaa00">—</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">COMPLETE</div>
+        <div class="admin-stat-value" id="adminStatComplete" style="color:#00ff88">—</div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="admin-tab-bar">
+      <button class="admin-tab-btn active" onclick="showAdminTab('orders', this)">
+        ☰ &nbsp;ORDERS
+      </button>
+      <button class="admin-tab-btn master-only" onclick="showAdminTab('users', this)">
+        ⚙ &nbsp;USERS
+      </button>
+    </div>
+
+
+    <!-- ════════════════════════
+         ORDERS TAB
+    ════════════════════════ -->
+    <div id="adminTab-orders" class="admin-tab-content">
+
+      <!-- Controls -->
+      <div class="admin-controls-row">
+        <div style="display:flex;align-items:center;gap:.85rem;flex-wrap:wrap">
+          <span class="ao-label">FILTER:</span>
+          <select id="adminStatusFilter" class="admin-select" onchange="adminFilterOrders()">
+            <option value="all">ALL ORDERS</option>
+            <option value="new">NEW</option>
+            <option value="in_progress">IN PROGRESS</option>
+            <option value="complete">COMPLETE</option>
+            <option value="cancelled">CANCELLED</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <div class="admin-live-pill">
+            <span class="admin-live-dot"></span> LIVE
+          </div>
+          <button class="admin-refresh-btn" onclick="refreshAdminOrders()">↻ REFRESH</button>
+        </div>
+      </div>
+
+      <!-- Orders Feed -->
+      <div id="adminOrdersContainer">
+        <div class="admin-empty">// INITIALIZING...</div>
+      </div>
+
+    </div><!-- /orders tab -->
+
+
+    <!-- ════════════════════════
+         USERS TAB  (master only)
+    ════════════════════════ -->
+    <div id="adminTab-users" class="admin-tab-content master-only" style="display:none">
+
+      <!-- Invite Panel -->
+      <div class="admin-invite-panel">
+        <div class="ao-header" style="border-bottom:1px solid var(--border)">
+          <span class="ao-id">// INVITE NEW USER</span>
+        </div>
+        <div style="padding:1.25rem">
+          <div class="admin-invite-row">
+            <div style="flex:1;min-width:200px">
+              <label class="admin-input-label">EMAIL ADDRESS</label>
+              <input type="email" id="inviteEmail" class="admin-input-field"
+                placeholder="newuser@email.com" />
+            </div>
+            <div>
+              <label class="admin-input-label">ROLE</label>
+              <select id="inviteRole" class="admin-select" style="height:42px;padding:0 12px">
+                <option value="user">USER — read-only</option>
+                <option value="admin">ADMIN — full access</option>
+              </select>
+            </div>
+            <button class="admin-login-btn" style="align-self:flex-end;white-space:nowrap;flex:none"
+              onclick="sendInvite()">⚡ SEND INVITE</button>
+          </div>
+          <div id="inviteMsg" class="admin-invite-msg"></div>
+          <div style="font-family:var(--font-mono);font-size:.52rem;color:var(--white-dim);
+            letter-spacing:.1em;margin-top:.6rem;line-height:1.8">
+            // Invited user receives an email to set their password.<br>
+            // Master admins cannot be modified or removed.
+          </div>
+        </div>
+      </div>
+
+      <!-- Users List -->
+      <div id="adminUsersContainer">
+        <div class="admin-empty">// SELECT USERS TAB TO LOAD</div>
+      </div>
+
+    </div><!-- /users tab -->
+
+  </div>
+</section>
+</div>
+<!-- /page-admin -->
+  
 <!-- ── SCRIPTS (load order matters) ── -->
 <script src="js/main.js"></script>
 <script src="js/blob.js"></script>

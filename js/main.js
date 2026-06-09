@@ -216,7 +216,9 @@ document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date
 
 let _clickCount = 0, _clickTimer = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+// ── HIDDEN CLICK TRIGGER ──
+// Works whether DOM is already loaded or not
+function initAdminTrigger() {
   const trigger = document.getElementById('adminSecretTrigger');
   if (!trigger) return;
   trigger.addEventListener('click', () => {
@@ -235,6 +237,21 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ev.key === 'Escape') closeAdminLogin();
     });
   });
+}
+
+// Run immediately (scripts load after DOM when at bottom of page)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAdminTrigger);
+} else {
+  initAdminTrigger();
+}
+
+// ── KEYBOARD SHORTCUT BACKUP: Ctrl + Shift + A ──
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    e.preventDefault();
+    showAdminLogin();
+  }
 });
 
 // ── ADMIN LOGIN MODAL ──

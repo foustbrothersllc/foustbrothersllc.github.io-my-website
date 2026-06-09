@@ -11,10 +11,20 @@ let _cfg = null;
 
 async function getCfg() {
   if (_cfg) return _cfg;
-  const res = await fetch('/api/config');
-  if (!res.ok) throw new Error('Config unavailable');
-  _cfg = await res.json();
-  return _cfg;
+  // Try Vercel edge function first, fall back to inline config
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.url && data.key) { _cfg = data; return _cfg; }
+    }
+  } catch(e) {}
+  // Fallback to inline config set in index.html
+  if (window.__SBCFG && window.__SBCFG.url) {
+    _cfg = window.__SBCFG;
+    return _cfg;
+  }
+  throw new Error('Supabase config not available');
 }
 
 async function getSB() {

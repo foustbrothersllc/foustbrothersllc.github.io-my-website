@@ -657,49 +657,6 @@ async function removeUser(userId, email) {
   loadAdminUsers();
 }
 
-async function sendInvite() {
-  const emailEl = document.getElementById('inviteEmail');
-  const roleEl  = document.getElementById('inviteRole');
-  const msgEl   = document.getElementById('inviteMsg');
-  const email   = emailEl.value.trim();
-  if (!email) { msgEl.style.color='#ff4466'; msgEl.textContent='⚠ Enter an email address'; return; }
-
-  msgEl.style.color = 'var(--cyan)'; msgEl.textContent = '// SENDING INVITE...';
-
-  try {
-    const [sb, cfg] = await Promise.all([getSB(), getCfg()]);
-    const { data: { session } } = await sb.auth.getSession();
-
-    const res = await fetch(`${cfg.url}/auth/v1/invite`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': cfg.key,
-        'Authorization': `Bearer ${session.access_token}`
-      },
-      body: JSON.stringify({ email })
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'Invite failed');
-    }
-
-    // Pre-set role in profiles (trigger will create the row; we update after a moment)
-    const role = roleEl.value;
-    setTimeout(async () => {
-      const { data: prof } = await sb.from('profiles').select('id').eq('email', email).single();
-      if (prof) await sb.from('profiles').update({ role }).eq('id', prof.id);
-    }, 2000);
-
-    msgEl.style.color = '#00ff88';
-    msgEl.textContent = `✓ Invite sent to ${email} — they will receive an email to set their password.`;
-    emailEl.value = '';
-    setTimeout(() => loadAdminUsers(), 3000);
-  } catch (err) {
-    msgEl.style.color = '#ff4466'; msgEl.textContent = '⚠ ' + err.message;
-  }
-}
 
 // ═══════════════════════════════════════════
 //  HELPERS

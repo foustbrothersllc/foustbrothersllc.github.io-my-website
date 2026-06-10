@@ -67,7 +67,7 @@ async function loadCMSContent() {
 
     document.querySelectorAll('[data-cms]').forEach(el => {
       const key = el.getAttribute('data-cms');
-      if (map[key] !== undefined) el.textContent = map[key];
+      if (map[key] !== undefined && map[key] !== '') el.textContent = map[key];
     });
 
     // Orb visibility toggle

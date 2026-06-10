@@ -386,3 +386,5 @@ textarea { resize: vertical; min-height: 120px; }
   .rate-amount-block { text-align: left; }
   .rate-amount { font-size: 1rem; }
 }
+
+.hero-hidden { display: none !important; }

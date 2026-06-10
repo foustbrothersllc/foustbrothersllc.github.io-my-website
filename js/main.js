@@ -70,15 +70,14 @@ async function loadCMSContent() {
       if (map[key] !== undefined) el.textContent = map[key];
     });
 
-    // Hero visibility toggle
-    const heroSection = document.querySelector('#page-home .hero');
-    if (heroSection) {
+    // Orb visibility toggle
+    const orbContainer = document.querySelector('#page-home .hero-orb-container');
+    if (orbContainer) {
       const v = map['hero_visible'];
       console.log('[HERO TOGGLE] raw value from DB:', JSON.stringify(v));
-      // Hide if value is any form of false/off
       const shouldHide = (v === 'false' || v === false || v === '0' || v === 0);
       console.log('[HERO TOGGLE] shouldHide:', shouldHide);
-      heroSection.classList.toggle('hero-hidden', shouldHide);
+      orbContainer.classList.toggle('hero-hidden', shouldHide);
     }
   } catch(e) {
     console.warn('CMS load failed:', e);
@@ -679,7 +678,7 @@ async function removeUser(userId, email) {
 
 const CMS_FIELDS = [
   // ── SITE CONTROLS ──
-  ['SITE CONTROLS', 'hero_visible', 'Hero Section Visible', 'toggle'],
+  ['SITE CONTROLS', 'hero_visible', 'Orb Visible', 'toggle'],
 
   // ── HOME ──
   ['HOME', 'nav_status',        'Nav Status Text',               'text'],
@@ -792,7 +791,7 @@ async function loadCMSEditor() {
                     <div>
                       <label class="admin-input-label" style="margin:0;display:block">${f.label}</label>
                       <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.08em;margin-top:3px">
-                        Controls whether the hero section is shown on the homepage
+                        Controls whether the orb animation is shown on the homepage
                       </div>
                     </div>
                     <button

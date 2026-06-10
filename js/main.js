@@ -769,13 +769,8 @@ async function loadCMSEditor() {
     });
 
     box.innerHTML = `
-      <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
-          // Edit fields below and click SAVE ALL CHANGES
-        </div>
-        <button class="admin-login-btn" style="padding:10px 24px" onclick="saveCMSContent()">
-          ⚡ SAVE ALL CHANGES
-        </button>
+      <div style="margin-bottom:1rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
+        // Edit fields below and click SAVE ALL CHANGES
       </div>
 
       ${Object.entries(sections).map(([section, fields]) => `
@@ -830,13 +825,12 @@ async function loadCMSEditor() {
         </div>
       `).join('')}
 
-      <div style="text-align:right;margin-top:1rem">
+      <div style="margin-top:1.5rem;border:1px solid var(--border);background:var(--bg-card);padding:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div id="editorSaveMsg" style="font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;min-height:1.2rem;flex:1;"></div>
         <button class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
           ⚡ SAVE ALL CHANGES
         </button>
       </div>
-      <div id="editorSaveMsg" style="font-family:var(--font-mono);font-size:.65rem;
-        letter-spacing:.1em;margin-top:.75rem;text-align:right;min-height:1.5rem"></div>
     `;
   } catch(err) {
     box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;

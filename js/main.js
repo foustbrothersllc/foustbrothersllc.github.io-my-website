@@ -74,11 +74,9 @@ async function loadCMSContent() {
     const heroSection = document.querySelector('#page-home .hero');
     if (heroSection) {
       const v = map['hero_visible'];
-      if (v === 'false') {
-        heroSection.classList.add('hero-hidden');
-      } else {
-        heroSection.classList.remove('hero-hidden');
-      }
+      // Hide if explicitly set to 'false'. Show in all other cases (undefined, 'true', empty).
+      const shouldHide = (v === 'false');
+      heroSection.classList.toggle('hero-hidden', shouldHide);
     }
   } catch(e) {
     console.warn('CMS load failed:', e);
@@ -105,6 +103,9 @@ function navigate(page) {
 
   try { history.pushState({ page }, '', page === 'home' ? '/' : '/' + page); } catch(e) {}
   setTimeout(initStamps, 150);
+
+  // Re-apply CMS content (hero visibility etc) on every navigation
+  loadCMSContent();
 
   if (page === 'admin') {
     checkAdminAuth();

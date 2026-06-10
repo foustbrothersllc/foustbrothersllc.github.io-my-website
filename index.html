@@ -596,7 +596,7 @@
     <div class="admin-tab-bar">
       <button class="admin-tab-btn active" onclick="showAdminTab('orders', this)">☰ &nbsp;ORDERS</button>
       <button class="admin-tab-btn master-only" onclick="showAdminTab('users', this)">⚙ &nbsp;USERS</button>
-      <button class="admin-tab-btn master-only" onclick="showAdminTab('editor', this)">✏ &nbsp;EDITOR</button>
+      <button class="admin-tab-btn admin-only" onclick="showAdminTab('editor', this)">✏ &nbsp;EDITOR</button>
     </div>
     <div id="adminTab-orders" class="admin-tab-content">
       <div class="admin-controls-row">
@@ -620,7 +620,7 @@
     <div id="adminTab-users" class="admin-tab-content master-only" style="display:none">
       <div id="adminUsersContainer"><div class="admin-empty">// SELECT USERS TAB TO LOAD</div></div>
     </div>
-    <div id="adminTab-editor" class="admin-tab-content master-only" style="display:none">
+    <div id="adminTab-editor" class="admin-tab-content admin-only" style="display:none">
       <div id="adminEditorContainer"><div class="admin-empty">// SELECT EDITOR TAB TO LOAD</div></div>
     </div>
   </div>

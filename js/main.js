@@ -383,6 +383,9 @@ async function checkAdminAuth() {
     document.querySelectorAll('.master-only').forEach(el => {
       el.style.display = profile.is_master ? '' : 'none';
     });
+    document.querySelectorAll('.admin-only').forEach(el => {
+      el.style.display = (profile.role === 'admin' || profile.is_master) ? '' : 'none';
+    });
 
     renderAdminHeader(session.user.email, profile.role, profile.is_master);
     loadAdminOrders();

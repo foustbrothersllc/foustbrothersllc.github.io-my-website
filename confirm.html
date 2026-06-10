@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Confirmed — Foust Brothers LLC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #020810;
+      --bg-card: #080f1e;
+      --cyan: #00e5ff;
+      --cyan-dim: #00b8cc;
+      --border: rgba(0,229,255,0.2);
+      --white: #e8f4f8;
+      --white-dim: #8aa8b8;
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'Share Tech Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg-primary);
+      color: var(--white);
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .math-bg {
+      position: fixed; inset: 0; z-index: 0; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Ctext x='20' y='40' fill='%2300e5ff' font-size='14' font-family='monospace'%3E%E2%88%87%C2%B2%CF%86%20%3D%20%CF%81/%CE%B5%E2%82%80%3C/text%3E%3Ctext x='200' y='80' fill='%2300e5ff' font-size='12' font-family='monospace'%3EF%20%3D%20ma%3C/text%3E%3Ctext x='400' y='60' fill='%2300e5ff' font-size='16' font-family='monospace'%3Ee%5E(i%CF%80)%20%2B%201%20%3D%200%3C/text%3E%3Ctext x='50' y='150' fill='%2300e5ff' font-size='13' font-family='monospace'%3E%CE%BB%20%3D%20h/mv%3C/text%3E%3Ctext x='300' y='200' fill='%2300e5ff' font-size='15' font-family='monospace'%3E%CF%83%20%3D%20%E2%88%9A(%CE%A3(x-%CE%BC)%C2%B2/N)%3C/text%3E%3Cline x1='0' y1='120' x2='800' y2='120' stroke='%2300e5ff' stroke-width='0.3'/%3E%3Cline x1='0' y1='350' x2='800' y2='350' stroke='%2300e5ff' stroke-width='0.3'/%3E%3C/svg%3E");
+      background-size: 800px 600px;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 560px;
+      border: 1px solid var(--cyan);
+      background: var(--bg-card);
+      box-shadow: 0 0 60px rgba(0,229,255,0.1), 0 0 120px rgba(0,229,255,0.05);
+    }
+
+    .card-header {
+      padding: 2rem 2rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,229,255,0.03);
+      text-align: center;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      color: var(--white);
+      margin-bottom: .25rem;
+    }
+    .brand-sub {
+      font-size: .55rem;
+      color: var(--cyan);
+      letter-spacing: .25em;
+    }
+
+    .check {
+      width: 64px; height: 64px;
+      border: 2px solid #00ff88;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 1.5rem auto 1rem;
+      box-shadow: 0 0 20px rgba(0,255,136,0.3);
+      animation: pulseGreen 2s ease-in-out infinite;
+    }
+    .check-inner {
+      font-size: 1.6rem;
+      color: #00ff88;
+    }
+    @keyframes pulseGreen {
+      0%,100% { box-shadow: 0 0 20px rgba(0,255,136,0.3); }
+      50% { box-shadow: 0 0 40px rgba(0,255,136,0.6); }
+    }
+
+    .status-label {
+      font-size: .55rem;
+      color: #00ff88;
+      letter-spacing: .3em;
+      margin-bottom: .5rem;
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: .08em;
+      line-height: 1.2;
+    }
+
+    .card-body { padding: 1.75rem 2rem 2rem; }
+
+    .section {
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+      margin-bottom: 1rem;
+    }
+    .section-head {
+      padding: .6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .55rem;
+      color: var(--cyan);
+      letter-spacing: .2em;
+    }
+    .section-body {
+      padding: 1rem;
+      font-size: .75rem;
+      color: var(--white-dim);
+      line-height: 1.9;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      margin-bottom: .85rem;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .step-num {
+      font-family: var(--font-display);
+      font-size: .6rem;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: .1em;
+      white-space: nowrap;
+      padding-top: .1rem;
+    }
+    .step-text { font-size: .72rem; color: var(--white-dim); line-height: 1.7; }
+    .step-text strong { color: var(--white); }
+
+    .shortcut {
+      display: inline-block;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--cyan);
+      letter-spacing: .05em;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin-top: 1.5rem;
+      background: transparent;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: var(--font-display);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+      clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    }
+    .btn:hover {
+      background: rgba(0,229,255,0.08);
+      box-shadow: 0 0 20px rgba(0,229,255,0.2);
+    }
+
+    .footer-note {
+      margin-top: 1.25rem;
+      text-align: center;
+      font-size: .55rem;
+      color: var(--white-dim);
+      letter-spacing: .1em;
+      opacity: .6;
+    }
+
+    .blink { animation: blink 1.5s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  </style>
+</head>
+<body>
+<div class="math-bg"></div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="brand">FOUST BROTHERS LLC</div>
+    <div class="brand-sub">DIGITAL DIVISION // SECURE ACCESS</div>
+    <div class="check"><div class="check-inner">✓</div></div>
+    <div class="status-label">● ACCOUNT CONFIRMED</div>
+    <div class="title">YOU'RE IN THE SYSTEM</div>
+  </div>
+
+  <div class="card-body">
+
+    <div class="section">
+      <div class="section-head">01 // ACCOUNT STATUS</div>
+      <div class="section-body">
+        Your email has been verified and your account is now active. You have been granted access to the Foust Brothers admin panel based on your assigned role.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">02 // HOW TO ACCESS THE ADMIN PANEL</div>
+      <div class="section-body">
+        <div class="step">
+          <div class="step-num">METHOD 01</div>
+          <div class="step-text">
+            <strong>Secret Trigger</strong> — Go to the main site and click the <strong>bottom-left corner</strong> of the screen <strong>5 times quickly</strong>. The login panel will appear.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">METHOD 02</div>
+          <div class="step-text">
+            <strong>Keyboard Shortcut</strong> — Press <span class="shortcut">Ctrl + Shift + A</span> anywhere on the site to open the login panel instantly.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">LOGIN</div>
+          <div class="step-text">
+            Use the <strong>email and password</strong> that was set up for your account. Contact your master admin if you need credentials reset.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="/" class="btn">⚡ GO TO SITE</a>
+
+    <div class="footer-note">
+      FOUST BROTHERS LLC — DIGITAL DIVISION // CONFIDENTIAL<span class="blink">_</span>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

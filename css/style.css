@@ -24,10 +24,6 @@
 html { scroll-behavior: smooth; }
 body { background: var(--bg-primary); color: var(--white); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 2px; }
-
 /* ── MATH BACKGROUND ── */
 .math-bg {
   position: fixed; inset: 0; z-index: 0; opacity: 0.04;
@@ -47,9 +43,6 @@ nav {
 }
 
 .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
-#navOrb { width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 0 12px var(--cyan), 0 0 24px rgba(0,229,255,0.3); animation: orbPulse 3s ease-in-out infinite; }
-@keyframes orbPulse { 0%,100%{ box-shadow: 0 0 12px var(--cyan), 0 0 24px rgba(0,229,255,0.3); } 50%{ box-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(0,229,255,0.5); } }
-
 .nav-brand-text { display: flex; flex-direction: column; }
 .nav-brand-name { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; color: var(--white); line-height: 1; }
 .nav-brand-sub { font-family: var(--font-mono); font-size: 0.55rem; color: var(--cyan); letter-spacing: 0.2em; line-height: 1.4; }
@@ -78,6 +71,7 @@ nav {
 
 /* ── HERO ── */
 .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding-top: 64px; }
+.hero-hidden { display: none !important; }
 
 .hero-grid-overlay {
   position: absolute; inset: 0;
@@ -164,37 +158,21 @@ section { padding: 6rem 2rem; position: relative; z-index: 1; }
 .service-card-cta { font-family: var(--font-mono); font-size: 0.6rem; color: var(--white-dim); letter-spacing: 0.15em; transition: color 0.2s; }
 .service-card:hover .service-card-cta { color: var(--cyan); }
 
+/* ── AI NOTICE ── */
+.ai-notice { background: rgba(0,229,255,0.04); border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 2rem; font-family: var(--font-mono); font-size: 0.65rem; color: var(--white-dim); letter-spacing: 0.08em; line-height: 1.7; display: flex; align-items: flex-start; gap: 10px; }
+.ai-badge { font-family: var(--font-display); font-size: 0.6rem; font-weight: 700; color: var(--cyan); letter-spacing: 0.15em; white-space: nowrap; }
+
 /* ── QUALITY BADGE ── */
-.quality-badge {
-  margin-top: 1.5rem;
-  border: 2px solid var(--cyan);
-  padding: 12px 16px;
-  text-align: center;
-  width: 160px;
-  height: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transform: rotate(-4deg);
-  box-shadow: 0 0 10px rgba(0,229,255,0.2), inset 0 0 10px rgba(0,229,255,0.05);
-  overflow: visible;
-}
+.quality-badge { margin-top: 1.5rem; border: 2px solid var(--cyan); padding: 12px 16px; text-align: center; width: 160px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: rotate(-4deg); box-shadow: 0 0 10px rgba(0,229,255,0.2), inset 0 0 10px rgba(0,229,255,0.05); overflow: visible; }
 .quality-badge.stamped { animation: stamp 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
 .quality-badge-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 900; color: var(--cyan); letter-spacing: 0.1em; line-height: 1.1; }
 .quality-badge-sub { font-family: var(--font-mono); font-size: 0.45rem; color: var(--white-dim); letter-spacing: 0.1em; margin-top: 6px; line-height: 1.6; }
+@keyframes stamp { 0% { opacity: 0; transform: scale(2) rotate(-4deg); } 60% { opacity: 1; transform: scale(0.92) rotate(-4deg); } 80% { opacity: 1; transform: scale(1.04) rotate(-4deg); } 100% { opacity: 1; transform: scale(1) rotate(-4deg); } }
 
-@keyframes stamp {
-  0%   { opacity: 0; transform: scale(2) rotate(-4deg); }
-  60%  { opacity: 1; transform: scale(0.92) rotate(-4deg); }
-  80%  { opacity: 1; transform: scale(1.04) rotate(-4deg); }
-  100% { opacity: 1; transform: scale(1) rotate(-4deg); }
-}
+/* ── FOOTER ── */
 footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 4rem 2rem 2rem; overflow: visible; }
 .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto 3rem; overflow: visible; }
 .footer-brand-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
-.footer-orb { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #4af, #00e5ff 40%, #006688 80%, #002233); box-shadow: 0 0 10px rgba(0,229,255,0.4); }
 .footer-brand-name { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; }
 .footer-brand-sub { font-family: var(--font-mono); font-size: 0.5rem; color: var(--cyan); letter-spacing: 0.2em; }
 .footer-tagline { font-size: 0.8rem; color: var(--white-dim); line-height: 1.6; margin-bottom: 1.5rem; }
@@ -338,31 +316,16 @@ textarea { resize: vertical; min-height: 120px; }
   .rate-stats { grid-template-columns: 1fr 1fr; }
 }
 
-/* ── MOBILE NAV FIX ── */
 @media (max-width: 700px) {
-  /* Hide clock on mobile so hamburger isn't pushed out of place */
   #navClock { display: none; }
-
-  /* Show hamburger, push it to the right */
   .nav-toggle { display: block; margin-left: auto; }
-
-  /* Hide nav links by default */
   .nav-links { display: none; }
-
-  /* When open: drop down as full-width overlay below nav bar */
   .nav-links.open {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 64px;
-    left: 0; right: 0;
-    background: var(--bg-primary);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
-    gap: 1rem;
-    z-index: 99;
+    display: flex; flex-direction: column; position: fixed;
+    top: 64px; left: 0; right: 0;
+    background: var(--bg-primary); border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem; gap: 1rem; z-index: 99;
   }
-
   .services-grid { grid-template-columns: 1fr; }
   .hero-headline { font-size: clamp(2.5rem, 12vw, 5rem); }
   .section-title { font-size: clamp(1.8rem, 8vw, 3rem); }
@@ -386,5 +349,3 @@ textarea { resize: vertical; min-height: 120px; }
   .rate-amount-block { text-align: left; }
   .rate-amount { font-size: 1rem; }
 }
-
-.hero-hidden { display: none !important; }

@@ -769,11 +769,11 @@ async function loadCMSEditor() {
     });
 
     box.innerHTML = `
-      <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <div style="margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border:1px solid var(--border);background:var(--bg-card);padding:1.25rem;">
         <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
           // Edit fields below and click SAVE ALL CHANGES
         </div>
-        <button class="admin-login-btn" style="padding:10px 24px" onclick="saveCMSContent()">
+        <button id="saveTopBtn" class="admin-login-btn" style="padding:10px 24px" onclick="saveCMSContent()">
           ⚡ SAVE ALL CHANGES
         </button>
       </div>
@@ -832,7 +832,7 @@ async function loadCMSEditor() {
 
       <div style="margin-top:1.5rem;border:1px solid var(--border);background:var(--bg-card);padding:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div id="editorSaveMsg" style="font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;flex:1;"></div>
-        <button class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
+        <button id="saveBottomBtn" class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
           ⚡ SAVE ALL CHANGES
         </button>
       </div>
@@ -864,7 +864,23 @@ function toggleCMSField(btn) {
 
 async function saveCMSContent() {
   const msg = document.getElementById('editorSaveMsg');
-  if (msg) { msg.style.color = 'var(--cyan)'; msg.textContent = '// SAVING...'; }
+
+  // Flash both buttons
+  const flashBtn = (id) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.textContent = '✓ ALL CHANGES SAVED';
+    btn.style.borderColor = '#00ff88';
+    btn.style.color = '#00ff88';
+    setTimeout(() => {
+      btn.innerHTML = '⚡ SAVE ALL CHANGES';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 5000);
+  };
+
+  flashBtn('saveTopBtn');
+  flashBtn('saveBottomBtn');
 
   try {
     const sb = await getSB();
@@ -882,10 +898,14 @@ async function saveCMSContent() {
 
     await loadCMSContent();
 
-    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ ALL CHANGES SAVED — SITE UPDATED LIVE'; }
-    setTimeout(() => { if (msg) msg.textContent = ''; }, 4000);
+    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ SITE UPDATED LIVE'; }
+    setTimeout(() => { if (msg) msg.textContent = ''; }, 5000);
   } catch(err) {
     if (msg) { msg.style.color = '#ff4466'; msg.textContent = '⚠ SAVE FAILED: ' + err.message; }
+    ['saveTopBtn','saveBottomBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) { btn.innerHTML = '⚠ SAVE FAILED'; btn.style.color = '#ff4466'; btn.style.borderColor = '#ff4466'; }
+    });
   }
 }
 

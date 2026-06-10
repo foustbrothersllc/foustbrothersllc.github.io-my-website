@@ -1,904 +1,752 @@
-/* ═══════════════════════════════════════════════════════════
-   js/main.js — Foust Brothers LLC
-   Navigation · Clock · Ticker · Forms · Admin Panel
-   NO KEYS OR PASSWORDS IN THIS FILE
-   All credentials fetched securely from /api/config
-═══════════════════════════════════════════════════════════ */
-
-// ── SUPABASE CLIENT — loaded once at runtime ──
-let _sb = null;
-let _cfg = null;
-
-async function getCfg() {
-  if (_cfg) return _cfg;
-  try {
-    const res = await fetch('/api/config');
-    if (res.ok) {
-      const data = await res.json();
-      if (data.url && data.key) { _cfg = data; return _cfg; }
-    }
-  } catch(e) {}
-  if (window.__SBCFG && window.__SBCFG.url) {
-    _cfg = window.__SBCFG;
-    return _cfg;
-  }
-  throw new Error('Supabase config not available');
-}
-
-async function getSB() {
-  if (_sb) return _sb;
-  const cfg = await getCfg();
-  if (!window.supabase) {
-    await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
-  }
-  _sb = window.supabase.createClient(cfg.url, cfg.key, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      storageKey: 'fb-admin-session',
-      storage: window.localStorage
-    }
-  });
-  return _sb;
-}
-
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = src; s.onload = resolve; s.onerror = reject;
-    document.head.appendChild(s);
-  });
-}
-
-// ═══════════════════════════════════════════
-//  CMS — CONTENT LOADER
-//  Fetches content from Supabase and injects
-//  into all elements with data-cms attributes
-// ═══════════════════════════════════════════
-
-async function loadCMSContent() {
-  try {
-    const sb = await getSB();
-    const { data: rows, error } = await sb.from('content').select('key, value');
-    if (error || !rows) return;
-    const map = {};
-    rows.forEach(r => map[r.key] = r.value);
-
-    document.querySelectorAll('[data-cms]').forEach(el => {
-      const key = el.getAttribute('data-cms');
-      if (map[key] !== undefined && map[key] !== '') el.textContent = map[key];
-    });
-
-    // Orb visibility toggle
-    const orbContainer = document.querySelector('#page-home .hero-orb-container');
-    if (orbContainer) {
-      const v = map['hero_visible'];
-      console.log('[HERO TOGGLE] raw value from DB:', JSON.stringify(v));
-      const shouldHide = (v === 'false' || v === false || v === '0' || v === 0);
-      console.log('[HERO TOGGLE] shouldHide:', shouldHide);
-      orbContainer.classList.toggle('hero-hidden', shouldHide);
-    }
-  } catch(e) {
-    console.warn('CMS load failed:', e);
-  }
-}
-
-loadCMSContent();
-
-// ═══════════════════════════════════════════
-//  NAVIGATION
-// ═══════════════════════════════════════════
-
-function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById('page-' + page);
-  if (target) target.classList.add('active');
-
-  document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
-    a.classList.toggle('active', a.dataset.page === page);
-  });
-
-  document.querySelector('.nav-links').classList.remove('open');
-  window.scrollTo(0, 0);
-
-  try { history.pushState({ page }, '', page === 'home' ? '/' : '/' + page); } catch(e) {}
-  setTimeout(initStamps, 150);
-
-  // Re-apply CMS content (hero visibility etc) on every navigation
-  loadCMSContent();
-
-  if (page === 'admin') {
-    checkAdminAuth();
-  } else {
-    stopAdminPolling();
-  }
-}
-
-window.addEventListener('popstate', (e) => {
-  if (e.state?.page) navigate(e.state.page);
-});
-
-// ── MOBILE NAV ──
-document.querySelector('.nav-toggle').addEventListener('click', function () {
-  document.querySelector('.nav-links').classList.toggle('open');
-});
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open'));
-});
-
-// ── LIVE CLOCK ──
-(function () {
-  function tick() {
-    const now = new Date();
-    const el = document.getElementById('navClock');
-    if (el) el.textContent =
-      String(now.getHours()).padStart(2,'0') + ':' +
-      String(now.getMinutes()).padStart(2,'0') + ':' +
-      String(now.getSeconds()).padStart(2,'0');
-  }
-  tick(); setInterval(tick, 1000);
-})();
-
-// ── TICKER ──
-(function () {
-  const inner = document.querySelector('.ticker-inner');
-  if (!inner) return;
-  let pos = 0;
-  (function tick() {
-    pos -= 0.4;
-    if (-pos >= inner.scrollWidth / 2) pos = 0;
-    inner.style.transform = `translateX(${pos}px)`;
-    requestAnimationFrame(tick);
-  })();
-})();
-
-// ── QUALITY BADGE STAMPS ──
-const stampObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('stamped');
-      stampObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.3 });
-
-function initStamps() {
-  document.querySelectorAll('.quality-badge').forEach(el => {
-    el.classList.remove('stamped');
-    stampObserver.observe(el);
-  });
-}
-initStamps();
-
-// ── SERVICE CARD → WORK ORDER ──
-function selectService(value) {
-  navigate('work-order');
-  setTimeout(() => {
-    const sel = document.getElementById('serviceType');
-    if (!sel) return;
-    sel.value = value;
-    sel.dispatchEvent(new Event('change'));
-    sel.closest('.form-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    sel.style.borderColor = 'var(--cyan)';
-    sel.style.boxShadow = '0 0 0 1px var(--cyan-dim), inset 0 0 10px var(--cyan-glow)';
-    setTimeout(() => { sel.style.borderColor = ''; sel.style.boxShadow = ''; }, 2000);
-  }, 150);
-}
-
-// ── PHONE FORMATTING ──
-const phoneInput = document.getElementById('phone');
-if (phoneInput) {
-  phoneInput.addEventListener('input', (e) => {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length >= 6) v = `(${v.slice(0,3)}) ${v.slice(3,6)}-${v.slice(6,10)}`;
-    else if (v.length >= 3) v = `(${v.slice(0,3)}) ${v.slice(3)}`;
-    e.target.value = v;
-  });
-}
-
-// ── WORK ORDER FORM ──
-document.getElementById('workOrderForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = e.target.querySelector('.form-submit');
-  btn.innerHTML = 'TRANSMITTING...';
-  btn.disabled = true;
-
-  const fd = new FormData(e.target);
-
-  const w3 = new FormData(e.target);
-  w3.append('access_key', 'e9d0aa34-4229-4f32-bec4-02b98db6c0e9');
-  w3.append('subject', 'New Work Order — Foust Brothers LLC');
-
-  const order = {
-    first_name:    fd.get('firstName'),
-    last_name:     fd.get('lastName'),
-    email:         fd.get('email'),
-    phone:         fd.get('phone')       || '',
-    business:      fd.get('business')    || '',
-    service_type:  fd.get('serviceType'),
-    timeline:      fd.get('timeline')    || '',
-    budget:        fd.get('budget')      || '',
-    existing_site: fd.get('existingSite')|| '',
-    description:   fd.get('description'),
-    how_heard:     fd.get('howHeard')    || '',
-    status: 'new'
-  };
-
-  try {
-    const sb = await getSB();
-    await Promise.all([
-      fetch('https://api.web3forms.com/submit', { method:'POST', body:w3, headers:{ Accept:'application/json' } }),
-      sb.from('work_orders').insert(order)
-    ]);
-    document.getElementById('successMsg').classList.add('show');
-    btn.innerHTML = '✓ REQUEST TRANSMITTED';
-    btn.classList.add('success');
-    e.target.reset();
-  } catch (err) {
-    console.error(err);
-    btn.innerHTML = 'ERROR — RETRY';
-    btn.disabled = false;
-  }
-});
-
-// ── AUTO YEAR ──
-document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date().getFullYear());
-
-// ── INITIAL PAGE LOAD FROM URL ──
-(function () {
-  const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
-  const valid = ['about','billing','work-order','privacy','terms'];
-  if (valid.includes(path)) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const pg = document.getElementById('page-' + path);
-    if (pg) pg.classList.add('active');
-    document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
-      a.classList.toggle('active', a.dataset.page === path);
-    });
-  }
-  if (path === 'admin') {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const adminPg = document.getElementById('page-admin');
-    if (adminPg) adminPg.classList.add('active');
-    setTimeout(() => checkAdminAuth(), 300);
-  }
-  try { history.replaceState({ page: path || 'home' }, '', window.location.pathname); } catch(e) {}
-})();
-
-// ═══════════════════════════════════════════
-//  ADMIN — HIDDEN TRIGGER
-//  Click the bottom-left corner 5× quickly
-// ═══════════════════════════════════════════
-
-let _clickCount = 0, _clickTimer = null;
-
-function initAdminTrigger() {
-  const trigger = document.getElementById('adminSecretTrigger');
-  if (!trigger) return;
-  trigger.addEventListener('click', () => {
-    _clickCount++;
-    clearTimeout(_clickTimer);
-    _clickTimer = setTimeout(() => { _clickCount = 0; }, 3000);
-    if (_clickCount >= 5) { _clickCount = 0; showAdminLogin(); }
-  });
-
-  ['adminEmailInput','adminPasswordInput'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('keydown', ev => {
-      if (ev.key === 'Enter') submitAdminLogin();
-      if (ev.key === 'Escape') closeAdminLogin();
-    });
-  });
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAdminTrigger);
-} else {
-  initAdminTrigger();
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-    e.preventDefault();
-    showAdminLogin();
-  }
-});
-
-// ── ADMIN LOGIN MODAL ──
-function showAdminLogin() {
-  const ov = document.getElementById('adminLoginOverlay');
-  if (ov) { ov.classList.add('show'); setTimeout(() => document.getElementById('adminEmailInput')?.focus(), 100); }
-}
-
-function closeAdminLogin() {
-  document.getElementById('adminLoginOverlay')?.classList.remove('show');
-  document.getElementById('adminEmailInput').value    = '';
-  document.getElementById('adminPasswordInput').value = '';
-  document.getElementById('adminLoginError').style.display = 'none';
-}
-
-async function submitAdminLogin() {
-  const email    = document.getElementById('adminEmailInput').value.trim();
-  const password = document.getElementById('adminPasswordInput').value;
-  const errEl    = document.getElementById('adminLoginError');
-  const btn      = document.getElementById('adminLoginBtn');
-
-  errEl.style.display = 'none';
-  if (!email || !password) {
-    errEl.textContent = '⚠ ENTER EMAIL AND PASSWORD';
-    errEl.style.display = 'block'; return;
-  }
-
-  btn.textContent = 'AUTHENTICATING...'; btn.disabled = true;
-
-  try {
-    const sb = await getSB();
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-
-    const { data: profile, error: pErr } = await sb
-      .from('profiles').select('role, is_master').eq('id', data.user.id).single();
-    if (pErr || !profile) throw new Error('Profile not found — contact admin');
-
-    window._adminRole     = profile.role;
-    window._adminIsMaster = profile.is_master;
-
-    closeAdminLogin();
-    navigate('admin');
-  } catch (err) {
-    errEl.textContent = '⚠ ' + (err.message || 'ACCESS DENIED');
-    errEl.style.display = 'block';
-    btn.textContent = 'AUTHENTICATE'; btn.disabled = false;
-  }
-}
-
-async function adminLogout() {
-  const sb = await getSB();
-  if (sb) await sb.auth.signOut();
-  window._adminRole = null; window._adminIsMaster = false;
-  navigate('home');
-}
-
-// ── CHECK AUTH WHEN ADMIN PAGE OPENS ──
-async function checkAdminAuth() {
-  try {
-    const sb = await getSB();
-    await new Promise(r => setTimeout(r, 200));
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) { showAdminLogin(); navigate('home'); return; }
-
-    const { data: profile } = await sb
-      .from('profiles').select('role, is_master').eq('id', session.user.id).single();
-    if (!profile) { navigate('home'); return; }
-
-    window._adminRole     = profile.role;
-    window._adminIsMaster = profile.is_master;
-
-    document.querySelectorAll('.master-only').forEach(el => {
-      el.style.display = profile.is_master ? '' : 'none';
-    });
-
-    renderAdminHeader(session.user.email, profile.role, profile.is_master);
-    loadAdminOrders();
-    startAdminPolling();
-  } catch (err) {
-    console.error('Auth check failed:', err);
-    showAdminLogin(); navigate('home');
-  }
-}
-
-function renderAdminHeader(email, role, isMaster) {
-  const el = document.getElementById('adminUserInfo');
-  if (!el) return;
-  el.innerHTML = `
-    <span class="au-email">${email}</span>
-    <span class="admin-role-badge role-${role}">${role.toUpperCase()}${isMaster ? ' ★' : ''}</span>
-    <button class="admin-logout-btn" onclick="adminLogout()">⏻ LOGOUT</button>
-  `;
-}
-
-// ── ADMIN TABS ──
-function showAdminTab(tab, el) {
-  document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
-  document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('adminTab-' + tab).style.display = 'block';
-  if (el) el.classList.add('active');
-  if (tab === 'users') loadAdminUsers();
-  if (tab === 'orders') loadAdminOrders();
-  if (tab === 'editor') loadCMSEditor();
-}
-
-// ═══════════════════════════════════════════
-//  LIVE POLLING
-// ═══════════════════════════════════════════
-
-let _realtimeChannel = null;
-let _fallbackInterval = null;
-
-async function startAdminPolling() {
-  if (_realtimeChannel) return;
-  const sb = await getSB();
-
-  _realtimeChannel = sb
-    .channel('work_orders_realtime')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'work_orders' }, (payload) => {
-      triggerNotification(payload.new);
-      loadAdminOrders();
-    })
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'work_orders' }, () => {
-      loadAdminOrders();
-    })
-    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'work_orders' }, () => {
-      loadAdminOrders();
-    })
-    .subscribe((status) => {
-      console.log('Realtime status:', status);
-    });
-
-  if (!_fallbackInterval) {
-    _fallbackInterval = setInterval(() => loadAdminOrders(), 30000);
-  }
-}
-
-function stopAdminPolling() {
-  if (_realtimeChannel) {
-    getSB().then(sb => sb.removeChannel(_realtimeChannel));
-    _realtimeChannel = null;
-  }
-  if (_fallbackInterval) {
-    clearInterval(_fallbackInterval);
-    _fallbackInterval = null;
-  }
-}
-
-function triggerNotification(order) {
-  playBeep();
-  showToast(`⚡ NEW ORDER: ${order.first_name} ${order.last_name} — ${svcLabel(order.service_type)}`);
-  if (Notification.permission === 'granted') {
-    new Notification('⚡ New Work Order — Foust Brothers', {
-      body: `${order.first_name} ${order.last_name} — ${svcLabel(order.service_type)}`
-    });
-  }
-}
-
-function playBeep() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.12);
-    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.24);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-    osc.start(); osc.stop(ctx.currentTime + 0.5);
-  } catch {}
-}
-
-function showToast(msg) {
-  const t = document.getElementById('adminToast');
-  if (!t) return;
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 6000);
-}
-
-// ═══════════════════════════════════════════
-//  ORDERS
-// ═══════════════════════════════════════════
-
-async function loadAdminOrders() {
-  const box = document.getElementById('adminOrdersContainer');
-  if (!box) return;
-  box.innerHTML = '<div class="admin-empty">// LOADING ORDERS...</div>';
-  try {
-    const sb = await getSB();
-    const { data: orders, error } = await sb
-      .from('work_orders').select('*').order('created_at', { ascending: false });
-    if (error) throw error;
-    if (Notification.permission === 'default') Notification.requestPermission();
-    renderOrders(orders);
-    updateStats(orders);
-  } catch (err) {
-    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
-  }
-}
-
-function renderOrders(orders) {
-  const box = document.getElementById('adminOrdersContainer');
-  if (!box) return;
-  const filter = document.getElementById('adminStatusFilter')?.value || 'all';
-  const list   = filter === 'all' ? orders : orders.filter(o => o.status === filter);
-  const canEdit = window._adminRole === 'master' || window._adminRole === 'admin';
-
-  if (!list.length) {
-    box.innerHTML = '<div class="admin-empty">// NO ORDERS MATCH THIS FILTER</div>'; return;
-  }
-
-  box.innerHTML = list.map(o => `
-    <div class="ao-card" id="order-${o.id}">
-      <div class="ao-header">
-        <div class="ao-meta">
-          <span class="ao-id">// ORDER-${o.id.slice(0,8).toUpperCase()}</span>
-          <span class="ao-time">${fmtDate(o.created_at)}</span>
-        </div>
-        <span class="ao-badge status-${o.status}">${o.status.replace('_',' ').toUpperCase()}</span>
-      </div>
-
-      <div class="ao-body">
-        <div class="ao-grid">
-          <div class="ao-field"><div class="ao-label">CLIENT</div>
-            <div class="ao-val">${o.first_name} ${o.last_name}</div></div>
-          <div class="ao-field"><div class="ao-label">EMAIL</div>
-            <div class="ao-val"><a href="mailto:${o.email}" style="color:var(--cyan);text-decoration:none">${o.email}</a></div></div>
-          <div class="ao-field"><div class="ao-label">PHONE</div>
-            <div class="ao-val">${o.phone ? `<a href="tel:${o.phone}" style="color:var(--white);text-decoration:none">${o.phone}</a>` : '—'}</div></div>
-          <div class="ao-field"><div class="ao-label">BUSINESS</div>
-            <div class="ao-val">${o.business || '—'}</div></div>
-          <div class="ao-field"><div class="ao-label">SERVICE</div>
-            <div class="ao-val">${svcLabel(o.service_type)}</div></div>
-          <div class="ao-field"><div class="ao-label">TIMELINE</div>
-            <div class="ao-val">${o.timeline || '—'}</div></div>
-          <div class="ao-field"><div class="ao-label">BUDGET</div>
-            <div class="ao-val">${o.budget || '—'}</div></div>
-          <div class="ao-field"><div class="ao-label">SOURCE</div>
-            <div class="ao-val">${o.how_heard || '—'}</div></div>
-          ${o.existing_site ? `<div class="ao-field"><div class="ao-label">EXISTING SITE</div>
-            <div class="ao-val"><a href="${o.existing_site}" target="_blank" style="color:var(--cyan);text-decoration:none">${o.existing_site}</a></div></div>` : ''}
-        </div>
-
-        ${o.description ? `
-        <div class="ao-desc-wrap">
-          <div class="ao-label">PROJECT DESCRIPTION</div>
-          <div class="ao-desc">${o.description}</div>
-        </div>` : ''}
-      </div>
-
-      ${canEdit ? `
-      <div class="ao-footer">
-        <span class="ao-label">STATUS:</span>
-        <div class="ao-status-btns">
-          <button class="ao-sbtn ${o.status==='new'?'active':''}"
-            onclick="setStatus('${o.id}','new')">NEW</button>
-          <button class="ao-sbtn ${o.status==='in_progress'?'active':''}"
-            onclick="setStatus('${o.id}','in_progress')">IN PROGRESS</button>
-          <button class="ao-sbtn ${o.status==='complete'?'active':''}"
-            onclick="setStatus('${o.id}','complete')">COMPLETE</button>
-          <button class="ao-sbtn ${o.status==='cancelled'?'active':''}"
-            onclick="setStatus('${o.id}','cancelled')">CANCELLED</button>
-          <button class="ao-sbtn danger" onclick="deleteOrder('${o.id}','${o.first_name} ${o.last_name}')">✕ DELETE</button>
-        </div>
-      </div>` : ''}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foust Brothers LLC — Digital Division</title>
+  <meta name="description" content="Foust Brothers LLC Digital Division — Expert web design and development. Under promise, over deliver." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    /* Hide orb instantly before JS loads — JS will show it if enabled */
+    .hero-orb-container { display: none; }
+  </style>
+</head>
+<body>
+<div class="math-bg"></div>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <div class="nav-brand" onclick="navigate('home')">
+    <div class="nav-brand-text">
+      <span class="nav-brand-name">FOUST BROTHERS</span>
+      <span class="nav-brand-sub" data-cms="nav_status">DIGITAL DIVISION // ONLINE</span>
     </div>
-  `).join('');
-}
+  </div>
+  <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+  <div id="navClock" style="font-family:var(--font-mono);font-size:.75rem;font-weight:900;color:var(--cyan);letter-spacing:.25em;text-shadow:0 0 10px rgba(0,229,255,0.5);margin-right:.5rem;">00:00:00</div>
+  <ul class="nav-links">
+    <li><a onclick="navigate('home')" data-page="home">HOME</a></li>
+    <li><a onclick="navigate('about')" data-page="about">ABOUT</a></li>
+    <li><a onclick="navigate('billing')" data-page="billing">BILLING</a></li>
+    <li><a onclick="navigate('work-order')" data-page="work-order">WORK ORDER</a></li>
+    <li><a onclick="navigate('work-order')" class="nav-cta">INITIALIZE REQUEST</a></li>
+  </ul>
+</nav>
 
-async function deleteOrder(id, name) {
-  if (!confirm(`Delete order from ${name}?\nThis cannot be undone.`)) return;
-  try {
-    const sb = await getSB();
-    await sb.from('work_orders').delete().eq('id', id);
-    const { data } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
-    renderOrders(data); updateStats(data);
-    showToast(`✓ ORDER DELETED: ${name}`);
-  } catch (err) { alert('Delete failed: ' + err.message); }
-}
+<!-- ═══════════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
 
-function updateStats(orders) {
-  const s = id => {
-    const e = document.getElementById(id);
-    if (e) e.textContent = id === 'adminStatTotal'
-      ? orders.length
-      : orders.filter(o => o.status === ({ adminStatNew:'new', adminStatProgress:'in_progress', adminStatComplete:'complete' }[id])).length;
-  };
-  ['adminStatTotal','adminStatNew','adminStatProgress','adminStatComplete'].forEach(s);
-}
+<section class="hero">
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-module-bar">
+    <div class="module-bar-left"><div class="module-dot"></div><span>MODULE_01 // COMMAND_INTERFACE</span><div class="module-line"></div></div>
+    <div class="module-bar-right"><div class="status-dot"></div><span>SYSTEM ONLINE</span></div>
+  </div>
+  <div class="boot-sequence">
+    <span data-cms="boot_line1">✓ INITIALIZING FOUST BROS SYSTEMS</span>
+    <span data-cms="boot_line2">✓ LOADING DIGITAL PROTOCOLS</span>
+    <span data-cms="boot_line3">✓ SCANNING NETWORK TOPOLOGY</span>
+    <span data-cms="boot_line4">✓ ESTABLISHING SECURE UPLINK</span>
+    <span data-cms="boot_line5">▶ ALL SYSTEMS NOMINAL.</span>
+  </div>
+  <div class="hero-panel-left">
+    <div class="sys-card"><div class="sys-card-label">SYS-001 // PHILOSOPHY</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_philosophy">BUILT RIGHT. BUILT ONCE.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-002 // STANDARD</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_standard">DETAILS MATTER HERE.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-003 // COMMITMENT</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_commitment">YOU APPROVE. WE DELIVER.</div></div>
+    <div class="sys-card"><div class="sys-card-label">SYS-004 // WARRANTY</div><div class="sys-card-value" style="font-size:.7rem" data-cms="sys_warranty">30-DAY BUG WARRANTY.</div></div>
+  </div>
+  <div class="hero-panel-right">
+    <div class="sys-card"><div class="sys-card-label">STATUS</div><div class="sys-card-value online" data-cms="sys_status">ONLINE</div></div>
+    <div class="sys-card"><div class="sys-card-label">UPTIME</div><div class="sys-card-value" data-cms="sys_uptime">99.9%</div></div>
+    <div class="sys-card"><div class="sys-card-label">BILLING</div><div class="sys-card-value" data-cms="sys_billing">TRANSPARENT</div></div>
+    <div class="sys-card"><div class="sys-card-label">REGION</div><div class="sys-card-value" data-cms="sys_region">LOCAL</div></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-orb-container">
+      <div id="orbThree"></div>
+      <div class="orb-status-ring"></div>
+    </div>
+    <div class="hero-directive" data-cms="hero_directive">— PRIMARY DIRECTIVE —</div>
+    <h1 class="hero-headline">
+      <span class="line1" data-cms="hero_line1">UNDER</span>
+      <span class="line2" data-cms="hero_line2">PROMISE,</span>
+      <span class="line3" data-cms="hero_line3">OVER DELIVER</span>
+    </h1>
+    <div class="hero-sub" data-cms="hero_sub">FOUST BROTHERS LLC — DIGITAL DIVISION</div>
+    <div class="hero-buttons">
+      <button class="btn-primary" onclick="navigate('work-order')"><span data-cms="hero_btn_primary">⚡ INITIALIZE REQUEST</span></button>
+      <button class="btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})"><span data-cms="hero_btn_secondary">VIEW SERVICES ↓</span></button>
+    </div>
+  </div>
+</section>
 
-async function setStatus(id, status) {
-  try {
-    const sb = await getSB();
-    await sb.from('work_orders').update({ status }).eq('id', id);
-    const { data } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
-    renderOrders(data); updateStats(data);
-  } catch (err) { alert('Update failed: ' + err.message); }
-}
+<!-- MODULE 02 — STATUS BAR + TICKER -->
+<section style="padding:0;border-top:1px solid var(--border)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 2rem;background:rgba(0,229,255,0.02);border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;flex-wrap:wrap;gap:.5rem;">
+    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+      <span style="color:var(--cyan)">MODULE_02 // SYSTEM_STATUS</span>
+      <span style="color:#00ff88">● ONLINE</span>
+      <span style="color:var(--white-dim)">UPTIME: 99.9%</span>
+    </div>
+    <button onclick="navigate('work-order')" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:var(--font-mono);font-size:.55rem;letter-spacing:.15em;padding:5px 14px;cursor:pointer;">INITIALIZE SYSTEMS</button>
+  </div>
+  <div class="ticker">
+    <div class="ticker-inner">
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>COMMITMENT: PERFORMANCE-BASED</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>PHILOSOPHY: UNDER PROMISE — OVER DELIVER</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>LOCATION: LOCAL &amp; RELIABLE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>STATUS: READY FOR DEPLOYMENT</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>ENCRYPTION: ACTIVE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>AI-ASSISTED: ALWAYS ON</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>BILLING: TRANSPARENT</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>REGION: LOCAL &amp; RELIABLE</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>COMMITMENT: PERFORMANCE-BASED</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>PHILOSOPHY: UNDER PROMISE — OVER DELIVER</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>LOCATION: LOCAL &amp; RELIABLE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>STATUS: READY FOR DEPLOYMENT</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>ENCRYPTION: ACTIVE</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>AI-ASSISTED: ALWAYS ON</span></div>
+      <div class="ticker-item"><span style="color:var(--orange)">⚡</span><span>BILLING: TRANSPARENT</span></div>
+      <div class="ticker-item"><span style="color:var(--cyan)">●</span><span>REGION: LOCAL &amp; RELIABLE</span></div>
+    </div>
+  </div>
+</section>
 
-async function adminFilterOrders() {
-  const sb = await getSB();
-  const { data } = await sb.from('work_orders').select('*').order('created_at', { ascending: false });
-  if (data) { renderOrders(data); updateStats(data); }
-}
-
-function refreshAdminOrders() { loadAdminOrders(); }
-
-// ═══════════════════════════════════════════
-//  USER MANAGEMENT  (master admin only)
-// ═══════════════════════════════════════════
-
-async function loadAdminUsers() {
-  const box = document.getElementById('adminUsersContainer');
-  if (!box) return;
-  box.innerHTML = '<div class="admin-empty">// LOADING USERS...</div>';
-  try {
-    const sb = await getSB();
-    const { data: users, error } = await sb
-      .from('profiles').select('*').order('created_at', { ascending: true });
-    if (error) throw error;
-    renderUsers(users);
-  } catch (err) {
-    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
-  }
-}
-
-function renderUsers(users) {
-  const box = document.getElementById('adminUsersContainer');
-  if (!box) return;
-  box.innerHTML = users.map(u => `
-    <div class="ao-card" style="margin-bottom:1px">
-      <div class="ao-header">
-        <div class="ao-meta">
-          <span class="ao-id">${u.email}</span>
-          <span class="ao-time">${fmtDate(u.created_at)}</span>
-        </div>
-        <span class="admin-role-badge role-${u.role}">${u.role.toUpperCase()}${u.is_master ? ' ★' : ''}</span>
+<!-- MODULE 03 — SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_03 // SERVICE_SYSTEMS</div>
+    <h2 class="section-title">WEB SERVICES</h2>
+    <div class="section-subtitle">CLICK ANY MODULE TO INITIALIZE A REQUEST</div>
+    <div class="ai-notice"><span class="ai-badge">⚡ AI-ASSISTED</span> All services leverage AI tools to accelerate delivery, enhance quality, and keep costs low — while every final product is reviewed and crafted by a real human craftsman.</div>
+    <div class="services-grid">
+      <div class="service-card" onclick="selectService('consultation')">
+        <div class="service-card-module">MODULE-01 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_consultation_title">Consultation</h3>
+        <p class="service-card-desc">Not sure where to start? We'll assess your situation, map out your options, and give you a clear, honest recommendation — no upsell, no fluff.</p>
+        <ul class="service-card-features"><li>Honest assessment of your needs</li><li>Platform &amp; stack recommendations</li><li>No commitment required</li><li>Flat-rate session</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
-      ${u.is_master
-        ? `<div style="padding:.6rem 1.25rem;font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em">// MASTER ADMIN — PROTECTED ACCOUNT</div>`
-        : `<div class="ao-footer">
-            <span class="ao-label">ROLE:</span>
-            <div class="ao-status-btns">
-              <button class="ao-sbtn ${u.role==='admin'?'active':''}" onclick="setUserRole('${u.id}','admin')">ADMIN</button>
-              <button class="ao-sbtn ${u.role==='user'?'active':''}"  onclick="setUserRole('${u.id}','user')">USER</button>
-              <button class="ao-sbtn danger" onclick="removeUser('${u.id}','${u.email}')">✕ REMOVE</button>
+      <div class="service-card" onclick="selectService('logo')">
+        <div class="service-card-module">MODULE-02 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_logo_title">Business Logo Design</h3>
+        <p class="service-card-desc">A professional logo built to represent your business with precision. Clean, scalable, and delivered in every format you need.</p>
+        <ul class="service-card-features"><li>Multiple concept directions</li><li>Unlimited revisions to chosen concept</li><li>All file formats (SVG, PNG, PDF)</li><li>Brand color palette included</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
+      </div>
+      <div class="service-card" onclick="selectService('flyer')">
+        <div class="service-card-module">MODULE-03 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_flyer_title">Digital Flyers</h3>
+        <p class="service-card-desc">High-impact digital flyers for social media, print, and web. Fast turnaround, professional finish.</p>
+        <ul class="service-card-features"><li>Social media ready sizes</li><li>Print-ready formats</li><li>Brand consistent design</li><li>Quick turnaround</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
+      </div>
+      <div class="service-card" onclick="selectService('brochure')">
+        <div class="service-card-module">MODULE-04 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_brochure_title">Brochure Site Build</h3>
+        <p class="service-card-desc">A clean, professional single-page or brochure-style site. Perfect for service businesses that need a solid online presence fast.</p>
+        <ul class="service-card-features"><li>1-page or multi-section layout</li><li>Contact form included</li><li>Mobile responsive</li><li>Fast deployment</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
+      </div>
+      <div class="service-card" onclick="selectService('simple')">
+        <div class="service-card-module">MODULE-05 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_simple_title">Simple 1–3 Page Build</h3>
+        <p class="service-card-desc">Everything a small business needs to show up online the right way.</p>
+        <ul class="service-card-features"><li>Professional landing page</li><li>Contact system included</li><li>Mobile responsive</li><li>Built to perform</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
+      </div>
+      <div class="service-card" onclick="selectService('standard')">
+        <div class="service-card-module">MODULE-06 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_standard_title">Standard 3–5 Page Build</h3>
+        <p class="service-card-desc">Designed for growing businesses needing detailed service menus and project galleries. More scope, same precision.</p>
+        <ul class="service-card-features"><li>Service menu pages</li><li>Project gallery</li><li>Mobile responsive</li><li>Scalable architecture</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
+      </div>
+      <div class="service-card" onclick="selectService('full')">
+        <div class="service-card-module">MODULE-07 <span class="sc-indicator"></span></div>
+        <h3 class="service-card-title" data-cms="svc_full_title">Full 5–10 Page Build</h3>
+        <p class="service-card-desc">Engineered for comprehensive site architectures and high-performance content. Heavy-duty builds for operations that demand reliability, depth, and a site that actually works under load.</p>
+        <ul class="service-card-features"><li>Full site architecture</li><li>High-performance content</li><li>Mobile responsive</li><li>Technical reliability</li></ul>
+        <div class="service-card-cta">// CLICK TO ACTIVATE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-header">
+        <div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div>
+      </div>
+      <p class="footer-tagline" data-cms="footer_tagline">Expert digital craftsmen operating with the same precision, honesty, and commitment to excellence as a master-level shop.</p>
+      <div class="footer-motto" data-cms="footer_motto">UNDER PROMISE.<br>OVER DELIVER.<br>EVERY TIME.</div>
+    </div>
+    <div>
+      <div class="footer-section-label">// QUICK LINKS</div>
+      <ul class="footer-nav-links">
+        <li><a onclick="navigate('home')">HOME</a></li>
+        <li><a onclick="navigate('about')">ABOUT</a></li>
+        <li><a onclick="navigate('billing')">BILLING</a></li>
+        <li><a onclick="navigate('work-order')">WORK ORDER</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-section-label">// CONTACT</div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">PHONE</div>
+        <div class="footer-contact-value"><a href="tel:3368622999" data-cms="contact_phone">(336) 862-2999</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">EMAIL</div>
+        <div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">REGION</div>
+        <div class="footer-contact-value">NC — LOCAL &amp; REMOTE</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div>
+    <div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div>
+    <div class="footer-philosophy" data-cms="footer_philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY &amp; CLEAR AGREEMENTS</div>
+  </div>
+</footer>
+</div><!-- /page-home -->
+
+<!-- ═══════════════════════════════════════════
+     ABOUT PAGE
+═══════════════════════════════════════════ -->
+<div id="page-about" class="page">
+<section class="about-hero-section">
+  <div class="about-module-bar">
+    <div style="display:flex;align-items:center;gap:8px"><div class="module-dot"></div><span>MODULE_02 // ABOUT_UNIT</span><div style="flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);margin-left:12px;max-width:300px"></div></div>
+  </div>
+  <div class="about-split">
+    <div class="about-img-panel">
+      <div class="about-img-inner">
+        <img src="about-bg.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;" alt="Circuit board" />
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,0.08) 0%,rgba(2,8,16,0.35) 100%);pointer-events:none;"></div>
+        <div class="about-img-caption">
+          <div class="about-img-ref">REF: FB-WD-2026</div>
+          <div class="about-img-tagline">Precision. Craft. Integrity.</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-content-panel">
+      <h1 class="about-headline" data-cms="about_headline">BUILT ON A <span class="about-headline-cyan">STRAIGHT-SHOOTING</span> PHILOSOPHY</h1>
+      <p class="about-body">Foust Brothers LLC — Digital Division operates the same way any expert shop operates: we assess the job honestly, quote it accurately, and deliver work that exceeds expectations every time. No fluff. No oversell. No hidden charges.</p>
+      <p class="about-body">We are digital craftsmen who take pride in clean code, reliable architecture, and a client relationship built on transparency. We use AI tools to move faster and deliver better — but a human reviews and approves every line before it ships.</p>
+      <div class="about-info-grid">
+        <div class="about-info-card"><div class="about-info-label">PHONE</div><div class="about-info-value"><a href="tel:3368622999" style="color:var(--white);text-decoration:none;">(336) 862-2999</a></div></div>
+        <div class="about-info-card"><div class="about-info-label">REGION</div><div class="about-info-value">NC — LOCAL &amp; REMOTE</div></div>
+      </div>
+      <div class="about-values">
+        <div class="value-item"><div class="value-title">TRANSPARENCY FIRST</div><div class="value-desc">Every quote is itemized. Every charge is explained. You know exactly what you're paying for before any work starts.</div></div>
+        <div class="value-item"><div class="value-title">CRAFT OVER SPEED</div><div class="value-desc">We use AI tools to move faster — but we never ship anything we haven't personally reviewed, tested, and approved.</div></div>
+        <div class="value-item"><div class="value-title">LOCAL RELIABILITY</div><div class="value-desc">We operate like a local shop with a handshake standard. If something's wrong, we fix it. No runaround, no excuses.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div>
+      <p class="footer-tagline">Expert digital craftsmen operating with the same precision and commitment to excellence as a master-level shop.</p>
+      <div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div>
+    </div>
+    <div>
+      <div class="footer-section-label">// CONTACT</div>
+      <div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div>
+      <div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div>
+    </div>
+    <div>
+      <div class="footer-section-label">// QUICK NAV</div>
+      <ul class="footer-nav-links">
+        <li><a onclick="navigate('home')">HOME</a></li>
+        <li><a onclick="navigate('work-order')">WORK ORDER</a></li>
+        <li><a onclick="navigate('billing')">BILLING</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div>
+    <div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div>
+    <div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER</div>
+  </div>
+</footer>
+</div><!-- /page-about -->
+
+<!-- ═══════════════════════════════════════════
+     BILLING PAGE
+═══════════════════════════════════════════ -->
+<div id="page-billing" class="page">
+<section style="padding-top:120px">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_04 // BILLING_PROTOCOL</div>
+    <h1 class="section-title">BILLING PROTOCOL</h1>
+    <p class="billing-intro" data-cms="billing_intro">Transparent, flat-rate pricing. No surprises, no hidden fees — just honest rates and clear agreements.</p>
+  </div>
+</section>
+
+<!-- SECTION 01 — SITE BUILD FEES -->
+<section style="padding-top:0;padding-bottom:2rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 01 — SITE BUILD FEES (ONE-TIME)</div>
+    <p style="font-size:.85rem;color:var(--white-dim);line-height:1.8;margin-bottom:2rem;">Special introductory pricing to design, develop, and launch your website.</p>
+    <div class="rate-table">
+      <div class="rate-table-header"><span>TIER</span><span>ONE-TIME RATE</span></div>
+      <div class="rate-row rate-row-active">
+        <div class="rate-row-left">
+          <div class="rate-dot cyan"></div>
+          <div>
+            <div class="rate-tier">TIER 1 — SIMPLE / INFORMATIONAL SITE</div>
+            <div class="rate-sub">Best for: Local service businesses needing a clean professional presence.</div>
+            <div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;">
+              <span style="color:var(--cyan)">›</span> Up to 3 main pages (Home, Services, Contact)<br>
+              <span style="color:var(--cyan)">›</span> Custom layout &amp; mobile optimization<br>
+              <span style="color:var(--cyan)">›</span> Basic contact form included
             </div>
-           </div>`
-      }
+          </div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_tier1">$250</div><div class="rate-amount-unit">ONE-TIME</div></div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot cyan"></div>
+          <div>
+            <div class="rate-tier">TIER 2 — STANDARD GROWTH SITE</div>
+            <div class="rate-sub">Best for: Established businesses showcasing portfolios, service menus, or generating active leads.</div>
+            <div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;">
+              <span style="color:var(--cyan)">›</span> Up to 6 pages<br>
+              <span style="color:var(--cyan)">›</span> Advanced forms (scheduling/booking hooks)<br>
+              <span style="color:var(--cyan)">›</span> Custom dynamic elements &amp; baseline SEO
+            </div>
+          </div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_tier2">$500</div><div class="rate-amount-unit">ONE-TIME</div></div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-row-left">
+          <div class="rate-dot"></div>
+          <div>
+            <div class="rate-tier">TIER 3 — ADVANCED CUSTOM SITE</div>
+            <div class="rate-sub">Best for: Complex builds requiring advanced functionality.</div>
+            <div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;">
+              <span style="color:var(--cyan)">›</span> Multi-page layouts &amp; deep integrations<br>
+              <span style="color:var(--cyan)">›</span> Dynamic database filtering<br>
+              <span style="color:var(--cyan)">›</span> Lightweight e-commerce setup
+            </div>
+          </div>
+        </div>
+        <div class="rate-amount-block"><div class="rate-amount" data-cms="price_tier3">$750+</div><div class="rate-amount-unit">ONE-TIME</div></div>
+      </div>
     </div>
-  `).join('');
-}
+    <div class="rate-stats">
+      <div class="rate-stat"><div class="rate-stat-label">DEPOSIT</div><div class="rate-stat-value">35%</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">ON DELIVERY</div><div class="rate-stat-value">65%</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">WARRANTY</div><div class="rate-stat-value">30D</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">BILLING</div><div class="rate-stat-value">NET30</div></div>
+    </div>
+  </div>
+</section>
 
-async function setUserRole(userId, role) {
-  const sb = await getSB();
-  await sb.from('profiles').update({ role }).eq('id', userId);
-  loadAdminUsers();
-}
-
-async function removeUser(userId, email) {
-  if (!confirm(`Remove ${email}?\nThis cannot be undone.`)) return;
-  const sb = await getSB();
-  await sb.from('profiles').delete().eq('id', userId);
-  loadAdminUsers();
-}
-
-// ═══════════════════════════════════════════
-//  CMS EDITOR — Admin Panel
-// ═══════════════════════════════════════════
-
-const CMS_FIELDS = [
-  // ── SITE CONTROLS ──
-  ['SITE CONTROLS', 'hero_visible', 'Orb Visible', 'toggle'],
-
-  // ── HOME ──
-  ['HOME', 'nav_status',        'Nav Status Text',               'text'],
-  ['HOME', 'hero_directive',    'Hero Directive Label',           'text'],
-  ['HOME', 'hero_line1',        'Hero Headline — Line 1',         'text'],
-  ['HOME', 'hero_line2',        'Hero Headline — Line 2',         'text'],
-  ['HOME', 'hero_line3',        'Hero Headline — Line 3 (Cyan)',  'text'],
-  ['HOME', 'hero_sub',          'Hero Sub Headline',              'text'],
-  ['HOME', 'hero_btn_primary',  'Hero Button — Primary',          'text'],
-  ['HOME', 'hero_btn_secondary','Hero Button — Secondary',        'text'],
-  ['HOME', 'boot_line1',        'Boot Sequence — Line 1',         'text'],
-  ['HOME', 'boot_line2',        'Boot Sequence — Line 2',         'text'],
-  ['HOME', 'boot_line3',        'Boot Sequence — Line 3',         'text'],
-  ['HOME', 'boot_line4',        'Boot Sequence — Line 4',         'text'],
-  ['HOME', 'boot_line5',        'Boot Sequence — Line 5',         'text'],
-  ['HOME', 'sys_philosophy',    'Left Panel — Philosophy',        'text'],
-  ['HOME', 'sys_standard',      'Left Panel — Standard',          'text'],
-  ['HOME', 'sys_commitment',    'Left Panel — Commitment',        'text'],
-  ['HOME', 'sys_warranty',      'Left Panel — Warranty',          'text'],
-  ['HOME', 'sys_status',        'Right Panel — Status Value',     'text'],
-  ['HOME', 'sys_uptime',        'Right Panel — Uptime Value',     'text'],
-  ['HOME', 'sys_billing',       'Right Panel — Billing Value',    'text'],
-  ['HOME', 'sys_region',        'Right Panel — Region Value',     'text'],
-
-  // ── SERVICES ──
-  ['SERVICES', 'svc_consultation_title', 'Service: Consultation Title',   'text'],
-  ['SERVICES', 'svc_logo_title',         'Service: Logo Design Title',     'text'],
-  ['SERVICES', 'svc_flyer_title',        'Service: Digital Flyers Title',  'text'],
-  ['SERVICES', 'svc_brochure_title',     'Service: Brochure Site Title',   'text'],
-  ['SERVICES', 'svc_simple_title',       'Service: Simple Build Title',    'text'],
-  ['SERVICES', 'svc_standard_title',     'Service: Standard Build Title',  'text'],
-  ['SERVICES', 'svc_full_title',         'Service: Full Build Title',      'text'],
-
-  // ── BILLING ──
-  ['BILLING', 'billing_intro',       'Billing Intro Text',          'textarea'],
-  ['BILLING', 'price_tier1',         'Tier 1 Price',                'text'],
-  ['BILLING', 'price_tier2',         'Tier 2 Price',                'text'],
-  ['BILLING', 'price_tier3',         'Tier 3 Price',                'text'],
-  ['BILLING', 'price_retainer_mo',   'Retainer Monthly Price',      'text'],
-  ['BILLING', 'price_retainer_yr',   'Retainer Annual Price',       'text'],
-  ['BILLING', 'rate_standard',       'Standard Shop Rate',          'text'],
-  ['BILLING', 'rate_overtime',       'Overtime Rate',               'text'],
-  ['BILLING', 'rate_rush',           'Rush Rate Multiplier',        'text'],
-  ['BILLING', 'spec_logo_price',     'Logo Design Price Range',     'text'],
-  ['BILLING', 'spec_logo_desc',      'Logo Design Description',     'text'],
-  ['BILLING', 'spec_flyer_price',    'Digital Flyers Price Range',  'text'],
-  ['BILLING', 'spec_flyer_desc',     'Digital Flyers Description',  'text'],
-  ['BILLING', 'spec_domain_price',   'Domain Privacy Price Range',  'text'],
-  ['BILLING', 'spec_domain_desc',    'Domain Privacy Description',  'text'],
-
-  // ── ABOUT ──
-  ['ABOUT', 'about_headline', 'About Page Headline', 'textarea'],
-
-  // ── FOOTER ──
-  ['FOOTER', 'footer_tagline',    'Footer Tagline',              'textarea'],
-  ['FOOTER', 'footer_motto',      'Footer Motto Box',            'text'],
-  ['FOOTER', 'footer_philosophy', 'Footer Bottom Philosophy',    'text'],
-
-  // ── WORK ORDER ──
-  ['WORK ORDER', 'step1', 'Step 1 — Submit Description',  'textarea'],
-  ['WORK ORDER', 'step2', 'Step 2 — Review Description',  'textarea'],
-  ['WORK ORDER', 'step3', 'Step 3 — Quote Description',   'textarea'],
-  ['WORK ORDER', 'step4', 'Step 4 — Deliver Description', 'textarea'],
-
-  // ── CONTACT ──
-  ['CONTACT', 'contact_phone', 'Phone Number', 'text'],
-];
-
-async function loadCMSEditor() {
-  const box = document.getElementById('adminEditorContainer');
-  if (!box) return;
-  box.innerHTML = '<div class="admin-empty">// LOADING EDITOR...</div>';
-
-  try {
-    const sb = await getSB();
-    const { data: rows } = await sb.from('content').select('key, value');
-    const map = {};
-    if (rows) rows.forEach(r => map[r.key] = r.value);
-
-    const sections = {};
-    CMS_FIELDS.forEach(([section, key, label, type]) => {
-      if (!sections[section]) sections[section] = [];
-      sections[section].push({ key, label, type, value: map[key] ?? '' });
-    });
-
-    box.innerHTML = `
-      <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
-          // Edit fields below and click SAVE ALL CHANGES
-        </div>
-        <button class="admin-login-btn" style="padding:10px 24px" onclick="saveCMSContent()">
-          ⚡ SAVE ALL CHANGES
-        </button>
+<!-- SECTION 02 — MANAGEMENT & HOSTING -->
+<section style="padding-top:0;padding-bottom:2rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 02 — MANAGEMENT &amp; HOSTING RETAINER</div>
+    <p style="font-size:.85rem;color:var(--white-dim);line-height:1.8;margin-bottom:2rem;">Once your site is live, this plan keeps it safe, online, and completely managed for you.</p>
+    <div class="rate-table">
+      <div class="rate-table-header"><span>PLAN</span><span>RATE</span></div>
+      <div class="rate-row rate-row-active">
+        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">MONTHLY RETAINER</div><div class="rate-sub">Full management, hosting, &amp; security — no contracts</div></div></div>
+        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_retainer_mo">$25</div><div class="rate-amount-unit">/ MO</div></div>
       </div>
-
-      ${Object.entries(sections).map(([section, fields]) => `
-        <div style="margin-bottom:1.5rem">
-          <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--cyan);
-            letter-spacing:.2em;padding:.6rem 1.25rem;border:1px solid var(--border);
-            background:rgba(0,229,255,.04);border-bottom:none">
-            // ${section}
-          </div>
-          <div style="border:1px solid var(--border);background:var(--bg-card)">
-            ${fields.map(f => {
-              if (f.type === 'toggle') {
-                const isOn = f.value !== 'false' && f.value !== '0' && f.value !== '';
-                return `
-                  <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border);
-                    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
-                    <div>
-                      <label class="admin-input-label" style="margin:0;display:block">${f.label}</label>
-                      <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.08em;margin-top:3px">
-                        Controls whether the orb animation is shown on the homepage
-                      </div>
-                    </div>
-                    <button
-                      data-cms-key="${f.key}"
-                      data-cms-type="toggle"
-                      data-value="${isOn ? 'true' : 'false'}"
-                      onclick="toggleCMSField(this)"
-                      style="
-                        font-family:var(--font-mono);font-size:.65rem;letter-spacing:.18em;font-weight:700;
-                        padding:10px 28px;border:1px solid;cursor:pointer;transition:all .25s;min-width:140px;
-                        ${isOn
-                          ? 'color:#00ff88;border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.08)'
-                          : 'color:#ff4466;border-color:rgba(255,68,102,.4);background:rgba(255,68,102,.06)'}
-                      ">
-                      ${isOn ? '▶ ONLINE' : '■ OFFLINE'}
-                    </button>
-                  </div>`;
-              }
-              return `
-                <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border)">
-                  <label class="admin-input-label" style="margin-bottom:5px">${f.label}</label>
-                  ${f.type === 'textarea'
-                    ? `<textarea data-cms-key="${f.key}" class="admin-input-field"
-                        style="min-height:70px;resize:vertical;padding:8px 12px;width:100%;box-sizing:border-box"
-                      >${f.value}</textarea>`
-                    : `<input type="text" data-cms-key="${f.key}" class="admin-input-field"
-                        value="${f.value.replace(/"/g,'&quot;')}" />`
-                  }
-                </div>`;
-            }).join('')}
-          </div>
-        </div>
-      `).join('')}
-
-      <div style="text-align:right;margin-top:1rem">
-        <button class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
-          ⚡ SAVE ALL CHANGES
-        </button>
+      <div class="rate-row">
+        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">ANNUAL RETAINER <span style="color:#00ff88;font-size:.6rem;letter-spacing:.1em;margin-left:8px">15% OFF — SAVE $45</span></div><div class="rate-sub">Same full plan, billed annually</div></div></div>
+        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_retainer_yr">$255</div><div class="rate-amount-unit">/ YR</div></div>
       </div>
-      <div id="editorSaveMsg" style="font-family:var(--font-mono);font-size:.65rem;
-        letter-spacing:.1em;margin-top:.75rem;text-align:right;min-height:1.5rem"></div>
-    `;
-  } catch(err) {
-    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
-  }
-}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border);border:1px solid var(--border);margin-top:2rem;">
+      <div style="background:var(--bg-card);padding:1.5rem;">
+        <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);">// INFRASTRUCTURE &amp; SECURITY</div>
+        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:2;">
+          <div><span style="color:var(--cyan)">›</span> Premium Cloud Hosting &amp; SSL Certification</div>
+          <div><span style="color:var(--cyan)">›</span> 24/7 Automated Uptime &amp; Security Monitoring</div>
+          <div><span style="color:var(--cyan)">›</span> Core Framework, Plugin &amp; Database Updates</div>
+        </div>
+      </div>
+      <div style="background:var(--bg-card);padding:1.5rem;">
+        <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);">// MAINTENANCE SUPPORT</div>
+        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:2;">
+          <div><span style="color:var(--cyan)">›</span> Quick Content Edits (up to 30 min/mo)</div>
+          <div style="font-size:.55rem;color:rgba(138,168,184,0.6);margin-top:.25rem;padding-left:1rem;">Larger adjustments fall to Standard Shop Rate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-function toggleCMSField(btn) {
-  const isOn = btn.getAttribute('data-value') === 'true';
-  const newVal = isOn ? 'false' : 'true';
-  btn.setAttribute('data-value', newVal);
+<!-- SECTION 03 — HOURLY LABOR -->
+<section style="padding-top:0;padding-bottom:2rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 03 — STANDARD HOURLY LABOR</div>
+    <p style="font-size:.85rem;color:var(--white-dim);line-height:1.8;margin-bottom:2rem;">Applies to maintenance calls, additions, or changes outside of a retainer plan.</p>
+    <div class="rate-table">
+      <div class="rate-table-header"><span>LABOR CATEGORY</span><span>RATE</span></div>
+      <div class="rate-row rate-row-active"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">STANDARD SHOP RATE</div><div class="rate-sub">General web work, content updates, minor fixes — 1 hr minimum</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_standard">$20</div><div class="rate-amount-unit">/ HR</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">OVERTIME RATE</div><div class="rate-sub">Extended or after-hours work</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_overtime">$30</div><div class="rate-amount-unit">/ HR</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">RUSH / EMERGENCY</div><div class="rate-sub">Same-day or critical response</div></div></div><div class="rate-amount-block"><div class="rate-amount" data-cms="rate_rush">2.5×</div><div class="rate-amount-unit">STANDARD RATE</div></div></div>
+    </div>
+  </div>
+</section>
 
-  if (!isOn) {
-    // Turning ON
-    btn.textContent = '▶ ONLINE';
-    btn.style.color = '#00ff88';
-    btn.style.borderColor = 'rgba(0,255,136,.5)';
-    btn.style.background = 'rgba(0,255,136,.08)';
-  } else {
-    // Turning OFF
-    btn.textContent = '■ OFFLINE';
-    btn.style.color = '#ff4466';
-    btn.style.borderColor = 'rgba(255,68,102,.4)';
-    btn.style.background = 'rgba(255,68,102,.06)';
-  }
-}
+<!-- SECTION 04 — SPECIALIZED -->
+<section style="padding-top:0;padding-bottom:4rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 04 — SPECIALIZED SERVICES</div>
+    <div class="specialized-grid">
+      <div class="specialized-card"><div class="specialized-label">LOGO DESIGN</div><div class="specialized-price" data-cms="spec_logo_price">$150–$500</div><div class="specialized-desc" data-cms="spec_logo_desc">Per project. Flat rate. Revisions included.</div></div>
+      <div class="specialized-card"><div class="specialized-label">DIGITAL FLYERS</div><div class="specialized-price" data-cms="spec_flyer_price">$50–$150</div><div class="specialized-desc" data-cms="spec_flyer_desc">Per asset. Social, print, web formats.</div></div>
+      <div class="specialized-card"><div class="specialized-label">DOMAIN PRIVACY</div><div class="specialized-price" data-cms="spec_domain_price">$10–$25</div><div class="specialized-desc" data-cms="spec_domain_desc">Per year. Billed at registrar cost.</div></div>
+    </div>
+  </div>
+</section>
 
-async function saveCMSContent() {
-  const msg = document.getElementById('editorSaveMsg');
-  if (msg) { msg.style.color = 'var(--cyan)'; msg.textContent = '// SAVING...'; }
+<!-- SECTION 05 — BILLING PRINCIPLES -->
+<section style="padding-top:0;padding-bottom:4rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 05 — BILLING PRINCIPLES</div>
+    <div class="billing-principles">
+      <div class="billing-card"><div class="billing-card-icon">⚡</div><div class="billing-card-title">NO SURPRISE CHARGES</div><div class="billing-card-desc">Every charge is approved in writing before work begins. No exceptions. You'll never open an invoice and wonder what you're paying for.</div></div>
+      <div class="billing-card"><div class="billing-card-icon">📋</div><div class="billing-card-title">SCOPE CHANGES IN WRITING</div><div class="billing-card-desc">Any additions or changes to the original scope are re-quoted and approved before work starts. We don't bill for surprises.</div></div>
+      <div class="billing-card"><div class="billing-card-icon">🔒</div><div class="billing-card-title">35% DEPOSIT, 65% ON DELIVERY</div><div class="billing-card-desc">Standard payment structure. The deposit is non-refundable and secures your spot in the queue. Final payment is due upon project delivery.</div></div>
+    </div>
+    <div class="billing-faq">
+      <div class="faq-item"><div class="faq-q">Do you offer payment plans?</div><div class="faq-a">For larger projects over $1,000, we can discuss milestone-based payment structures. Contact us to work out a plan that fits your cash flow.</div></div>
+      <div class="faq-item"><div class="faq-q">What if I need changes after launch?</div><div class="faq-a">The 30-day post-launch warranty covers bugs and technical errors from the original scope. New features or content changes are billed at the Standard Shop Rate ($20/hr, 1 hr minimum).</div></div>
+      <div class="faq-item"><div class="faq-q">What payment methods do you accept?</div><div class="faq-a">We accept all major credit and debit cards. Invoice details are provided at the time of quote approval.</div></div>
+    </div>
+  </div>
+</section>
 
-  try {
-    const sb = await getSB();
-    const inputs = document.querySelectorAll('[data-cms-key]');
-    const upserts = Array.from(inputs).map(el => ({
-      key: el.getAttribute('data-cms-key'),
-      value: el.getAttribute('data-cms-type') === 'toggle'
-        ? el.getAttribute('data-value')
-        : (el.value !== undefined ? el.value : el.textContent),
-      updated_at: new Date().toISOString()
-    }));
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div>
+      <p class="footer-tagline">Transparent, flat-rate pricing with zero hidden fees.</p>
+      <div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div>
+    </div>
+    <div>
+      <div class="footer-section-label">// QUICK LINKS</div>
+      <ul class="footer-nav-links">
+        <li><a onclick="navigate('home')">HOME</a></li>
+        <li><a onclick="navigate('about')">ABOUT</a></li>
+        <li><a onclick="navigate('work-order')">WORK ORDER</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-section-label">// CONTACT</div>
+      <div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div>
+      <div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div>
+    <div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div>
+    <div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER<br>COMMITMENT: LOCAL RELIABILITY &amp; CLEAR AGREEMENTS</div>
+  </div>
+</footer>
+</div><!-- /page-billing -->
 
-    const { error } = await sb.from('content').upsert(upserts, { onConflict: 'key' });
-    if (error) throw error;
+<!-- ═══════════════════════════════════════════
+     WORK ORDER PAGE
+═══════════════════════════════════════════ -->
+<div id="page-work-order" class="page">
+<section style="padding-top:120px">
+  <div class="container">
+    <div class="section-module-label"><div class="section-dot"></div> MODULE_05 // PROJECT_INTAKE</div>
+    <h1 class="section-title">WORK ORDER</h1>
+    <div class="section-subtitle">INITIALIZE YOUR PROJECT REQUEST</div>
+    <div class="work-order-layout">
+      <div>
+        <div class="wof">
+          <div class="wof-header"><span>// PROJECT INQUIRY FORM</span><span style="color:var(--white-dim)">SECURE TRANSMISSION</span></div>
+          <form id="workOrderForm">
+            <div class="form-row">
+              <div class="form-group"><label for="firstName">FIRST NAME *</label><input type="text" id="firstName" name="firstName" placeholder="John" required /></div>
+              <div class="form-group"><label for="lastName">LAST NAME *</label><input type="text" id="lastName" name="lastName" placeholder="Smith" required /></div>
+            </div>
+            <div class="form-group"><label for="email">EMAIL ADDRESS *</label><input type="email" id="email" name="email" placeholder="contact@email.com" required /></div>
+            <div class="form-group"><label for="phone">PHONE NUMBER</label><input type="tel" id="phone" name="phone" placeholder="(336) 555-1234" /></div>
+            <div class="form-group"><label for="business">BUSINESS NAME</label><input type="text" id="business" name="business" placeholder="Your Business LLC" /></div>
+            <div class="form-group"><label for="serviceType">SERVICE MODULE *</label>
+              <select id="serviceType" name="serviceType" required>
+                <option value="" disabled selected>-- SELECT SERVICE MODULE --</option>
+                <option value="consultation">MODULE-01 // Consultation</option>
+                <option value="logo">MODULE-02 // Business Logo Design</option>
+                <option value="flyer">MODULE-03 // Digital Flyers</option>
+                <option value="brochure">MODULE-04 // Brochure Site Build</option>
+                <option value="simple">MODULE-05 // Simple 1–3 Page Build</option>
+                <option value="standard">MODULE-06 // Standard 3–5 Page Build</option>
+                <option value="full">MODULE-07 // Full 5–10 Page Build</option>
+                <option value="unsure">Not Sure — Need Guidance</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="timeline">PROJECT TIMELINE</label>
+              <select id="timeline" name="timeline">
+                <option value="" disabled selected>SELECT TIMELINE...</option>
+                <option value="asap">ASAP — CRITICAL</option>
+                <option value="1month">WITHIN 1 MONTH</option>
+                <option value="1-3months">1 – 3 MONTHS</option>
+                <option value="3-6months">3 – 6 MONTHS</option>
+                <option value="flexible">FLEXIBLE</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="budget">ESTIMATED BUDGET</label>
+              <select id="budget" name="budget">
+                <option value="" disabled selected>SELECT BUDGET RANGE...</option>
+                <option value="under500">UNDER $500</option>
+                <option value="500-1000">$500 – $1,000</option>
+                <option value="1000-2500">$1,000 – $2,500</option>
+                <option value="2500-5000">$2,500 – $5,000</option>
+                <option value="5000+">$5,000+</option>
+                <option value="tbd">TO BE DISCUSSED</option>
+              </select>
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);margin-top:6px;letter-spacing:.1em;">A representative will contact you for manual follow-up and formal quotation.</div>
+            </div>
+            <div class="form-group"><label for="existingSite">EXISTING WEBSITE URL (if any)</label><input type="text" id="existingSite" name="existingSite" placeholder="e.g. www.yoursite.com" /></div>
+            <div class="form-group"><label for="description">PROJECT DESCRIPTION *</label><textarea id="description" name="description" placeholder="Describe your project, goals, and any specific requirements." required></textarea></div>
+            <div class="form-group"><label for="howHeard">HOW DID YOU HEAR ABOUT US?</label>
+              <select id="howHeard" name="howHeard">
+                <option value="" disabled selected>-- SELECT --</option>
+                <option value="referral">Referral / Word of Mouth</option>
+                <option value="search">Search Engine</option>
+                <option value="social">Social Media</option>
+                <option value="local">Local / Community</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="form-submit"><span>⚡</span> TRANSMIT WORK ORDER</button>
+          </form>
+          <div class="success-msg" id="successMsg"><h3>✓ TRANSMISSION CONFIRMED</h3><p>Your work order has been received. We'll be in contact within 1 business day.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-module-label" style="margin-bottom:1rem"><div class="section-dot"></div> WHAT TO EXPECT</div>
+        <div class="woi-card"><div class="woi-label">STEP 01 // SUBMIT</div><div class="woi-value" data-cms="step1">Fill out the work order form with as much detail as possible. The more context you give us, the faster we can scope your project.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 02 // REVIEW</div><div class="woi-value" data-cms="step2">We review your request within 1 business day and reach out to confirm scope, timeline, and any clarifying questions.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 03 // QUOTE</div><div class="woi-value" data-cms="step3">You receive a detailed, itemized quote. No hidden fees. No surprises. You approve the scope before any work begins.</div></div>
+        <div class="woi-card"><div class="woi-label">STEP 04 // DELIVER</div><div class="woi-value" data-cms="step4">We build it. You approve it. We deploy it. 30-day bug warranty included on all builds.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div>
+      <p class="footer-tagline">Expert digital craftsmen. Honest quotes. Reliable delivery.</p>
+      <div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div>
+    </div>
+    <div>
+      <div class="footer-section-label">// CONTACT</div>
+      <div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div>
+      <div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div>
+    </div>
+    <div>
+      <div class="footer-section-label">// QUICK NAV</div>
+      <ul class="footer-nav-links">
+        <li><a onclick="navigate('home')">HOME</a></li>
+        <li><a onclick="navigate('about')">ABOUT</a></li>
+        <li><a onclick="navigate('billing')">BILLING</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div>
+    <div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div>
+    <div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER</div>
+  </div>
+</footer>
+</div><!-- /page-work-order -->
 
-    await loadCMSContent();
+<!-- ═══════════════════════════════════════════
+     PRIVACY POLICY PAGE
+═══════════════════════════════════════════ -->
+<div id="page-privacy" class="page">
+<section style="padding-top:120px;padding-bottom:6rem">
+  <div class="container">
+    <div class="legal-layout">
+      <div class="section-module-label"><div class="section-dot"></div> MODULE_06 // PRIVACY_POLICY</div>
+      <h1 class="section-title">PRIVACY POLICY</h1>
+      <div class="section-subtitle">FOUST BROTHERS LLC — EFFECTIVE JUNE 1, 2026</div>
+      <div class="legal-section"><div class="legal-section-head">01 // INFORMATION WE COLLECT</div><div class="legal-section-body">When you submit a work order or contact us through this website, we collect the information you voluntarily provide, including your name, email address, phone number, business name, and project details. We do not collect payment information through this website.</div></div>
+      <div class="legal-section"><div class="legal-section-head">02 // HOW WE USE YOUR INFORMATION</div><div class="legal-section-body">We use the information you provide solely to respond to your inquiry, scope your project, and communicate with you about our services. We do not sell, rent, or share your personal information with third parties for marketing purposes.</div></div>
+      <div class="legal-section"><div class="legal-section-head">03 // COOKIES &amp; ANALYTICS</div><div class="legal-section-body">This website may use basic analytics tools to understand visitor traffic and improve our services. These tools may use cookies or similar tracking technologies. No personally identifiable information is collected through these tools without your knowledge.</div></div>
+      <div class="legal-section"><div class="legal-section-head">04 // DATA SECURITY</div><div class="legal-section-body">We take reasonable precautions to protect your information. Work order submissions are processed through Web3Forms, a third-party form service. We recommend reviewing their privacy policy at web3forms.com.</div></div>
+      <div class="legal-section"><div class="legal-section-head">05 // YOUR RIGHTS</div><div class="legal-section-body">You may request that we delete any personal information you have submitted to us at any time by contacting us at FoustBrothersLLC@gmail.com.</div></div>
+      <div class="legal-section"><div class="legal-section-head">06 // CONTACT</div><div class="legal-section-body">Questions? Contact us at <strong>FoustBrothersLLC@gmail.com</strong> or <strong>(336) 862-2999</strong>. MON-FRI 0900-1700.</div></div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">HOME</a></li><li><a onclick="navigate('work-order')">WORK ORDER</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div></div>
+</footer>
+</div><!-- /page-privacy -->
 
-    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ ALL CHANGES SAVED — SITE UPDATED LIVE'; }
-    setTimeout(() => { if (msg) msg.textContent = ''; }, 4000);
-  } catch(err) {
-    if (msg) { msg.style.color = '#ff4466'; msg.textContent = '⚠ SAVE FAILED: ' + err.message; }
-  }
-}
+<!-- ═══════════════════════════════════════════
+     TERMS OF SERVICE PAGE
+═══════════════════════════════════════════ -->
+<div id="page-terms" class="page">
+<section style="padding-top:120px;padding-bottom:6rem">
+  <div class="container">
+    <div class="legal-layout">
+      <div class="section-module-label"><div class="section-dot"></div> MODULE_07 // TERMS_OF_SERVICE</div>
+      <h1 class="section-title">TERMS OF SERVICE</h1>
+      <div class="section-subtitle">FOUST BROTHERS LLC — EFFECTIVE JUNE 1, 2026</div>
+      <div class="legal-section"><div class="legal-section-head">01 // PARTIES &amp; AGREEMENT</div><div class="legal-section-body">This Agreement is between Foust Brothers LLC ("Developer") and the client ("Client"). By submitting a work order and paying a deposit, the Client agrees to these terms.</div></div>
+      <div class="legal-section"><div class="legal-section-head">02 // SCOPE OF WORK</div><div class="legal-section-body">All work is scoped in writing prior to starting. Any additions or changes outside of the agreed scope will be re-quoted and require written approval before implementation.</div></div>
+      <div class="legal-section"><div class="legal-section-head">03 // PAYMENT TERMS</div><div class="legal-section-body"><ul><li>35% non-refundable deposit is due before work begins</li><li>65% final payment is due upon project delivery</li><li>Projects over $1,000 may use milestone-based payment by mutual agreement</li><li>Invoices unpaid after 30 days accrue a 5% late fee per month</li></ul></div></div>
+      <div class="legal-section"><div class="legal-section-head">04 // REVISIONS &amp; WARRANTIES</div><div class="legal-section-body">All builds include a 30-day post-launch bug warranty covering errors within the original agreed scope. Content changes, new features, or scope expansions after launch are billed at the Standard Shop Rate.</div></div>
+      <div class="legal-section"><div class="legal-section-head">05 // CLIENT RESPONSIBILITIES</div><div class="legal-section-body">The Client is responsible for providing all required content (text, images, branding assets) in a timely manner. Project delays caused by missing client materials may affect timeline and are not the responsibility of the Developer.</div></div>
+      <div class="legal-section"><div class="legal-section-head">06 // INTELLECTUAL PROPERTY</div><div class="legal-section-body">Upon receipt of final payment, the Client owns all custom work product created for their project. Developer retains the right to display completed work in a portfolio unless otherwise agreed in writing.</div></div>
+      <div class="legal-section"><div class="legal-section-head">07 // LIMITATION OF LIABILITY</div><div class="legal-section-body">Foust Brothers LLC is not liable for indirect, incidental, or consequential damages arising from the use of delivered work. Total liability is limited to the amount paid by the Client for the specific project in dispute.</div></div>
+      <div class="legal-section"><div class="legal-section-head">08 // CONTACT</div><div class="legal-section-body">Questions? Contact us at <strong>FoustBrothersLLC@gmail.com</strong> or <strong>(336) 862-2999</strong>.</div></div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">HOME</a></li><li><a onclick="navigate('work-order')">WORK ORDER</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div></div>
+</footer>
+</div><!-- /page-terms -->
 
-// ═══════════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════════
+<!-- ═══════════════════════════════════════════
+     ADMIN LOGIN OVERLAY
+═══════════════════════════════════════════ -->
+<div id="adminLoginOverlay" class="admin-login-overlay">
+  <div class="admin-login-box">
+    <div class="admin-login-header">
+      <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:.5rem">// RESTRICTED ACCESS</div>
+      <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:.1em">ADMIN AUTHENTICATION</div>
+    </div>
+    <div class="admin-login-body">
+      <div class="admin-login-error" id="adminLoginError"></div>
+      <div style="margin-bottom:1rem">
+        <label class="admin-input-label">EMAIL</label>
+        <input type="email" id="adminEmailInput" class="admin-input-field" placeholder="admin@email.com" autocomplete="email" />
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <label class="admin-input-label">PASSWORD</label>
+        <input type="password" id="adminPasswordInput" class="admin-input-field" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <div style="display:flex;gap:.75rem">
+        <button class="admin-login-btn" id="adminLoginBtn" onclick="submitAdminLogin()">⚡ AUTHENTICATE</button>
+        <button class="admin-abort-btn" onclick="closeAdminLogin()">ABORT</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-function fmtDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-US',{ month:'short', day:'numeric', year:'numeric' }) +
-    ' ' + d.toLocaleTimeString('en-US',{ hour:'2-digit', minute:'2-digit' });
-}
+<!-- ── LIVE NOTIFICATION TOAST ── -->
+<div id="adminToast" class="admin-toast"></div>
 
-function svcLabel(val) {
-  return ({ consultation:'Consultation', logo:'Logo Design', flyer:'Digital Flyers',
-    brochure:'Brochure Site', simple:'1–3 Page Build', standard:'3–5 Page Build',
-    full:'5–10 Page Build', unsure:'Needs Guidance' })[val] || val || '—';
-}
+<!-- ── HIDDEN TRIGGER: click bottom-left corner 5× quickly ── -->
+<div id="adminSecretTrigger" style="position:fixed;bottom:0;left:0;width:50px;height:50px;z-index:9000;cursor:default;user-select:none;"></div>
+
+<!-- ═══════════════════════════════════════════
+     ADMIN PAGE
+═══════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+<section style="padding-top:90px;padding-bottom:6rem;min-height:100vh">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="admin-page-header">
+      <div>
+        <div class="section-module-label"><div class="section-dot"></div> MODULE_ADMIN // COMMAND_CENTER</div>
+        <h1 class="section-title">ADMIN PANEL</h1>
+        <div class="section-subtitle">WORK ORDER MONITORING // LIVE FEED</div>
+      </div>
+      <div id="adminUserInfo" class="admin-user-info"></div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="admin-stats-bar">
+      <div class="admin-stat-card"><div class="admin-stat-label">TOTAL ORDERS</div><div class="admin-stat-value" id="adminStatTotal">—</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-label">NEW</div><div class="admin-stat-value" id="adminStatNew" style="color:#00e5ff">—</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-label">IN PROGRESS</div><div class="admin-stat-value" id="adminStatProgress" style="color:#ffaa00">—</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-label">COMPLETE</div><div class="admin-stat-value" id="adminStatComplete" style="color:#00ff88">—</div></div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="admin-tab-bar">
+      <button class="admin-tab-btn active" onclick="showAdminTab('orders', this)">☰ &nbsp;ORDERS</button>
+      <button class="admin-tab-btn master-only" onclick="showAdminTab('users', this)">⚙ &nbsp;USERS</button>
+      <button class="admin-tab-btn master-only" onclick="showAdminTab('editor', this)">✏ &nbsp;EDITOR</button>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="adminTab-orders" class="admin-tab-content">
+      <div class="admin-controls-row">
+        <div style="display:flex;align-items:center;gap:.85rem;flex-wrap:wrap">
+          <span class="ao-label">FILTER:</span>
+          <select id="adminStatusFilter" class="admin-select" onchange="adminFilterOrders()">
+            <option value="all">ALL ORDERS</option>
+            <option value="new">NEW</option>
+            <option value="in_progress">IN PROGRESS</option>
+            <option value="complete">COMPLETE</option>
+            <option value="cancelled">CANCELLED</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <div class="admin-live-pill"><span class="admin-live-dot"></span> LIVE</div>
+          <button class="admin-refresh-btn" onclick="refreshAdminOrders()">↻ REFRESH</button>
+        </div>
+      </div>
+      <div id="adminOrdersContainer"><div class="admin-empty">// INITIALIZING...</div></div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="adminTab-users" class="admin-tab-content master-only" style="display:none">
+      <div id="adminUsersContainer"><div class="admin-empty">// SELECT USERS TAB TO LOAD</div></div>
+    </div>
+
+    <!-- EDITOR TAB -->
+    <div id="adminTab-editor" class="admin-tab-content master-only" style="display:none">
+      <div id="adminEditorContainer"><div class="admin-empty">// SELECT EDITOR TAB TO LOAD</div></div>
+    </div>
+
+  </div>
+</section>
+</div><!-- /page-admin -->
+
+<!-- ── SUPABASE CONFIG ── -->
+<script>
+  window.__SBCFG = {
+    url: 'https://gschfggmjdccpbvkvbyz.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzY2hmZ2dtamRjY3Bidmt2Ynl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NzEwNDgsImV4cCI6MjA5NjU0NzA0OH0.AKyPiyPKfxiZ7LurxB4w6ln1TY0tW6riDr9_uP5m5kM'
+  };
+</script>
+<script src="js/main.js"></script>
+<script src="js/blob.js"></script>
+</body>
+</html>

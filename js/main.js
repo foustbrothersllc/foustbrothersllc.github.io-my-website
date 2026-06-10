@@ -74,8 +74,10 @@ async function loadCMSContent() {
     const heroSection = document.querySelector('#page-home .hero');
     if (heroSection) {
       const v = map['hero_visible'];
-      // Hide if explicitly set to 'false'. Show in all other cases (undefined, 'true', empty).
-      const shouldHide = (v === 'false');
+      console.log('[HERO TOGGLE] raw value from DB:', JSON.stringify(v));
+      // Hide if value is any form of false/off
+      const shouldHide = (v === 'false' || v === false || v === '0' || v === 0);
+      console.log('[HERO TOGGLE] shouldHide:', shouldHide);
       heroSection.classList.toggle('hero-hidden', shouldHide);
     }
   } catch(e) {

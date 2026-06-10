@@ -11,7 +11,6 @@ let _cfg = null;
 
 async function getCfg() {
   if (_cfg) return _cfg;
-  // Try Vercel edge function first, fall back to inline config
   try {
     const res = await fetch('/api/config');
     if (res.ok) {
@@ -19,7 +18,6 @@ async function getCfg() {
       if (data.url && data.key) { _cfg = data; return _cfg; }
     }
   } catch(e) {}
-  // Fallback to inline config set in index.html
   if (window.__SBCFG && window.__SBCFG.url) {
     _cfg = window.__SBCFG;
     return _cfg;
@@ -52,6 +50,7 @@ function loadScript(src) {
     document.head.appendChild(s);
   });
 }
+
 // ═══════════════════════════════════════════
 //  CMS — CONTENT LOADER
 //  Fetches content from Supabase and injects
@@ -65,19 +64,24 @@ async function loadCMSContent() {
     if (error || !rows) return;
     const map = {};
     rows.forEach(r => map[r.key] = r.value);
+
     document.querySelectorAll('[data-cms]').forEach(el => {
       const key = el.getAttribute('data-cms');
       if (map[key] !== undefined) el.textContent = map[key];
     });
+
+    // Hero visibility toggle
+    const heroSection = document.querySelector('#page-home .hero');
+    if (heroSection) {
+      const v = map['hero_visible'];
+      heroSection.style.display = (v === 'false') ? 'none' : '';
+    }
   } catch(e) {
     console.warn('CMS load failed:', e);
   }
 }
 
-// Load CMS content on page start
 loadCMSContent();
-
-
 
 // ═══════════════════════════════════════════
 //  NAVIGATION
@@ -196,12 +200,10 @@ document.getElementById('workOrderForm').addEventListener('submit', async (e) =>
 
   const fd = new FormData(e.target);
 
-  // Web3Forms (email)
   const w3 = new FormData(e.target);
   w3.append('access_key', 'e9d0aa34-4229-4f32-bec4-02b98db6c0e9');
   w3.append('subject', 'New Work Order — Foust Brothers LLC');
 
-  // Supabase payload
   const order = {
     first_name:    fd.get('firstName'),
     last_name:     fd.get('lastName'),
@@ -249,7 +251,6 @@ document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date
       a.classList.toggle('active', a.dataset.page === path);
     });
   }
-  // If refreshed on admin page, restore session instead of redirecting home
   if (path === 'admin') {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const adminPg = document.getElementById('page-admin');
@@ -266,8 +267,6 @@ document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date
 
 let _clickCount = 0, _clickTimer = null;
 
-// ── HIDDEN CLICK TRIGGER ──
-// Works whether DOM is already loaded or not
 function initAdminTrigger() {
   const trigger = document.getElementById('adminSecretTrigger');
   if (!trigger) return;
@@ -278,7 +277,6 @@ function initAdminTrigger() {
     if (_clickCount >= 5) { _clickCount = 0; showAdminLogin(); }
   });
 
-  // Keyboard listeners for login modal
   ['adminEmailInput','adminPasswordInput'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -289,14 +287,12 @@ function initAdminTrigger() {
   });
 }
 
-// Run immediately (scripts load after DOM when at bottom of page)
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initAdminTrigger);
 } else {
   initAdminTrigger();
 }
 
-// ── KEYBOARD SHORTCUT BACKUP: Ctrl + Shift + A ──
 document.addEventListener('keydown', (e) => {
   if (e.ctrlKey && e.shiftKey && e.key === 'A') {
     e.preventDefault();
@@ -363,7 +359,6 @@ async function adminLogout() {
 async function checkAdminAuth() {
   try {
     const sb = await getSB();
-    // Give Supabase time to restore session from localStorage on page refresh
     await new Promise(r => setTimeout(r, 200));
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { showAdminLogin(); navigate('home'); return; }
@@ -375,7 +370,6 @@ async function checkAdminAuth() {
     window._adminRole     = profile.role;
     window._adminIsMaster = profile.is_master;
 
-    // Show/hide master-only UI
     document.querySelectorAll('.master-only').forEach(el => {
       el.style.display = profile.is_master ? '' : 'none';
     });
@@ -421,36 +415,22 @@ async function startAdminPolling() {
   if (_realtimeChannel) return;
   const sb = await getSB();
 
-  // Real-time subscription — fires instantly on any change
   _realtimeChannel = sb
     .channel('work_orders_realtime')
-    .on('postgres_changes', {
-      event: 'INSERT',
-      schema: 'public',
-      table: 'work_orders'
-    }, (payload) => {
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'work_orders' }, (payload) => {
       triggerNotification(payload.new);
       loadAdminOrders();
     })
-    .on('postgres_changes', {
-      event: 'UPDATE',
-      schema: 'public',
-      table: 'work_orders'
-    }, () => {
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'work_orders' }, () => {
       loadAdminOrders();
     })
-    .on('postgres_changes', {
-      event: 'DELETE',
-      schema: 'public',
-      table: 'work_orders'
-    }, () => {
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'work_orders' }, () => {
       loadAdminOrders();
     })
     .subscribe((status) => {
       console.log('Realtime status:', status);
     });
 
-  // Fallback poll every 30s in case realtime drops
   if (!_fallbackInterval) {
     _fallbackInterval = setInterval(() => loadAdminOrders(), 30000);
   }
@@ -512,8 +492,6 @@ async function loadAdminOrders() {
     const { data: orders, error } = await sb
       .from('work_orders').select('*').order('created_at', { ascending: false });
     if (error) throw error;
-    _knownIds = new Set(orders.map(o => o.id));
-    _firstLoad = false;
     if (Notification.permission === 'default') Notification.requestPermission();
     renderOrders(orders);
     updateStats(orders);
@@ -603,8 +581,12 @@ async function deleteOrder(id, name) {
 }
 
 function updateStats(orders) {
-  const s = id => { const e = document.getElementById(id); if(e) e.textContent = id === 'adminStatTotal' ? orders.length
-    : orders.filter(o => o.status === ({ adminStatNew:'new', adminStatProgress:'in_progress', adminStatComplete:'complete' }[id])).length; };
+  const s = id => {
+    const e = document.getElementById(id);
+    if (e) e.textContent = id === 'adminStatTotal'
+      ? orders.length
+      : orders.filter(o => o.status === ({ adminStatNew:'new', adminStatProgress:'in_progress', adminStatComplete:'complete' }[id])).length;
+  };
   ['adminStatTotal','adminStatNew','adminStatProgress','adminStatComplete'].forEach(s);
 }
 
@@ -684,49 +666,79 @@ async function removeUser(userId, email) {
   loadAdminUsers();
 }
 
-
-
 // ═══════════════════════════════════════════
 //  CMS EDITOR — Admin Panel
 // ═══════════════════════════════════════════
 
 const CMS_FIELDS = [
-  // Section, key, label, type (text/textarea)
-  ['HOME', 'nav_status', 'Nav Status Text', 'text'],
-  ['HOME', 'hero_directive', 'Hero Directive Label', 'text'],
-  ['HOME', 'hero_sub', 'Hero Sub Headline', 'text'],
-  ['HOME', 'sys_philosophy', 'Sys Card — Philosophy', 'text'],
-  ['HOME', 'sys_standard', 'Sys Card — Standard', 'text'],
-  ['HOME', 'sys_commitment', 'Sys Card — Commitment', 'text'],
-  ['HOME', 'sys_warranty', 'Sys Card — Warranty', 'text'],
-  ['SERVICES', 'svc_consultation_title', 'Service: Consultation Title', 'text'],
-  ['SERVICES', 'svc_logo_title', 'Service: Logo Design Title', 'text'],
-  ['SERVICES', 'svc_flyer_title', 'Service: Digital Flyers Title', 'text'],
-  ['SERVICES', 'svc_brochure_title', 'Service: Brochure Site Title', 'text'],
-  ['SERVICES', 'svc_simple_title', 'Service: Simple Build Title', 'text'],
-  ['SERVICES', 'svc_standard_title', 'Service: Standard Build Title', 'text'],
-  ['SERVICES', 'svc_full_title', 'Service: Full Build Title', 'text'],
-  ['BILLING', 'billing_intro', 'Billing Intro Text', 'textarea'],
-  ['BILLING', 'price_tier1', 'Tier 1 Price', 'text'],
-  ['BILLING', 'price_tier2', 'Tier 2 Price', 'text'],
-  ['BILLING', 'price_tier3', 'Tier 3 Price', 'text'],
-  ['BILLING', 'price_retainer_mo', 'Retainer Monthly Price', 'text'],
-  ['BILLING', 'price_retainer_yr', 'Retainer Annual Price', 'text'],
-  ['BILLING', 'rate_standard', 'Standard Shop Rate', 'text'],
-  ['BILLING', 'rate_overtime', 'Overtime Rate', 'text'],
-  ['BILLING', 'rate_rush', 'Rush Rate Multiplier', 'text'],
+  // ── SITE CONTROLS ──
+  ['SITE CONTROLS', 'hero_visible', 'Hero Section Visible', 'toggle'],
+
+  // ── HOME ──
+  ['HOME', 'nav_status',        'Nav Status Text',               'text'],
+  ['HOME', 'hero_directive',    'Hero Directive Label',           'text'],
+  ['HOME', 'hero_line1',        'Hero Headline — Line 1',         'text'],
+  ['HOME', 'hero_line2',        'Hero Headline — Line 2',         'text'],
+  ['HOME', 'hero_line3',        'Hero Headline — Line 3 (Cyan)',  'text'],
+  ['HOME', 'hero_sub',          'Hero Sub Headline',              'text'],
+  ['HOME', 'hero_btn_primary',  'Hero Button — Primary',          'text'],
+  ['HOME', 'hero_btn_secondary','Hero Button — Secondary',        'text'],
+  ['HOME', 'boot_line1',        'Boot Sequence — Line 1',         'text'],
+  ['HOME', 'boot_line2',        'Boot Sequence — Line 2',         'text'],
+  ['HOME', 'boot_line3',        'Boot Sequence — Line 3',         'text'],
+  ['HOME', 'boot_line4',        'Boot Sequence — Line 4',         'text'],
+  ['HOME', 'boot_line5',        'Boot Sequence — Line 5',         'text'],
+  ['HOME', 'sys_philosophy',    'Left Panel — Philosophy',        'text'],
+  ['HOME', 'sys_standard',      'Left Panel — Standard',          'text'],
+  ['HOME', 'sys_commitment',    'Left Panel — Commitment',        'text'],
+  ['HOME', 'sys_warranty',      'Left Panel — Warranty',          'text'],
+  ['HOME', 'sys_status',        'Right Panel — Status Value',     'text'],
+  ['HOME', 'sys_uptime',        'Right Panel — Uptime Value',     'text'],
+  ['HOME', 'sys_billing',       'Right Panel — Billing Value',    'text'],
+  ['HOME', 'sys_region',        'Right Panel — Region Value',     'text'],
+
+  // ── SERVICES ──
+  ['SERVICES', 'svc_consultation_title', 'Service: Consultation Title',   'text'],
+  ['SERVICES', 'svc_logo_title',         'Service: Logo Design Title',     'text'],
+  ['SERVICES', 'svc_flyer_title',        'Service: Digital Flyers Title',  'text'],
+  ['SERVICES', 'svc_brochure_title',     'Service: Brochure Site Title',   'text'],
+  ['SERVICES', 'svc_simple_title',       'Service: Simple Build Title',    'text'],
+  ['SERVICES', 'svc_standard_title',     'Service: Standard Build Title',  'text'],
+  ['SERVICES', 'svc_full_title',         'Service: Full Build Title',      'text'],
+
+  // ── BILLING ──
+  ['BILLING', 'billing_intro',       'Billing Intro Text',          'textarea'],
+  ['BILLING', 'price_tier1',         'Tier 1 Price',                'text'],
+  ['BILLING', 'price_tier2',         'Tier 2 Price',                'text'],
+  ['BILLING', 'price_tier3',         'Tier 3 Price',                'text'],
+  ['BILLING', 'price_retainer_mo',   'Retainer Monthly Price',      'text'],
+  ['BILLING', 'price_retainer_yr',   'Retainer Annual Price',       'text'],
+  ['BILLING', 'rate_standard',       'Standard Shop Rate',          'text'],
+  ['BILLING', 'rate_overtime',       'Overtime Rate',               'text'],
+  ['BILLING', 'rate_rush',           'Rush Rate Multiplier',        'text'],
+  ['BILLING', 'spec_logo_price',     'Logo Design Price Range',     'text'],
+  ['BILLING', 'spec_logo_desc',      'Logo Design Description',     'text'],
+  ['BILLING', 'spec_flyer_price',    'Digital Flyers Price Range',  'text'],
+  ['BILLING', 'spec_flyer_desc',     'Digital Flyers Description',  'text'],
+  ['BILLING', 'spec_domain_price',   'Domain Privacy Price Range',  'text'],
+  ['BILLING', 'spec_domain_desc',    'Domain Privacy Description',  'text'],
+
+  // ── ABOUT ──
   ['ABOUT', 'about_headline', 'About Page Headline', 'textarea'],
-  ['WORK ORDER', 'step1', 'Step 1 — Submit Description', 'textarea'],
-  ['WORK ORDER', 'step2', 'Step 2 — Review Description', 'textarea'],
-  ['WORK ORDER', 'step3', 'Step 3 — Quote Description', 'textarea'],
+
+  // ── FOOTER ──
+  ['FOOTER', 'footer_tagline',    'Footer Tagline',              'textarea'],
+  ['FOOTER', 'footer_motto',      'Footer Motto Box',            'text'],
+  ['FOOTER', 'footer_philosophy', 'Footer Bottom Philosophy',    'text'],
+
+  // ── WORK ORDER ──
+  ['WORK ORDER', 'step1', 'Step 1 — Submit Description',  'textarea'],
+  ['WORK ORDER', 'step2', 'Step 2 — Review Description',  'textarea'],
+  ['WORK ORDER', 'step3', 'Step 3 — Quote Description',   'textarea'],
   ['WORK ORDER', 'step4', 'Step 4 — Deliver Description', 'textarea'],
+
+  // ── CONTACT ──
   ['CONTACT', 'contact_phone', 'Phone Number', 'text'],
-  ['BILLING', 'spec_logo_price', 'Logo Design Price Range', 'text'],
-  ['BILLING', 'spec_logo_desc', 'Logo Design Description', 'text'],
-  ['BILLING', 'spec_flyer_price', 'Digital Flyers Price Range', 'text'],
-  ['BILLING', 'spec_flyer_desc', 'Digital Flyers Description', 'text'],
-  ['BILLING', 'spec_domain_price', 'Domain Privacy Price Range', 'text'],
-  ['BILLING', 'spec_domain_desc', 'Domain Privacy Description', 'text'],
 ];
 
 async function loadCMSEditor() {
@@ -740,11 +752,10 @@ async function loadCMSEditor() {
     const map = {};
     if (rows) rows.forEach(r => map[r.key] = r.value);
 
-    // Group by section
     const sections = {};
     CMS_FIELDS.forEach(([section, key, label, type]) => {
       if (!sections[section]) sections[section] = [];
-      sections[section].push({ key, label, type, value: map[key] || '' });
+      sections[section].push({ key, label, type, value: map[key] ?? '' });
     });
 
     box.innerHTML = `
@@ -756,6 +767,7 @@ async function loadCMSEditor() {
           ⚡ SAVE ALL CHANGES
         </button>
       </div>
+
       ${Object.entries(sections).map(([section, fields]) => `
         <div style="margin-bottom:1.5rem">
           <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--cyan);
@@ -764,21 +776,50 @@ async function loadCMSEditor() {
             // ${section}
           </div>
           <div style="border:1px solid var(--border);background:var(--bg-card)">
-            ${fields.map(f => `
-              <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border)">
-                <label class="admin-input-label" style="margin-bottom:5px">${f.label}</label>
-                ${f.type === 'textarea'
-                  ? `<textarea data-cms-key="${f.key}" class="admin-input-field"
-                      style="min-height:70px;resize:vertical;padding:8px 12px;width:100%;box-sizing:border-box"
-                    >${f.value}</textarea>`
-                  : `<input type="text" data-cms-key="${f.key}" class="admin-input-field"
-                      value="${f.value.replace(/"/g,'&quot;')}" />`
-                }
-              </div>
-            `).join('')}
+            ${fields.map(f => {
+              if (f.type === 'toggle') {
+                const isOn = f.value !== 'false' && f.value !== '0' && f.value !== '';
+                return `
+                  <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border);
+                    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+                    <div>
+                      <label class="admin-input-label" style="margin:0;display:block">${f.label}</label>
+                      <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.08em;margin-top:3px">
+                        Controls whether the hero section is shown on the homepage
+                      </div>
+                    </div>
+                    <button
+                      data-cms-key="${f.key}"
+                      data-cms-type="toggle"
+                      data-value="${isOn ? 'true' : 'false'}"
+                      onclick="toggleCMSField(this)"
+                      style="
+                        font-family:var(--font-mono);font-size:.65rem;letter-spacing:.18em;font-weight:700;
+                        padding:10px 28px;border:1px solid;cursor:pointer;transition:all .25s;min-width:140px;
+                        ${isOn
+                          ? 'color:#00ff88;border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.08)'
+                          : 'color:#ff4466;border-color:rgba(255,68,102,.4);background:rgba(255,68,102,.06)'}
+                      ">
+                      ${isOn ? '▶ ONLINE' : '■ OFFLINE'}
+                    </button>
+                  </div>`;
+              }
+              return `
+                <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border)">
+                  <label class="admin-input-label" style="margin-bottom:5px">${f.label}</label>
+                  ${f.type === 'textarea'
+                    ? `<textarea data-cms-key="${f.key}" class="admin-input-field"
+                        style="min-height:70px;resize:vertical;padding:8px 12px;width:100%;box-sizing:border-box"
+                      >${f.value}</textarea>`
+                    : `<input type="text" data-cms-key="${f.key}" class="admin-input-field"
+                        value="${f.value.replace(/"/g,'&quot;')}" />`
+                  }
+                </div>`;
+            }).join('')}
           </div>
         </div>
       `).join('')}
+
       <div style="text-align:right;margin-top:1rem">
         <button class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
           ⚡ SAVE ALL CHANGES
@@ -792,6 +833,26 @@ async function loadCMSEditor() {
   }
 }
 
+function toggleCMSField(btn) {
+  const isOn = btn.getAttribute('data-value') === 'true';
+  const newVal = isOn ? 'false' : 'true';
+  btn.setAttribute('data-value', newVal);
+
+  if (!isOn) {
+    // Turning ON
+    btn.textContent = '▶ ONLINE';
+    btn.style.color = '#00ff88';
+    btn.style.borderColor = 'rgba(0,255,136,.5)';
+    btn.style.background = 'rgba(0,255,136,.08)';
+  } else {
+    // Turning OFF
+    btn.textContent = '■ OFFLINE';
+    btn.style.color = '#ff4466';
+    btn.style.borderColor = 'rgba(255,68,102,.4)';
+    btn.style.background = 'rgba(255,68,102,.06)';
+  }
+}
+
 async function saveCMSContent() {
   const msg = document.getElementById('editorSaveMsg');
   if (msg) { msg.style.color = 'var(--cyan)'; msg.textContent = '// SAVING...'; }
@@ -801,14 +862,15 @@ async function saveCMSContent() {
     const inputs = document.querySelectorAll('[data-cms-key]');
     const upserts = Array.from(inputs).map(el => ({
       key: el.getAttribute('data-cms-key'),
-      value: el.value || el.textContent,
+      value: el.getAttribute('data-cms-type') === 'toggle'
+        ? el.getAttribute('data-value')
+        : (el.value !== undefined ? el.value : el.textContent),
       updated_at: new Date().toISOString()
     }));
 
     const { error } = await sb.from('content').upsert(upserts, { onConflict: 'key' });
     if (error) throw error;
 
-    // Reload live content on the page
     await loadCMSContent();
 
     if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ ALL CHANGES SAVED — SITE UPDATED LIVE'; }

@@ -74,7 +74,11 @@ async function loadCMSContent() {
     const heroSection = document.querySelector('#page-home .hero');
     if (heroSection) {
       const v = map['hero_visible'];
-      heroSection.style.display = (v === 'false') ? 'none' : '';
+      if (v === 'false') {
+        heroSection.classList.add('hero-hidden');
+      } else {
+        heroSection.classList.remove('hero-hidden');
+      }
     }
   } catch(e) {
     console.warn('CMS load failed:', e);

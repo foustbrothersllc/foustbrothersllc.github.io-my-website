@@ -642,28 +642,112 @@ async function loadAdminUsers() {
 function renderUsers(users) {
   const box = document.getElementById('adminUsersContainer');
   if (!box) return;
-  box.innerHTML = users.map(u => `
-    <div class="ao-card" style="margin-bottom:1px">
-      <div class="ao-header">
-        <div class="ao-meta">
-          <span class="ao-id">${u.email}</span>
-          <span class="ao-time">${fmtDate(u.created_at)}</span>
-        </div>
-        <span class="admin-role-badge role-${u.role}">${u.role.toUpperCase()}${u.is_master ? ' ★' : ''}</span>
+  box.innerHTML = `
+    <!-- Create User Form -->
+    <div style="border:1px solid rgba(0,229,255,.3);background:var(--bg-card);margin-bottom:1.5rem;">
+      <div style="padding:.7rem 1.25rem;border-bottom:1px solid var(--border);background:rgba(0,229,255,.03);font-family:var(--font-mono);font-size:.58rem;color:var(--cyan);letter-spacing:.2em;">
+        // CREATE NEW USER
       </div>
-      ${u.is_master
-        ? `<div style="padding:.6rem 1.25rem;font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em">// MASTER ADMIN — PROTECTED ACCOUNT</div>`
-        : `<div class="ao-footer">
-            <span class="ao-label">ROLE:</span>
-            <div class="ao-status-btns">
-              <button class="ao-sbtn ${u.role==='admin'?'active':''}" onclick="setUserRole('${u.id}','admin')">ADMIN</button>
-              <button class="ao-sbtn ${u.role==='user'?'active':''}"  onclick="setUserRole('${u.id}','user')">USER</button>
-              <button class="ao-sbtn danger" onclick="removeUser('${u.id}','${u.email}')">✕ REMOVE</button>
-            </div>
-           </div>`
-      }
+      <div style="padding:1.25rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;">
+        <div style="flex:1;min-width:200px;">
+          <label class="admin-input-label">EMAIL</label>
+          <input type="email" id="newUserEmail" class="admin-input-field" placeholder="user@email.com" />
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label class="admin-input-label">PASSWORD</label>
+          <input type="password" id="newUserPassword" class="admin-input-field" placeholder="••••••••" />
+        </div>
+        <div style="min-width:140px;">
+          <label class="admin-input-label">ROLE</label>
+          <select id="newUserRole" class="admin-select" style="width:100%;padding:11px 14px;">
+            <option value="user">USER</option>
+            <option value="admin">ADMIN</option>
+          </select>
+        </div>
+        <button class="admin-login-btn" style="padding:11px 22px;white-space:nowrap;" onclick="createUser()">
+          ⚡ CREATE USER
+        </button>
+      </div>
+      <div id="createUserMsg" style="font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;padding:0 1.25rem .75rem;min-height:1.2rem;"></div>
     </div>
-  `).join('');
+
+    <!-- User List -->
+    ${users.map(u => `
+      <div class="ao-card" style="margin-bottom:1px">
+        <div class="ao-header">
+          <div class="ao-meta">
+            <span class="ao-id">${u.email}</span>
+            <span class="ao-time">${fmtDate(u.created_at)}</span>
+          </div>
+          <span class="admin-role-badge role-${u.role}">${u.role.toUpperCase()}${u.is_master ? ' ★' : ''}</span>
+        </div>
+        ${u.is_master
+          ? `<div style="padding:.6rem 1.25rem;font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em">// MASTER ADMIN — PROTECTED ACCOUNT</div>`
+          : `<div class="ao-footer">
+              <span class="ao-label">ROLE:</span>
+              <div class="ao-status-btns">
+                <button class="ao-sbtn ${u.role==='admin'?'active':''}" onclick="setUserRole('${u.id}','admin')">ADMIN</button>
+                <button class="ao-sbtn ${u.role==='user'?'active':''}"  onclick="setUserRole('${u.id}','user')">USER</button>
+                <button class="ao-sbtn danger" onclick="removeUser('${u.id}','${u.email}')">✕ REMOVE</button>
+              </div>
+             </div>`
+        }
+      </div>
+    `).join('')}
+  `;
+}
+
+async function createUser() {
+  const email    = document.getElementById('newUserEmail').value.trim();
+  const password = document.getElementById('newUserPassword').value;
+  const role     = document.getElementById('newUserRole').value;
+  const msg      = document.getElementById('createUserMsg');
+
+  if (!email || !password) {
+    msg.style.color = '#ff4466';
+    msg.textContent = '⚠ EMAIL AND PASSWORD REQUIRED';
+    return;
+  }
+  if (password.length < 6) {
+    msg.style.color = '#ff4466';
+    msg.textContent = '⚠ PASSWORD MUST BE AT LEAST 6 CHARACTERS';
+    return;
+  }
+
+  msg.style.color = 'var(--cyan)';
+  msg.textContent = '// CREATING USER...';
+
+  try {
+    const sb = await getSB();
+
+    // Sign up the new user
+    const { data, error } = await sb.auth.signUp({ email, password });
+    if (error) throw error;
+    if (!data.user) throw new Error('User creation failed');
+
+    // Set their role in profiles table
+    await sb.from('profiles').upsert({
+      id: data.user.id,
+      email,
+      role,
+      is_master: false
+    }, { onConflict: 'id' });
+
+    msg.style.color = '#00ff88';
+    msg.textContent = `✓ USER CREATED: ${email} — ${role.toUpperCase()}`;
+
+    // Clear form
+    document.getElementById('newUserEmail').value = '';
+    document.getElementById('newUserPassword').value = '';
+    document.getElementById('newUserRole').value = 'user';
+
+    // Reload user list
+    setTimeout(() => loadAdminUsers(), 1000);
+
+  } catch(err) {
+    msg.style.color = '#ff4466';
+    msg.textContent = '⚠ ' + (err.message || 'CREATE FAILED');
+  }
 }
 
 async function setUserRole(userId, role) {

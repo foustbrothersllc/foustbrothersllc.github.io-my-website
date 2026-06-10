@@ -1,7 +1,5 @@
 /* ═══════════════════════════════════════════
-   ADMIN PANEL — paste at bottom of style.css
-   after the closing @media (max-width: 700px)
-   block. No existing styles share these names.
+   ADMIN PANEL STYLES
 ═══════════════════════════════════════════ */
 
 /* ── Login Overlay ── */
@@ -59,14 +57,15 @@
 }
 .admin-abort-btn:hover { border-color: #ff4466; color: #ff4466; }
 
-/* ── Toast ── */
+/* ── Toast — pushed fully off screen when hidden ── */
 .admin-toast {
   position: fixed; top: 80px; right: 2rem; max-width: 370px;
   background: var(--bg-card); border: 1px solid var(--cyan);
   color: var(--cyan); font-family: var(--font-mono); font-size: .63rem;
   letter-spacing: .12em; padding: 13px 20px; z-index: 9998;
   box-shadow: 0 0 30px rgba(0,229,255,0.2);
-  transform: translateX(130%); transition: transform .4s cubic-bezier(.16,1,.3,1);
+  transform: translateX(calc(100% + 4rem)); transition: transform .4s cubic-bezier(.16,1,.3,1);
+  overflow: hidden;
 }
 .admin-toast.show { transform: translateX(0); }
 

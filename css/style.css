@@ -22,7 +22,10 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: var(--bg-primary); color: var(--white); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+body { background: var(--bg-primary); color: var(--white); font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+
+/* ── HIDE SCROLLBAR ── */
+body::-webkit-scrollbar { display: none; }
 
 /* ── MATH BACKGROUND ── */
 .math-bg {

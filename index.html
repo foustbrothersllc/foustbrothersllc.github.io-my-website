@@ -28,9 +28,8 @@
       <span class="nav-brand-sub" data-cms="nav_status"></span>
     </div>
   </div>
-  <!-- FIXED: navClock before nav-toggle so margin-left:auto on toggle works correctly on mobile -->
-  <div id="navClock" style="font-family:var(--font-mono);font-size:.75rem;font-weight:900;color:var(--cyan);letter-spacing:.25em;text-shadow:0 0 10px rgba(0,229,255,0.5);margin-right:.5rem;">00:00:00</div>
   <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+  <div id="navClock" style="font-family:var(--font-mono);font-size:.75rem;font-weight:900;color:var(--cyan);letter-spacing:.25em;text-shadow:0 0 10px rgba(0,229,255,0.5);margin-right:.5rem;">00:00:00</div>
   <ul class="nav-links">
     <li><a onclick="navigate('home')" data-page="home">HOME</a></li>
     <li><a onclick="navigate('about')" data-page="about">ABOUT</a></li>
@@ -167,7 +166,7 @@
       <div class="service-card" onclick="selectService('standard')">
         <div class="service-card-module">MODULE-06 <span class="sc-indicator"></span></div>
         <h3 class="service-card-title" data-cms="svc_standard_title"></h3>
-        <p class="service-card-desc">More scope, same precision.</p>
+        <p class="service-card-desc">Designed for growing businesses needing detailed service menus and project galleries. More scope, same precision.</p>
         <ul class="service-card-features"><li>Service menu pages</li><li>Project gallery</li><li>Mobile responsive</li><li>Scalable architecture</li></ul>
         <div class="service-card-cta">// CLICK TO ACTIVATE</div>
       </div>
@@ -300,18 +299,18 @@
         <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_tier1"></div><div class="rate-amount-unit">ONE-TIME</div></div>
       </div>
       <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">TIER 2 — STANDARD BUSINESS SITE</div><div class="rate-sub">Best for: Businesses needing a complete professional web presence.</div><div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;"><span style="color:var(--cyan)">›</span> Up to 5 pages with full service menus<br><span style="color:var(--cyan)">›</span> Blog or news section optional<br><span style="color:var(--cyan)">›</span> Advanced contact &amp; quote forms</div></div></div>
+        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">TIER 2 — STANDARD GROWTH SITE</div><div class="rate-sub">Best for: Established businesses showcasing portfolios, service menus, or generating active leads.</div><div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;"><span style="color:var(--cyan)">›</span> Up to 6 pages<br><span style="color:var(--cyan)">›</span> Advanced forms (scheduling/booking hooks)<br><span style="color:var(--cyan)">›</span> Custom dynamic elements &amp; baseline SEO</div></div></div>
         <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_tier2"></div><div class="rate-amount-unit">ONE-TIME</div></div>
       </div>
       <div class="rate-row">
-        <div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">TIER 3 — FULL CUSTOM BUILD</div><div class="rate-sub">Best for: Operations requiring deep architecture and custom functionality.</div><div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;"><span style="color:var(--cyan)">›</span> 5–10+ pages, full custom architecture<br><span style="color:var(--cyan)">›</span> Custom integrations &amp; advanced features<br><span style="color:var(--cyan)">›</span> Performance-optimized build</div></div></div>
-        <div class="rate-amount-block"><div class="rate-amount cyan" data-cms="price_tier3"></div><div class="rate-amount-unit">ONE-TIME</div></div>
+        <div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">TIER 3 — ADVANCED CUSTOM SITE</div><div class="rate-sub">Best for: Complex builds requiring advanced functionality.</div><div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);line-height:1.8;"><span style="color:var(--cyan)">›</span> Multi-page layouts &amp; deep integrations<br><span style="color:var(--cyan)">›</span> Dynamic database filtering<br><span style="color:var(--cyan)">›</span> Lightweight e-commerce setup</div></div></div>
+        <div class="rate-amount-block"><div class="rate-amount" data-cms="price_tier3"></div><div class="rate-amount-unit">ONE-TIME</div></div>
       </div>
     </div>
     <div class="rate-stats">
-      <div class="rate-stat"><div class="rate-stat-value">35%</div><div class="rate-stat-label">DEPOSIT</div></div>
-      <div class="rate-stat"><div class="rate-stat-value">65%</div><div class="rate-stat-label">ON DELIVERY</div></div>
-      <div class="rate-stat"><div class="rate-stat-value" style="font-size:1.4rem">WARRANTY</div><div class="rate-stat-label">30D</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">DEPOSIT</div><div class="rate-stat-value">35%</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">ON DELIVERY</div><div class="rate-stat-value">65%</div></div>
+      <div class="rate-stat"><div class="rate-stat-label">WARRANTY</div><div class="rate-stat-value">30D</div></div>
       <div class="rate-stat"><div class="rate-stat-label">BILLING</div><div class="rate-stat-value">NET30</div></div>
     </div>
   </div>
@@ -338,17 +337,27 @@
     <div class="rate-table">
       <div class="rate-table-header"><span>LABOR CATEGORY</span><span>RATE</span></div>
       <div class="rate-row rate-row-active"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">STANDARD SHOP RATE</div><div class="rate-sub">General web work, content updates, minor fixes — 1 hr minimum</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_standard"></div><div class="rate-amount-unit">/ HR</div></div></div>
-      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">OVERTIME RATE</div><div class="rate-sub">After-hours or weekend work — 1 hr minimum</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_overtime"></div><div class="rate-amount-unit">/ HR</div></div></div>
-      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">RUSH RATE</div><div class="rate-sub">48-hour or less turnaround — applied as multiplier</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_rush"></div><div class="rate-amount-unit">MULTIPLIER</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot cyan"></div><div><div class="rate-tier">OVERTIME RATE</div><div class="rate-sub">Extended or after-hours work</div></div></div><div class="rate-amount-block"><div class="rate-amount cyan" data-cms="rate_overtime"></div><div class="rate-amount-unit">/ HR</div></div></div>
+      <div class="rate-row"><div class="rate-row-left"><div class="rate-dot"></div><div><div class="rate-tier">RUSH / EMERGENCY</div><div class="rate-sub">Same-day or critical response</div></div></div><div class="rate-amount-block"><div class="rate-amount" data-cms="rate_rush"></div><div class="rate-amount-unit">STANDARD RATE</div></div></div>
     </div>
   </div>
 </section>
 <section style="padding-top:0;padding-bottom:4rem">
   <div class="container">
-    <div class="rate-section-label">// SECTION 04 — BILLING PRINCIPLES</div>
+    <div class="rate-section-label">// SECTION 04 — SPECIALIZED SERVICES</div>
+    <div class="specialized-grid">
+      <div class="specialized-card"><div class="specialized-label">LOGO DESIGN</div><div class="specialized-price" data-cms="spec_logo_price"></div><div class="specialized-desc" data-cms="spec_logo_desc"></div></div>
+      <div class="specialized-card"><div class="specialized-label">DIGITAL FLYERS</div><div class="specialized-price" data-cms="spec_flyer_price"></div><div class="specialized-desc" data-cms="spec_flyer_desc"></div></div>
+      <div class="specialized-card"><div class="specialized-label">DOMAIN PRIVACY</div><div class="specialized-price" data-cms="spec_domain_price"></div><div class="specialized-desc" data-cms="spec_domain_desc"></div></div>
+    </div>
+  </div>
+</section>
+<section style="padding-top:0;padding-bottom:4rem">
+  <div class="container">
+    <div class="rate-section-label">// SECTION 05 — BILLING PRINCIPLES</div>
     <div class="billing-principles">
-      <div class="billing-card"><div class="billing-card-icon">📋</div><div class="billing-card-title">FLAT-RATE PROJECTS</div><div class="billing-card-desc">All site builds are quoted as flat-rate projects. You approve the scope and price before we start. No scope creep surprises.</div></div>
-      <div class="billing-card"><div class="billing-card-icon">💬</div><div class="billing-card-title">TRANSPARENT QUOTING</div><div class="billing-card-desc">Every quote breaks down exactly what you're getting and what it costs. We don't bill for surprises.</div></div>
+      <div class="billing-card"><div class="billing-card-icon">⚡</div><div class="billing-card-title">NO SURPRISE CHARGES</div><div class="billing-card-desc">Every charge is approved in writing before work begins. No exceptions. You'll never open an invoice and wonder what you're paying for.</div></div>
+      <div class="billing-card"><div class="billing-card-icon">📋</div><div class="billing-card-title">SCOPE CHANGES IN WRITING</div><div class="billing-card-desc">Any additions or changes to the original scope are re-quoted and approved before work starts. We don't bill for surprises.</div></div>
       <div class="billing-card"><div class="billing-card-icon">🔒</div><div class="billing-card-title">35% DEPOSIT, 65% ON DELIVERY</div><div class="billing-card-desc">Standard payment structure. The deposit is non-refundable and secures your spot in the queue. Final payment is due upon project delivery.</div></div>
     </div>
     <div class="billing-faq">
@@ -409,52 +418,65 @@
             </div>
             <div class="form-group"><label for="timeline">PROJECT TIMELINE</label>
               <select id="timeline" name="timeline">
-                <option value="" disabled selected>-- SELECT TIMELINE --</option>
-                <option value="asap">ASAP — Rush Rate Applies</option>
-                <option value="2weeks">Within 2 Weeks</option>
-                <option value="1month">Within 1 Month</option>
-                <option value="flexible">Flexible</option>
+                <option value="" disabled selected>SELECT TIMELINE...</option>
+                <option value="asap">ASAP — CRITICAL</option>
+                <option value="1month">WITHIN 1 MONTH</option>
+                <option value="1-3months">1 – 3 MONTHS</option>
+                <option value="3-6months">3 – 6 MONTHS</option>
+                <option value="flexible">FLEXIBLE</option>
               </select>
             </div>
             <div class="form-group"><label for="budget">ESTIMATED BUDGET</label>
               <select id="budget" name="budget">
-                <option value="" disabled selected>-- SELECT BUDGET RANGE --</option>
-                <option value="under500">Under $500</option>
+                <option value="" disabled selected>SELECT BUDGET RANGE...</option>
+                <option value="under500">UNDER $500</option>
                 <option value="500-1000">$500 – $1,000</option>
                 <option value="1000-2500">$1,000 – $2,500</option>
-                <option value="2500plus">$2,500+</option>
-                <option value="unsure">Not Sure</option>
+                <option value="2500-5000">$2,500 – $5,000</option>
+                <option value="5000+">$5,000+</option>
+                <option value="tbd">TO BE DISCUSSED</option>
+              </select>
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);margin-top:6px;letter-spacing:.1em;">A representative will contact you for manual follow-up and formal quotation.</div>
+            </div>
+            <div class="form-group"><label for="existingSite">EXISTING WEBSITE URL (if any)</label><input type="text" id="existingSite" name="existingSite" placeholder="e.g. www.yoursite.com" /></div>
+            <div class="form-group"><label for="description">PROJECT DESCRIPTION *</label><textarea id="description" name="description" placeholder="Describe your project, goals, and any specific requirements." required></textarea></div>
+            <div class="form-group"><label for="howHeard">HOW DID YOU HEAR ABOUT US?</label>
+              <select id="howHeard" name="howHeard">
+                <option value="" disabled selected>-- SELECT --</option>
+                <option value="referral">Referral / Word of Mouth</option>
+                <option value="search">Search Engine</option>
+                <option value="social">Social Media</option>
+                <option value="local">Local / Community</option>
+                <option value="other">Other</option>
               </select>
             </div>
-            <div class="form-group"><label for="description">PROJECT DESCRIPTION *</label><textarea id="description" name="description" placeholder="Describe your project, goals, and any specific requirements..." required></textarea></div>
-            <div class="form-group"><label for="referral">HOW DID YOU FIND US?</label><input type="text" id="referral" name="referral" placeholder="Google, referral, social media..." /></div>
-            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
-            <input type="hidden" name="subject" value="New Work Order — Foust Brothers LLC" />
-            <input type="hidden" name="from_name" value="Foust Brothers Site" />
-            <button type="submit" class="form-submit" id="submitBtn">⚡ TRANSMIT REQUEST</button>
+            <button type="submit" class="form-submit"><span>⚡</span> TRANSMIT WORK ORDER</button>
           </form>
-          <div class="success-msg" id="successMsg">
-            <h3>// TRANSMISSION RECEIVED</h3>
-            <p>We'll review your request and get back to you within 1 business day.</p>
-          </div>
+          <div class="success-msg" id="successMsg"><h3>✓ TRANSMISSION CONFIRMED</h3><p>Your work order has been received. We'll be in contact within 1 business day.</p></div>
         </div>
       </div>
       <div>
-        <div class="woi-card"><div class="woi-label">// RESPONSE TIME</div><div class="woi-value">Within 1 business day. Usually faster.</div></div>
-        <div class="woi-card"><div class="woi-label">// WHAT HAPPENS NEXT</div><div class="woi-value">We review your request, scope the project, and send you a detailed quote with no obligation.</div></div>
-        <div class="woi-card"><div class="woi-label">// PAYMENT</div><div class="woi-value">35% deposit to start. 65% on delivery. No hidden fees.</div></div>
-        <div class="woi-card"><div class="woi-label">// DIRECT CONTACT</div><div class="woi-value"><a href="tel:3368622999" style="color:var(--cyan);text-decoration:none;">(336) 862-2999</a><br><a href="mailto:FoustBrothersLLC@gmail.com" style="color:var(--white-dim);text-decoration:none;font-size:.8rem;">FoustBrothersLLC@gmail.com</a></div></div>
+        <div class="section-module-label" style="margin-bottom:1rem"><div class="section-dot"></div> WHAT TO EXPECT</div>
+        <div class="woi-card"><div class="woi-label">STEP 01 // SUBMIT</div><div class="woi-value" data-cms="step1"></div></div>
+        <div class="woi-card"><div class="woi-label">STEP 02 // REVIEW</div><div class="woi-value" data-cms="step2"></div></div>
+        <div class="woi-card"><div class="woi-label">STEP 03 // QUOTE</div><div class="woi-value" data-cms="step3"></div></div>
+        <div class="woi-card"><div class="woi-label">STEP 04 // DELIVER</div><div class="woi-value" data-cms="step4"></div></div>
       </div>
     </div>
   </div>
 </section>
 <footer>
   <div class="footer-grid">
-    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
-    <div><div class="footer-section-label">// CONTACT</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div></div>
-    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">HOME</a></li><li><a onclick="navigate('work-order')">WORK ORDER</a></li></ul></div>
+    <div><div class="footer-brand-header"><div><div class="footer-brand-name">FOUST BROTHERS</div><div class="footer-brand-sub">DIGITAL DIVISION</div></div></div><p class="footer-tagline">Expert digital craftsmen. Honest quotes. Reliable delivery.</p><div class="footer-motto">UNDER PROMISE.<br>OVER DELIVER.</div></div>
+    <div><div class="footer-section-label">// CONTACT</div><div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div></div>
+    <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">HOME</a></li><li><a onclick="navigate('about')">ABOUT</a></li><li><a onclick="navigate('billing')">BILLING</a></li></ul>
+      <div class="quality-badge">
+        <div class="quality-badge-title">QUALITY<br>CONTROL</div>
+        <div class="quality-badge-sub">FOUST BROS APPROVED<br>WD-CERTIFIED <span style="color:var(--cyan)">●</span></div>
+      </div>
+    </div>
   </div>
-  <div class="footer-bottom"><div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div></div>
+  <div class="footer-bottom"><div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER</div></div>
 </footer>
 </div><!-- /page-work-order -->
 
@@ -498,12 +520,12 @@
       <h1 class="section-title">TERMS OF SERVICE</h1>
       <div class="section-subtitle">FOUST BROTHERS LLC — EFFECTIVE JUNE 1, 2026</div>
       <div class="legal-section"><div class="legal-section-head">01 // PARTIES &amp; AGREEMENT</div><div class="legal-section-body">This Agreement is between Foust Brothers LLC ("Developer") and the client ("Client"). By submitting a work order and paying a deposit, the Client agrees to these terms.</div></div>
-      <div class="legal-section"><div class="legal-section-head">02 // SCOPE OF WORK</div><div class="legal-section-body">All work is scoped in writing prior to starting. Changes to the agreed scope may result in additional charges at the Standard Shop Rate. Any change that adds significant new features or pages will be quoted separately.</div></div>
-      <div class="legal-section"><div class="legal-section-head">03 // PAYMENT TERMS</div><div class="legal-section-body">A 35% non-refundable deposit is required to begin work. The remaining 65% is due upon project delivery. Retainer plans are billed monthly or annually as agreed. Overdue invoices may result in work stoppage.</div></div>
-      <div class="legal-section"><div class="legal-section-head">04 // REVISIONS &amp; APPROVALS</div><div class="legal-section-body">Reasonable revisions within the agreed scope are included. The Client is responsible for providing timely feedback and final approval. Projects are considered complete upon Client approval or 14 days of no response after delivery.</div></div>
-      <div class="legal-section"><div class="legal-section-head">05 // WARRANTY</div><div class="legal-section-body">We provide a 30-day post-launch warranty covering bugs and technical errors from the original scope. This does not cover new feature requests, content changes, or third-party service failures.</div></div>
-      <div class="legal-section"><div class="legal-section-head">06 // INTELLECTUAL PROPERTY</div><div class="legal-section-body">Upon final payment, the Client owns all custom deliverables. Foust Brothers LLC retains the right to display completed work in our portfolio unless otherwise agreed in writing.</div></div>
-      <div class="legal-section"><div class="legal-section-head">07 // LIMITATION OF LIABILITY</div><div class="legal-section-body">Foust Brothers LLC is not liable for indirect, incidental, or consequential damages. Total liability is limited to the amount paid by the Client for the specific project in dispute.</div></div>
+      <div class="legal-section"><div class="legal-section-head">02 // SCOPE OF WORK</div><div class="legal-section-body">All work is scoped in writing prior to starting. Any additions or changes outside of the agreed scope will be re-quoted and require written approval before implementation.</div></div>
+      <div class="legal-section"><div class="legal-section-head">03 // PAYMENT TERMS</div><div class="legal-section-body"><ul><li>35% non-refundable deposit is due before work begins</li><li>65% final payment is due upon project delivery</li><li>Projects over $1,000 may use milestone-based payment by mutual agreement</li><li>Invoices unpaid after 30 days accrue a 5% late fee per month</li></ul></div></div>
+      <div class="legal-section"><div class="legal-section-head">04 // REVISIONS &amp; WARRANTIES</div><div class="legal-section-body">All builds include a 30-day post-launch bug warranty covering errors within the original agreed scope. Content changes, new features, or scope expansions after launch are billed at the Standard Shop Rate.</div></div>
+      <div class="legal-section"><div class="legal-section-head">05 // CLIENT RESPONSIBILITIES</div><div class="legal-section-body">The Client is responsible for providing all required content (text, images, branding assets) in a timely manner. Project delays caused by missing client materials may affect timeline and are not the responsibility of the Developer.</div></div>
+      <div class="legal-section"><div class="legal-section-head">06 // INTELLECTUAL PROPERTY</div><div class="legal-section-body">Upon receipt of final payment, the Client owns all custom work product created for their project. Developer retains the right to display completed work in a portfolio unless otherwise agreed in writing.</div></div>
+      <div class="legal-section"><div class="legal-section-head">07 // LIMITATION OF LIABILITY</div><div class="legal-section-body">Foust Brothers LLC is not liable for indirect, incidental, or consequential damages arising from the use of delivered work. Total liability is limited to the amount paid by the Client for the specific project in dispute.</div></div>
       <div class="legal-section"><div class="legal-section-head">08 // CONTACT</div><div class="legal-section-body">Questions? Contact us at <strong>FoustBrothersLLC@gmail.com</strong> or <strong>(336) 862-2999</strong>.</div></div>
     </div>
   </div>
@@ -514,12 +536,42 @@
     <div><div class="footer-section-label">// CONTACT</div><div class="footer-contact-item"><div class="footer-contact-label">EMAIL</div><div class="footer-contact-value"><a href="mailto:FoustBrothersLLC@gmail.com">FoustBrothersLLC@gmail.com</a></div></div><div class="footer-contact-item"><div class="footer-contact-label">PHONE</div><div class="footer-contact-value"><a href="tel:3368622999">(336) 862-2999</a></div></div></div>
     <div><div class="footer-section-label">// QUICK NAV</div><ul class="footer-nav-links"><li><a onclick="navigate('home')">HOME</a></li><li><a onclick="navigate('work-order')">WORK ORDER</a></li></ul></div>
   </div>
-  <div class="footer-bottom"><div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div><div class="footer-philosophy">PHILOSOPHY: UNDER PROMISE — OVER DELIVER</div></div>
+  <div class="footer-bottom"><div class="footer-copy">© <span class="footerYear"></span> FOUST BROTHERS LLC. All rights reserved.</div><div class="footer-legal-links"><a onclick="navigate('privacy')">PRIVACY POLICY</a><a onclick="navigate('terms')">TERMS OF SERVICE</a></div></div>
 </footer>
 </div><!-- /page-terms -->
 
-<!-- ── SECRET ADMIN TRIGGER ── -->
-<div onclick="navigate('admin')" style="position:fixed;bottom:0;left:0;width:50px;height:50px;z-index:9000;cursor:default;user-select:none;opacity:0;pointer-events:all;"></div>
+<!-- ═══════════════════════════════════════════
+     ADMIN LOGIN OVERLAY
+═══════════════════════════════════════════ -->
+<div id="adminLoginOverlay" class="admin-login-overlay">
+  <div class="admin-login-box">
+    <div class="admin-login-header">
+      <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:.5rem">// RESTRICTED ACCESS</div>
+      <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:.1em">ADMIN AUTHENTICATION</div>
+    </div>
+    <div class="admin-login-body">
+      <div class="admin-login-error" id="adminLoginError"></div>
+      <div style="margin-bottom:1rem">
+        <label class="admin-input-label">EMAIL</label>
+        <input type="email" id="adminEmailInput" class="admin-input-field" placeholder="admin@email.com" autocomplete="email" />
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <label class="admin-input-label">PASSWORD</label>
+        <input type="password" id="adminPasswordInput" class="admin-input-field" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <div style="display:flex;gap:.75rem">
+        <button class="admin-login-btn" id="adminLoginBtn" onclick="submitAdminLogin()">⚡ AUTHENTICATE</button>
+        <button class="admin-abort-btn" onclick="closeAdminLogin()">ABORT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIVE NOTIFICATION TOAST ── -->
+<div id="adminToast" class="admin-toast"></div>
+
+<!-- ── HIDDEN TRIGGER: click bottom-left corner 5× quickly ── -->
+<div id="adminSecretTrigger" style="position:fixed;bottom:0;left:0;width:50px;height:50px;z-index:9000;cursor:default;user-select:none;opacity:0;pointer-events:all;"></div>
 
 <!-- ═══════════════════════════════════════════
      ADMIN PAGE

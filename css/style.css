@@ -342,7 +342,8 @@ textarea { resize: vertical; min-height: 120px; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .footer-legal-links { justify-content: center; }
   .footer-philosophy { text-align: center; }
-  .hero-content { padding: 1rem; }
+  .boot-sequence { display: none; }
+  .hero-content { padding: 1rem; background: rgba(2,8,16,0.7); }
   .hero-buttons { flex-direction: column; align-items: center; }
   .btn-primary, .btn-secondary { width: 100%; justify-content: center; clip-path: none; }
   .wof { padding: 1.5rem; }

@@ -609,7 +609,7 @@ function stopAdminPolling() {
 function triggerNotification(order) {
   playBeep();
   showToast(`⚡ NEW ORDER: ${order.first_name} ${order.last_name} — ${svcLabel(order.service_type)}`);
-  if (Notification.permission === 'granted') {
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     new Notification('⚡ New Work Order — Foust Brothers', {
       body: `${order.first_name} ${order.last_name} — ${svcLabel(order.service_type)}`
     });
@@ -651,7 +651,7 @@ async function loadAdminOrders() {
     const { data: orders, error } = await sb
       .from('work_orders').select('*').order('created_at', { ascending: false });
     if (error) throw error;
-    if (Notification.permission === 'default') Notification.requestPermission();
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') Notification.requestPermission();
     renderOrders(orders);
     updateStats(orders);
   } catch (err) {

@@ -527,15 +527,31 @@ async function checkAdminAuth() {
     window._adminIsMaster = profile.is_master;
 
     document.querySelectorAll('.master-only').forEach(el => {
-      el.style.display = profile.is_master ? '' : 'none';
+      const isTabPanel = el.classList.contains('admin-tab-content');
+      if (isTabPanel) {
+        // Tab panels stay hidden until their tab is explicitly clicked —
+        // role only controls whether the TAB BUTTON is visible, not the panel.
+        if (!profile.is_master) el.style.display = 'none';
+      } else {
+        el.style.display = profile.is_master ? '' : 'none';
+      }
     });
     document.querySelectorAll('.admin-only').forEach(el => {
-      el.style.display = (profile.role === 'admin' || profile.is_master) ? '' : 'none';
+      const isTabPanel = el.classList.contains('admin-tab-content');
+      const allowed = (profile.role === 'admin' || profile.is_master);
+      if (isTabPanel) {
+        if (!allowed) el.style.display = 'none';
+      } else {
+        el.style.display = allowed ? '' : 'none';
+      }
     });
 
     renderAdminHeader(session.user.email, profile.role, profile.is_master);
     loadAdminOrders();
     startAdminPolling();
+
+    // Always land on the Orders tab by default, regardless of role reveals above
+    showAdminTab('orders', document.querySelector('.admin-tab-btn'));
   } catch (err) {
     console.error('Auth check failed:', err);
     showAdminLogin(); navigate('home');

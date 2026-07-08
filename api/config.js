@@ -4,8 +4,8 @@ export default function handler(req) {
   const origin = req.headers.get('origin') || '';
 
   const allowed = [
-    'https://foustbrothers.com',
-    'https://www.foustbrothers.com',
+    'https://foustbrothersllc.com',
+    'https://www.foustbrothersllc.com',
     'https://foust-brothers.vercel.app',
     'http://localhost:3000',
     'http://127.0.0.1:5500'

@@ -284,7 +284,7 @@ function initAdminTrigger() {
     _clickCount++;
     clearTimeout(_clickTimer);
     _clickTimer = setTimeout(() => { _clickCount = 0; }, 3000);
-    if (_clickCount >= 5) { _clickCount = 0; showAdminLogin(); }
+    if (_clickCount >= 5) { _clickCount = 0; openAdminOrLogin(); }
   });
 
   ['adminEmailInput','adminPasswordInput'].forEach(id => {
@@ -306,11 +306,31 @@ if (document.readyState === 'loading') {
 document.addEventListener('keydown', (e) => {
   if (e.ctrlKey && e.shiftKey && e.key === 'A') {
     e.preventDefault();
-    showAdminLogin();
+    openAdminOrLogin();
   }
 });
 
 // ── ADMIN LOGIN MODAL ──
+async function openAdminOrLogin() {
+  // If a valid session already exists (browser remembers this login),
+  // skip the login form entirely and go straight to the panel.
+  try {
+    const sb = await getSB();
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      const { data: profile } = await sb
+        .from('profiles').select('role, is_master').eq('id', session.user.id).single();
+      if (profile) {
+        navigate('admin');
+        return;
+      }
+    }
+  } catch (e) {
+    // fall through to login form if anything goes wrong
+  }
+  showAdminLogin();
+}
+
 function showAdminLogin() {
   const ov = document.getElementById('adminLoginOverlay');
   if (ov) { ov.classList.add('show'); setTimeout(() => document.getElementById('adminEmailInput')?.focus(), 100); }

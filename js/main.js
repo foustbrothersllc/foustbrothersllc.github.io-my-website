@@ -373,7 +373,9 @@ async function adminLogout() {
 
 async function checkForPasswordRecovery() {
   const hash = window.location.hash;
-  if (!hash.includes('type=recovery')) return;
+  const isRecovery = hash.includes('type=recovery');
+  const isInvite   = hash.includes('type=invite');
+  if (!isRecovery && !isInvite) return;
 
   // Let Supabase's client pick up the token from the URL
   const sb = await getSB();
@@ -381,7 +383,14 @@ async function checkForPasswordRecovery() {
 
   if (session) {
     const ov = document.getElementById('resetPasswordOverlay');
-    if (ov) ov.classList.add('show');
+    if (ov) {
+      // Tweak the header copy slightly for invites vs recovery
+      const headerLabel = ov.querySelector('.admin-login-header div');
+      if (headerLabel && isInvite) {
+        headerLabel.textContent = '// WELCOME — SET UP YOUR ACCOUNT';
+      }
+      ov.classList.add('show');
+    }
   }
 }
 
@@ -706,19 +715,15 @@ function renderUsers(users) {
   const box = document.getElementById('adminUsersContainer');
   if (!box) return;
   box.innerHTML = `
-    <!-- Create User Form -->
+    <!-- Invite User Form -->
     <div style="border:1px solid rgba(0,229,255,.3);background:var(--bg-card);margin-bottom:1.5rem;">
       <div style="padding:.7rem 1.25rem;border-bottom:1px solid var(--border);background:rgba(0,229,255,.03);font-family:var(--font-mono);font-size:.58rem;color:var(--cyan);letter-spacing:.2em;">
-        // CREATE NEW USER
+        // INVITE NEW USER
       </div>
       <div style="padding:1.25rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;">
         <div style="flex:1;min-width:200px;">
           <label class="admin-input-label">EMAIL</label>
           <input type="email" id="newUserEmail" class="admin-input-field" placeholder="user@email.com" />
-        </div>
-        <div style="flex:1;min-width:200px;">
-          <label class="admin-input-label">PASSWORD</label>
-          <input type="password" id="newUserPassword" class="admin-input-field" placeholder="••••••••" />
         </div>
         <div style="min-width:140px;">
           <label class="admin-input-label">ROLE</label>
@@ -728,7 +733,7 @@ function renderUsers(users) {
           </select>
         </div>
         <button class="admin-login-btn" style="padding:11px 22px;white-space:nowrap;" onclick="createUser()">
-          ⚡ CREATE USER
+          ⚡ SEND INVITE
         </button>
       </div>
       <div id="createUserMsg" style="font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;padding:0 1.25rem .75rem;min-height:1.2rem;"></div>
@@ -761,47 +766,41 @@ function renderUsers(users) {
 }
 
 async function createUser() {
-  const email    = document.getElementById('newUserEmail').value.trim();
-  const password = document.getElementById('newUserPassword').value;
-  const role     = document.getElementById('newUserRole').value;
-  const msg      = document.getElementById('createUserMsg');
+  const email = document.getElementById('newUserEmail').value.trim();
+  const role  = document.getElementById('newUserRole').value;
+  const msg   = document.getElementById('createUserMsg');
 
-  if (!email || !password) {
+  if (!email) {
     msg.style.color = '#ff4466';
-    msg.textContent = '⚠ EMAIL AND PASSWORD REQUIRED';
-    return;
-  }
-  if (password.length < 6) {
-    msg.style.color = '#ff4466';
-    msg.textContent = '⚠ PASSWORD MUST BE AT LEAST 6 CHARACTERS';
+    msg.textContent = '⚠ EMAIL REQUIRED';
     return;
   }
 
   msg.style.color = 'var(--cyan)';
-  msg.textContent = '// CREATING USER...';
+  msg.textContent = '// SENDING INVITE...';
 
   try {
     const sb = await getSB();
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Not authenticated');
 
-    // Sign up the new user
-    const { data, error } = await sb.auth.signUp({ email, password });
-    if (error) throw error;
-    if (!data.user) throw new Error('User creation failed');
+    const res = await fetch('/api/invite-user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({ email, role })
+    });
 
-    // Set their role in profiles table
-    await sb.from('profiles').upsert({
-      id: data.user.id,
-      email,
-      role,
-      is_master: false
-    }, { onConflict: 'id' });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'Invite failed');
 
     msg.style.color = '#00ff88';
-    msg.textContent = `✓ USER CREATED: ${email} — ${role.toUpperCase()}`;
+    msg.textContent = `✓ INVITE SENT: ${email} — ${role.toUpperCase()}`;
 
     // Clear form
     document.getElementById('newUserEmail').value = '';
-    document.getElementById('newUserPassword').value = '';
     document.getElementById('newUserRole').value = 'user';
 
     // Reload user list
@@ -809,9 +808,10 @@ async function createUser() {
 
   } catch(err) {
     msg.style.color = '#ff4466';
-    msg.textContent = '⚠ ' + (err.message || 'CREATE FAILED');
+    msg.textContent = '⚠ ' + (err.message || 'INVITE FAILED');
   }
 }
+
 
 async function setUserRole(userId, role) {
   const sb = await getSB();

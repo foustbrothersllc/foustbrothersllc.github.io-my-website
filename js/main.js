@@ -365,6 +365,69 @@ async function adminLogout() {
   navigate('home');
 }
 
+// ═══════════════════════════════════════════
+//  PASSWORD RECOVERY FLOW
+//  Detects Supabase's recovery token in the URL
+//  and shows a set-new-password form
+// ═══════════════════════════════════════════
+
+async function checkForPasswordRecovery() {
+  const hash = window.location.hash;
+  if (!hash.includes('type=recovery')) return;
+
+  // Let Supabase's client pick up the token from the URL
+  const sb = await getSB();
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (session) {
+    const ov = document.getElementById('resetPasswordOverlay');
+    if (ov) ov.classList.add('show');
+  }
+}
+
+async function submitPasswordReset() {
+  const pw     = document.getElementById('resetPasswordInput').value;
+  const pwConf = document.getElementById('resetPasswordConfirm').value;
+  const errEl  = document.getElementById('resetPasswordError');
+  const btn    = document.getElementById('resetPasswordBtn');
+
+  errEl.style.display = 'none';
+
+  if (!pw || pw.length < 6) {
+    errEl.textContent = '⚠ PASSWORD MUST BE AT LEAST 6 CHARACTERS';
+    errEl.style.display = 'block'; return;
+  }
+  if (pw !== pwConf) {
+    errEl.textContent = '⚠ PASSWORDS DO NOT MATCH';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.textContent = 'UPDATING...'; btn.disabled = true;
+
+  try {
+    const sb = await getSB();
+    const { error } = await sb.auth.updateUser({ password: pw });
+    if (error) throw error;
+
+    document.getElementById('resetPasswordOverlay').classList.remove('show');
+    // Clean the recovery token out of the URL
+    history.replaceState(null, '', window.location.pathname);
+    alert('Password updated! You can now log in with your new password.');
+    showAdminLogin();
+  } catch (err) {
+    errEl.textContent = '⚠ ' + (err.message || 'FAILED TO UPDATE PASSWORD');
+    errEl.style.display = 'block';
+    btn.textContent = '⚡ SET PASSWORD'; btn.disabled = false;
+  }
+}
+
+// Run the check on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkForPasswordRecovery);
+} else {
+  checkForPasswordRecovery();
+}
+
 // ── CHECK AUTH WHEN ADMIN PAGE OPENS ──
 async function checkAdminAuth() {
   try {

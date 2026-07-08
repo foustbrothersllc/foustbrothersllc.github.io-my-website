@@ -567,6 +567,32 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════
+     PASSWORD RESET OVERLAY (recovery flow)
+═══════════════════════════════════════════ -->
+<div id="resetPasswordOverlay" class="admin-login-overlay">
+  <div class="admin-login-box">
+    <div class="admin-login-header">
+      <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:.5rem">// PASSWORD RECOVERY</div>
+      <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:.1em">SET NEW PASSWORD</div>
+    </div>
+    <div class="admin-login-body">
+      <div class="admin-login-error" id="resetPasswordError"></div>
+      <div style="margin-bottom:1rem">
+        <label class="admin-input-label">NEW PASSWORD</label>
+        <input type="password" id="resetPasswordInput" class="admin-input-field" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <label class="admin-input-label">CONFIRM PASSWORD</label>
+        <input type="password" id="resetPasswordConfirm" class="admin-input-field" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+      <div style="display:flex;gap:.75rem">
+        <button class="admin-login-btn" id="resetPasswordBtn" onclick="submitPasswordReset()">⚡ SET PASSWORD</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── LIVE NOTIFICATION TOAST ── -->
 <div id="adminToast" class="admin-toast"></div>
 

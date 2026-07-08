@@ -563,6 +563,49 @@
         <button class="admin-login-btn" id="adminLoginBtn" onclick="submitAdminLogin()">⚡ AUTHENTICATE</button>
         <button class="admin-abort-btn" onclick="closeAdminLogin()">ABORT</button>
       </div>
+      <div style="margin-top:1rem;text-align:center">
+        <a onclick="closeAdminLogin();openCodeEntry()" style="font-family:var(--font-mono);font-size:.58rem;color:var(--white-dim);letter-spacing:.08em;cursor:pointer;text-decoration:underline">
+          HAVE AN INVITE OR RESET CODE?
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     CODE ENTRY OVERLAY (invite / password reset via code)
+═══════════════════════════════════════════ -->
+<div id="codeEntryOverlay" class="admin-login-overlay">
+  <div class="admin-login-box">
+    <div class="admin-login-header">
+      <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.2em;margin-bottom:.5rem">// ACCOUNT SETUP</div>
+      <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:.1em">ENTER YOUR CODE</div>
+    </div>
+    <div class="admin-login-body">
+      <div class="admin-login-error" id="codeEntryError"></div>
+      <div style="margin-bottom:1rem;font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.05em;line-height:1.6">
+        Check your email for a 6-digit code, then enter it below along with your new password.
+      </div>
+      <div style="margin-bottom:1rem">
+        <label class="admin-input-label">EMAIL</label>
+        <input type="email" id="codeEntryEmail" class="admin-input-field" placeholder="you@email.com" autocomplete="email" />
+      </div>
+      <div style="margin-bottom:1rem">
+        <label class="admin-input-label">6-DIGIT CODE</label>
+        <input type="text" id="codeEntryCode" class="admin-input-field" placeholder="123456" maxlength="6" inputmode="numeric" autocomplete="one-time-code" />
+      </div>
+      <div style="margin-bottom:1rem">
+        <label class="admin-input-label">NEW PASSWORD</label>
+        <input type="password" id="codeEntryPassword" class="admin-input-field" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <label class="admin-input-label">CONFIRM PASSWORD</label>
+        <input type="password" id="codeEntryPasswordConfirm" class="admin-input-field" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+      <div style="display:flex;gap:.75rem">
+        <button class="admin-login-btn" id="codeEntryBtn" onclick="submitCodeEntry()">⚡ SET PASSWORD & CONTINUE</button>
+        <button class="admin-abort-btn" onclick="closeCodeEntry()">ABORT</button>
+      </div>
     </div>
   </div>
 </div>

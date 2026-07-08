@@ -437,6 +437,80 @@ if (document.readyState === 'loading') {
   checkForPasswordRecovery();
 }
 
+// ═══════════════════════════════════════════
+//  CODE-BASED INVITE / RESET FLOW
+//  Avoids single-use link tokens getting burned
+//  by email security scanners — person types in
+//  the 6-digit code from their email instead.
+// ═══════════════════════════════════════════
+
+function openCodeEntry() {
+  const ov = document.getElementById('codeEntryOverlay');
+  if (ov) { ov.classList.add('show'); setTimeout(() => document.getElementById('codeEntryEmail')?.focus(), 100); }
+}
+
+function closeCodeEntry() {
+  const ov = document.getElementById('codeEntryOverlay');
+  if (!ov) return;
+  ov.classList.remove('show');
+  ['codeEntryEmail','codeEntryCode','codeEntryPassword','codeEntryPasswordConfirm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const errEl = document.getElementById('codeEntryError');
+  if (errEl) errEl.style.display = 'none';
+}
+
+async function submitCodeEntry() {
+  const email    = document.getElementById('codeEntryEmail').value.trim();
+  const code     = document.getElementById('codeEntryCode').value.trim();
+  const pw       = document.getElementById('codeEntryPassword').value;
+  const pwConf   = document.getElementById('codeEntryPasswordConfirm').value;
+  const errEl    = document.getElementById('codeEntryError');
+  const btn      = document.getElementById('codeEntryBtn');
+
+  errEl.style.display = 'none';
+
+  if (!email || !code) {
+    errEl.textContent = '⚠ ENTER YOUR EMAIL AND CODE';
+    errEl.style.display = 'block'; return;
+  }
+  if (!pw || pw.length < 6) {
+    errEl.textContent = '⚠ PASSWORD MUST BE AT LEAST 6 CHARACTERS';
+    errEl.style.display = 'block'; return;
+  }
+  if (pw !== pwConf) {
+    errEl.textContent = '⚠ PASSWORDS DO NOT MATCH';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.textContent = 'VERIFYING...'; btn.disabled = true;
+
+  try {
+    const sb = await getSB();
+
+    // Try invite first, then recovery — either type may apply depending on which email they got
+    let { data, error } = await sb.auth.verifyOtp({ email, token: code, type: 'invite' });
+    if (error) {
+      ({ data, error } = await sb.auth.verifyOtp({ email, token: code, type: 'recovery' }));
+    }
+    if (error) throw error;
+
+    // Now that we have a session, set the password
+    const { error: pwError } = await sb.auth.updateUser({ password: pw });
+    if (pwError) throw pwError;
+
+    closeCodeEntry();
+    alert('Account set up! You can now log in with your new password.');
+    showAdminLogin();
+
+  } catch (err) {
+    errEl.textContent = '⚠ ' + (err.message || 'INVALID OR EXPIRED CODE');
+    errEl.style.display = 'block';
+    btn.textContent = '⚡ SET PASSWORD & CONTINUE'; btn.disabled = false;
+  }
+}
+
 // ── CHECK AUTH WHEN ADMIN PAGE OPENS ──
 async function checkAdminAuth() {
   try {

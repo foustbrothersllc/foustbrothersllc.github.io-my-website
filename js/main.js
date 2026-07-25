@@ -39,6 +39,19 @@ async function getSB() {
       storage: window.localStorage
     }
   });
+
+  // ── KEEP SESSION ALIVE — refresh every 3 days ──
+  setInterval(async () => {
+    try {
+      const { data: { session } } = await _sb.auth.refreshSession();
+      if (session) {
+        console.log('[SESSION] Refreshed at', new Date().toLocaleTimeString());
+      }
+    } catch (error) {
+      console.error('[SESSION] Refresh failed:', error);
+    }
+  }, 3 * 24 * 60 * 60 * 1000); // 3 days in milliseconds
+
   return _sb;
 }
 

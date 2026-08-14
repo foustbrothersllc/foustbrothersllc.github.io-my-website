@@ -703,6 +703,81 @@
     key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzY2hmZ2dtamRjY3Bidmt2Ynl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NzEwNDgsImV4cCI6MjA5NjU0NzA0OH0.AKyPiyPKfxiZ7LurxB4w6ln1TY0tW6riDr9_uP5m5kM'
   };
 </script>
+
+<!-- ── SUPABASE 12-HOUR SESSION KEEP-ALIVE ── -->
+<script>
+(function initSupabaseKeepalive() {
+  const REFRESH_INTERVAL = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+  let refreshTimeout = null;
+  let isTabVisible = true;
+
+  // Check if Supabase client is available
+  if (typeof window.__SBCFG === 'undefined') {
+    console.warn('[Keepalive] Supabase config not found. Keepalive not started.');
+    return;
+  }
+
+  async function refreshSupabaseSession() {
+    try {
+      // Wait for supabase to be initialized (it loads after this script)
+      if (typeof supabase === 'undefined') {
+        console.warn('[Keepalive] Supabase client not initialized yet.');
+        return;
+      }
+
+      const { data, error } = await supabase.auth.refreshSession();
+      
+      if (error) {
+        console.error('[Keepalive] Refresh error:', error.message);
+        return;
+      }
+
+      if (data?.session) {
+        console.log('[Keepalive] Session refreshed successfully at', new Date().toLocaleTimeString());
+      } else {
+        console.warn('[Keepalive] No session to refresh.');
+      }
+    } catch (err) {
+      console.error('[Keepalive] Unexpected error during refresh:', err);
+    }
+  }
+
+  function scheduleNextRefresh() {
+    if (refreshTimeout) clearTimeout(refreshTimeout);
+    
+    if (!isTabVisible) {
+      console.log('[Keepalive] Tab hidden. Refresh scheduled for when tab returns.');
+      return;
+    }
+
+    refreshTimeout = setTimeout(() => {
+      refreshSupabaseSession();
+      scheduleNextRefresh(); // Reschedule for next interval
+    }, REFRESH_INTERVAL);
+
+    const nextRefresh = new Date(Date.now() + REFRESH_INTERVAL);
+    console.log('[Keepalive] Next refresh scheduled for', nextRefresh.toLocaleTimeString());
+  }
+
+  // Listen for tab visibility changes
+  document.addEventListener('visibilitychange', () => {
+    isTabVisible = !document.hidden;
+
+    if (isTabVisible) {
+      console.log('[Keepalive] Tab regained focus. Restarting refresh schedule.');
+      scheduleNextRefresh();
+    } else {
+      console.log('[Keepalive] Tab hidden. Pausing refresh.');
+      if (refreshTimeout) clearTimeout(refreshTimeout);
+    }
+  });
+
+  // Start the keep-alive loop
+  scheduleNextRefresh();
+  console.log('[Keepalive] Supabase session keep-alive initialized. Refresh every 12 hours.');
+})();
+</script>
+
 <script src="js/main.js"></script>
 <script src="js/blob.js"></script>
 </body>

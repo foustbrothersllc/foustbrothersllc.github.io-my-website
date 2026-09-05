@@ -14,8 +14,6 @@
     { "source": "/billing",    "destination": "/index.html" },
     { "source": "/work-order", "destination": "/index.html" },
     { "source": "/privacy",    "destination": "/index.html" },
-    { "source": "/terms",      "destination": "/index.html" },
-    { "source": "/admin",      "destination": "/index.html" },
-    { "source": "/confirm",    "destination": "/confirm.html" }
+    { "source": "/terms",      "destination": "/index.html" }
   ]
 }

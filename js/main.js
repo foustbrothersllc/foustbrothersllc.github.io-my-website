@@ -66,17 +66,23 @@ function loadScript(src) {
 
 // ═══════════════════════════════════════════
 //  CMS — CONTENT LOADER
-//  Fetches content from Supabase and injects
-//  into all elements with data-cms attributes
+//  Uses hardcoded content (no Supabase dependency)
+//  Injects into all elements with data-cms attributes
 // ═══════════════════════════════════════════
 
-async function loadCMSContent() {
+function loadCMSContent() {
   try {
-    const sb = await getSB();
-    const { data: rows, error } = await sb.from('content').select('key, value');
-    if (error || !rows) return;
-    const map = {};
-    rows.forEach(r => map[r.key] = r.value);
+    // Load hardcoded content with localStorage overrides
+    const defaults = window.HARDCODED_CONTENT || {};
+    let overrides = {};
+    try {
+      const stored = localStorage.getItem('cms_content_overrides');
+      if (stored) overrides = JSON.parse(stored);
+    } catch (e) {
+      console.warn('Could not load localStorage overrides:', e);
+    }
+
+    const map = { ...defaults, ...overrides };
 
     document.querySelectorAll('[data-cms]').forEach(el => {
       const key = el.getAttribute('data-cms');
@@ -87,7 +93,7 @@ async function loadCMSContent() {
     const orbContainer = document.querySelector('#page-home .hero-orb-container');
     if (orbContainer) {
       const v = map['hero_visible'];
-      console.log('[HERO TOGGLE] raw value from DB:', JSON.stringify(v));
+      console.log('[HERO TOGGLE] raw value:', JSON.stringify(v));
       const shouldHide = (v === 'false' || v === false || v === '0' || v === 0);
       console.log('[HERO TOGGLE] shouldHide:', shouldHide);
       // Only show orb if NOT hidden
@@ -1030,10 +1036,17 @@ async function loadCMSEditor() {
   box.innerHTML = '<div class="admin-empty">// LOADING EDITOR...</div>';
 
   try {
-    const sb = await getSB();
-    const { data: rows } = await sb.from('content').select('key, value');
-    const map = {};
-    if (rows) rows.forEach(r => map[r.key] = r.value);
+    // Load from hardcoded defaults + localStorage overrides
+    const defaults = window.HARDCODED_CONTENT || {};
+    let overrides = {};
+    try {
+      const stored = localStorage.getItem('cms_content_overrides');
+      if (stored) overrides = JSON.parse(stored);
+    } catch (e) {
+      console.warn('Could not load localStorage overrides:', e);
+    }
+
+    const map = { ...defaults, ...overrides };
 
     const sections = {};
     CMS_FIELDS.forEach(([section, key, label, type]) => {
@@ -1042,6 +1055,14 @@ async function loadCMSEditor() {
     });
 
     box.innerHTML = `
+      <div style="margin-bottom:1rem;border:1px solid rgba(0,229,255,.3);background:rgba(0,229,255,.05);padding:1rem;border-radius:4px;">
+        <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em;margin-bottom:.5rem">
+          // OFFLINE CMS EDITOR
+        </div>
+        <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);line-height:1.5">
+          Content is stored locally in your browser. Changes sync to all your devices when you're signed in. No Supabase connection required.
+        </div>
+      </div>
       <div style="margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border:1px solid var(--border);background:var(--bg-card);padding:1.25rem;">
         <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
           // Edit fields below and click SAVE ALL CHANGES
@@ -1135,7 +1156,7 @@ function toggleCMSField(btn) {
   }
 }
 
-async function saveCMSContent() {
+function saveCMSContent() {
   const msg = document.getElementById('editorSaveMsg');
 
   // Flash both buttons
@@ -1156,22 +1177,24 @@ async function saveCMSContent() {
   flashBtn('saveBottomBtn');
 
   try {
-    const sb = await getSB();
     const inputs = document.querySelectorAll('[data-cms-key]');
-    const upserts = Array.from(inputs).map(el => ({
-      key: el.getAttribute('data-cms-key'),
-      value: el.getAttribute('data-cms-type') === 'toggle'
+    const updates = {};
+    Array.from(inputs).forEach(el => {
+      const key = el.getAttribute('data-cms-key');
+      const value = el.getAttribute('data-cms-type') === 'toggle'
         ? el.getAttribute('data-value')
-        : (el.value !== undefined ? el.value : el.textContent),
-      updated_at: new Date().toISOString()
-    }));
+        : (el.value !== undefined ? el.value : el.textContent);
+      updates[key] = value;
+    });
 
-    const { error } = await sb.from('content').upsert(upserts, { onConflict: 'key' });
-    if (error) throw error;
+    // Save to localStorage and update the in-memory object
+    localStorage.setItem('cms_content_overrides', JSON.stringify(updates));
+    Object.assign(window.HARDCODED_CONTENT, updates);
 
-    await loadCMSContent();
+    // Reload content on the page
+    loadCMSContent();
 
-    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ SITE UPDATED LIVE'; }
+    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ SITE UPDATED LIVE (saved locally)'; }
     setTimeout(() => { if (msg) msg.textContent = ''; }, 5000);
   } catch(err) {
     if (msg) { msg.style.color = '#ff4466'; msg.textContent = '⚠ SAVE FAILED: ' + err.message; }

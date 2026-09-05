@@ -72,17 +72,8 @@ function loadScript(src) {
 
 function loadCMSContent() {
   try {
-    // Load hardcoded content with localStorage overrides
-    const defaults = window.HARDCODED_CONTENT || {};
-    let overrides = {};
-    try {
-      const stored = localStorage.getItem('cms_content_overrides');
-      if (stored) overrides = JSON.parse(stored);
-    } catch (e) {
-      console.warn('Could not load localStorage overrides:', e);
-    }
-
-    const map = { ...defaults, ...overrides };
+    // Content lives in js/content-data.js — edit that file and redeploy to change it.
+    const map = window.HARDCODED_CONTENT || {};
 
     document.querySelectorAll('[data-cms]').forEach(el => {
       const key = el.getAttribute('data-cms');
@@ -615,7 +606,6 @@ function showAdminTab(tab, el) {
   if (el) el.classList.add('active');
   if (tab === 'users') loadAdminUsers();
   if (tab === 'orders') loadAdminOrders();
-  if (tab === 'editor') loadCMSEditor();
 }
 
 // ═══════════════════════════════════════════
@@ -956,254 +946,14 @@ async function removeUser(userId, email) {
 }
 
 // ═══════════════════════════════════════════
-//  CMS EDITOR — Admin Panel
+//  NOTE: The old CMS Editor admin tab has been removed.
+//  Site content now lives in js/content-data.js as plain
+//  hardcoded values (no Supabase dependency). To change
+//  text shown on the live site, edit that file directly
+//  and redeploy — there is no in-browser editor anymore,
+//  since a database-backed editor defeats the purpose of
+//  removing the Supabase dependency.
 // ═══════════════════════════════════════════
-
-const CMS_FIELDS = [
-  // ── SITE CONTROLS ──
-  ['SITE CONTROLS', 'hero_visible', 'Orb Visible', 'toggle'],
-
-  // ── HOME ──
-  ['HOME', 'nav_status',        'Nav Status Text',               'text'],
-  ['HOME', 'hero_directive',    'Hero Directive Label',           'text'],
-  ['HOME', 'hero_line1',        'Hero Headline — Line 1',         'text'],
-  ['HOME', 'hero_line2',        'Hero Headline — Line 2',         'text'],
-  ['HOME', 'hero_line3',        'Hero Headline — Line 3 (Cyan)',  'text'],
-  ['HOME', 'hero_sub',          'Hero Sub Headline',              'text'],
-  ['HOME', 'hero_btn_primary',  'Hero Button — Primary',          'text'],
-  ['HOME', 'hero_btn_secondary','Hero Button — Secondary',        'text'],
-  ['HOME', 'boot_line1',        'Boot Sequence — Line 1',         'text'],
-  ['HOME', 'boot_line2',        'Boot Sequence — Line 2',         'text'],
-  ['HOME', 'boot_line3',        'Boot Sequence — Line 3',         'text'],
-  ['HOME', 'boot_line4',        'Boot Sequence — Line 4',         'text'],
-  ['HOME', 'boot_line5',        'Boot Sequence — Line 5',         'text'],
-  ['HOME', 'sys_philosophy',    'Left Panel — Philosophy',        'text'],
-  ['HOME', 'sys_standard',      'Left Panel — Standard',          'text'],
-  ['HOME', 'sys_commitment',    'Left Panel — Commitment',        'text'],
-  ['HOME', 'sys_warranty',      'Left Panel — Warranty',          'text'],
-  ['HOME', 'sys_status',        'Right Panel — Status Value',     'text'],
-  ['HOME', 'sys_uptime',        'Right Panel — Uptime Value',     'text'],
-  ['HOME', 'sys_billing',       'Right Panel — Billing Value',    'text'],
-  ['HOME', 'sys_region',        'Right Panel — Region Value',     'text'],
-
-  // ── SERVICES ──
-  ['SERVICES', 'svc_consultation_title', 'Service: Consultation Title',   'text'],
-  ['SERVICES', 'svc_logo_title',         'Service: Logo Design Title',     'text'],
-  ['SERVICES', 'svc_flyer_title',        'Service: Digital Flyers Title',  'text'],
-  ['SERVICES', 'svc_brochure_title',     'Service: Brochure Site Title',   'text'],
-  ['SERVICES', 'svc_simple_title',       'Service: Simple Build Title',    'text'],
-  ['SERVICES', 'svc_standard_title',     'Service: Standard Build Title',  'text'],
-  ['SERVICES', 'svc_full_title',         'Service: Full Build Title',      'text'],
-
-  // ── BILLING ──
-  ['BILLING', 'billing_intro',       'Billing Intro Text',          'textarea'],
-  ['BILLING', 'price_tier1',         'Tier 1 Price',                'text'],
-  ['BILLING', 'price_tier2',         'Tier 2 Price',                'text'],
-  ['BILLING', 'price_tier3',         'Tier 3 Price',                'text'],
-  ['BILLING', 'price_retainer_mo',   'Retainer Monthly Price',      'text'],
-  ['BILLING', 'price_retainer_yr',   'Retainer Annual Price',       'text'],
-  ['BILLING', 'rate_standard',       'Standard Shop Rate',          'text'],
-  ['BILLING', 'rate_overtime',       'Overtime Rate',               'text'],
-  ['BILLING', 'rate_rush',           'Rush Rate Multiplier',        'text'],
-  ['BILLING', 'spec_logo_price',     'Logo Design Price Range',     'text'],
-  ['BILLING', 'spec_logo_desc',      'Logo Design Description',     'text'],
-  ['BILLING', 'spec_flyer_price',    'Digital Flyers Price Range',  'text'],
-  ['BILLING', 'spec_flyer_desc',     'Digital Flyers Description',  'text'],
-  ['BILLING', 'spec_domain_price',   'Domain Privacy Price Range',  'text'],
-  ['BILLING', 'spec_domain_desc',    'Domain Privacy Description',  'text'],
-
-  // ── ABOUT ──
-  ['ABOUT', 'about_headline', 'About Page Headline', 'textarea'],
-
-  // ── FOOTER ──
-  ['FOOTER', 'footer_tagline',    'Footer Tagline',              'textarea'],
-  ['FOOTER', 'footer_motto',      'Footer Motto Box',            'text'],
-  ['FOOTER', 'footer_philosophy', 'Footer Bottom Philosophy',    'text'],
-
-  // ── WORK ORDER ──
-  ['WORK ORDER', 'step1', 'Step 1 — Submit Description',  'textarea'],
-  ['WORK ORDER', 'step2', 'Step 2 — Review Description',  'textarea'],
-  ['WORK ORDER', 'step3', 'Step 3 — Quote Description',   'textarea'],
-  ['WORK ORDER', 'step4', 'Step 4 — Deliver Description', 'textarea'],
-
-  // ── CONTACT ──
-  ['CONTACT', 'contact_phone', 'Phone Number', 'text'],
-];
-
-async function loadCMSEditor() {
-  const box = document.getElementById('adminEditorContainer');
-  if (!box) return;
-  box.innerHTML = '<div class="admin-empty">// LOADING EDITOR...</div>';
-
-  try {
-    // Load from hardcoded defaults + localStorage overrides
-    const defaults = window.HARDCODED_CONTENT || {};
-    let overrides = {};
-    try {
-      const stored = localStorage.getItem('cms_content_overrides');
-      if (stored) overrides = JSON.parse(stored);
-    } catch (e) {
-      console.warn('Could not load localStorage overrides:', e);
-    }
-
-    const map = { ...defaults, ...overrides };
-
-    const sections = {};
-    CMS_FIELDS.forEach(([section, key, label, type]) => {
-      if (!sections[section]) sections[section] = [];
-      sections[section].push({ key, label, type, value: map[key] ?? '' });
-    });
-
-    box.innerHTML = `
-      <div style="margin-bottom:1rem;border:1px solid rgba(0,229,255,.3);background:rgba(0,229,255,.05);padding:1rem;border-radius:4px;">
-        <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em;margin-bottom:.5rem">
-          // OFFLINE CMS EDITOR
-        </div>
-        <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);line-height:1.5">
-          Content is stored locally in your browser. Changes sync to all your devices when you're signed in. No Supabase connection required.
-        </div>
-      </div>
-      <div style="margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border:1px solid var(--border);background:var(--bg-card);padding:1.25rem;">
-        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--white-dim);letter-spacing:.15em">
-          // Edit fields below and click SAVE ALL CHANGES
-        </div>
-        <button id="saveTopBtn" class="admin-login-btn" style="padding:10px 24px" onclick="saveCMSContent()">
-          ⚡ SAVE ALL CHANGES
-        </button>
-      </div>
-
-      ${Object.entries(sections).map(([section, fields]) => `
-        <div style="margin-bottom:1.5rem">
-          <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--cyan);
-            letter-spacing:.2em;padding:.6rem 1.25rem;border:1px solid var(--border);
-            background:rgba(0,229,255,.04);border-bottom:none">
-            // ${section}
-          </div>
-          <div style="border:1px solid var(--border);background:var(--bg-card)">
-            ${fields.map(f => {
-              if (f.type === 'toggle') {
-                const isOn = f.value !== 'false' && f.value !== '0' && f.value !== '';
-                return `
-                  <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border);
-                    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
-                    <div>
-                      <label class="admin-input-label" style="margin:0;display:block">${f.label}</label>
-                      <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--white-dim);letter-spacing:.08em;margin-top:3px">
-                        Controls whether the orb animation is shown on the homepage
-                      </div>
-                    </div>
-                    <button
-                      data-cms-key="${f.key}"
-                      data-cms-type="toggle"
-                      data-value="${isOn ? 'true' : 'false'}"
-                      onclick="toggleCMSField(this)"
-                      style="
-                        font-family:var(--font-mono);font-size:.65rem;letter-spacing:.18em;font-weight:700;
-                        padding:10px 28px;border:1px solid;cursor:pointer;transition:all .25s;min-width:140px;
-                        ${isOn
-                          ? 'color:#00ff88;border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.08)'
-                          : 'color:#ff4466;border-color:rgba(255,68,102,.4);background:rgba(255,68,102,.06)'}
-                      ">
-                      ${isOn ? '▶ ONLINE' : '■ OFFLINE'}
-                    </button>
-                  </div>`;
-              }
-              return `
-                <div style="padding:.85rem 1.25rem;border-bottom:1px solid var(--border)">
-                  <label class="admin-input-label" style="margin-bottom:5px">${f.label}</label>
-                  ${f.type === 'textarea'
-                    ? `<textarea data-cms-key="${f.key}" class="admin-input-field"
-                        style="min-height:70px;resize:vertical;padding:8px 12px;width:100%;box-sizing:border-box"
-                      >${f.value}</textarea>`
-                    : `<input type="text" data-cms-key="${f.key}" class="admin-input-field"
-                        value="${f.value.replace(/"/g,'&quot;')}" />`
-                  }
-                </div>`;
-            }).join('')}
-          </div>
-        </div>
-      `).join('')}
-
-      <div style="margin-top:1.5rem;border:1px solid var(--border);background:var(--bg-card);padding:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-        <div id="editorSaveMsg" style="font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;flex:1;"></div>
-        <button id="saveBottomBtn" class="admin-login-btn" style="padding:12px 32px" onclick="saveCMSContent()">
-          ⚡ SAVE ALL CHANGES
-        </button>
-      </div>
-    `;
-  } catch(err) {
-    box.innerHTML = `<div class="admin-empty" style="color:#ff4466">// ERROR: ${err.message}</div>`;
-  }
-}
-
-function toggleCMSField(btn) {
-  const isOn = btn.getAttribute('data-value') === 'true';
-  const newVal = isOn ? 'false' : 'true';
-  btn.setAttribute('data-value', newVal);
-
-  if (!isOn) {
-    // Turning ON
-    btn.textContent = '▶ ONLINE';
-    btn.style.color = '#00ff88';
-    btn.style.borderColor = 'rgba(0,255,136,.5)';
-    btn.style.background = 'rgba(0,255,136,.08)';
-  } else {
-    // Turning OFF
-    btn.textContent = '■ OFFLINE';
-    btn.style.color = '#ff4466';
-    btn.style.borderColor = 'rgba(255,68,102,.4)';
-    btn.style.background = 'rgba(255,68,102,.06)';
-  }
-}
-
-function saveCMSContent() {
-  const msg = document.getElementById('editorSaveMsg');
-
-  // Flash both buttons
-  const flashBtn = (id) => {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    btn.textContent = '✓ ALL CHANGES SAVED';
-    btn.style.borderColor = '#00ff88';
-    btn.style.color = '#00ff88';
-    setTimeout(() => {
-      btn.innerHTML = '⚡ SAVE ALL CHANGES';
-      btn.style.borderColor = '';
-      btn.style.color = '';
-    }, 5000);
-  };
-
-  flashBtn('saveTopBtn');
-  flashBtn('saveBottomBtn');
-
-  try {
-    const inputs = document.querySelectorAll('[data-cms-key]');
-    const updates = {};
-    Array.from(inputs).forEach(el => {
-      const key = el.getAttribute('data-cms-key');
-      const value = el.getAttribute('data-cms-type') === 'toggle'
-        ? el.getAttribute('data-value')
-        : (el.value !== undefined ? el.value : el.textContent);
-      updates[key] = value;
-    });
-
-    // Save to localStorage and update the in-memory object
-    localStorage.setItem('cms_content_overrides', JSON.stringify(updates));
-    Object.assign(window.HARDCODED_CONTENT, updates);
-
-    // Reload content on the page
-    loadCMSContent();
-
-    if (msg) { msg.style.color = '#00ff88'; msg.textContent = '✓ SITE UPDATED LIVE (saved locally)'; }
-    setTimeout(() => { if (msg) msg.textContent = ''; }, 5000);
-  } catch(err) {
-    if (msg) { msg.style.color = '#ff4466'; msg.textContent = '⚠ SAVE FAILED: ' + err.message; }
-    ['saveTopBtn','saveBottomBtn'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) { btn.innerHTML = '⚠ SAVE FAILED'; btn.style.color = '#ff4466'; btn.style.borderColor = '#ff4466'; }
-    });
-  }
-}
 
 // ═══════════════════════════════════════════
 //  HELPERS
